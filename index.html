@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Woodpecker's en Gavà - Las Mejores Hamburguesas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #111111;
+      --bg-card: #1a1a1a;
+      --accent: #e8a838;
+      --accent-hover: #f0b848;
+      --accent-dark: #c4882a;
+      --text-primary: #f5f0eb;
+      --text-secondary: #a09888;
+      --text-muted: #6b6358;
+      --border: #2a2520;
+      --gradient-warm: linear-gradient(135deg, #e8a838 0%, #d4722a 100%);
+      --gradient-dark: linear-gradient(180deg, #0a0a0a 0%, #1a1510 100%);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    ::selection { background: var(--accent); color: var(--bg-primary); }
+
+    /* NAVBAR */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .navbar.scrolled {
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 0.75rem 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      position: relative;
+      line-height: 1;
+    }
+
+    .logo-main {
+      white-space: nowrap;
+      display: flex;
+      align-items: baseline;
+    }
+
+    .logo-text {
+      font-size: 1.25rem;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #f5f0eb 0%, #e8a838 50%, #f5f0eb 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s linear infinite;
+      filter: drop-shadow(0 0 8px rgba(232, 168, 56, 0.3));
+    }
+
+    .logo-accent {
+      font-size: 1.25rem;
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(232, 168, 56, 0.5), 0 0 20px rgba(232, 168, 56, 0.3);
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    .logo-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.5rem;
+      font-weight: 300;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 2px;
+      transition: color 0.3s;
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      letter-spacing: 4px;
+      background: linear-gradient(135deg, #f5f0eb 0%, #e8a838 50%, #f5f0eb 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s linear infinite;
+      filter: drop-shadow(0 0 8px rgba(232, 168, 56, 0.3));
+    }
+
+    .logo-accent {
+      font-size: 1.5rem;
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(232, 168, 56, 0.5), 0 0 20px rgba(232, 168, 56, 0.3);
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    .logo-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.55rem;
+      font-weight: 300;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-left: 8px;
+      transition: color 0.3s;
+    }
+
+    .nav-logo:hover .logo-text {
+      filter: drop-shadow(0 0 12px rgba(232, 168, 56, 0.6));
+    }
+
+    .nav-logo:hover .logo-sub { color: var(--accent); }
+
+    @keyframes shimmer {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    @keyframes glow {
+      0% { text-shadow: 0 0 10px rgba(232, 168, 56, 0.5), 0 0 20px rgba(232, 168, 56, 0.3); }
+      100% { text-shadow: 0 0 15px rgba(232, 168, 56, 0.8), 0 0 30px rgba(232, 168, 56, 0.5), 0 0 45px rgba(232, 168, 56, 0.3); }
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      background: var(--gradient-warm) !important;
+      color: var(--bg-primary) !important;
+      padding: 0.6rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600 !important;
+      letter-spacing: 1px !important;
+      transition: transform 0.3s, box-shadow 0.3s !important;
+    }
+
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(232, 168, 56, 0.3); }
+
+    .hamburger-menu {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 1001;
+      background: none;
+      border: none;
+      padding: 5px;
+    }
+
+    .hamburger-menu span {
+      width: 28px;
+      height: 2px;
+      background: var(--text-primary);
+      transition: all 0.3s;
+      border-radius: 2px;
+    }
+
+    .hamburger-menu.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger-menu.active span:nth-child(2) { opacity: 0; }
+    .hamburger-menu.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(232, 168, 56, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(212, 114, 42, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(232, 168, 56, 0.04) 0%, transparent 50%);
+    }
+
+    .hero-particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 50%;
+      opacity: 0;
+      animation: float 6s infinite;
+    }
+
+    .particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 8s; }
+    .particle:nth-child(2) { left: 25%; animation-delay: 1s; animation-duration: 6s; }
+    .particle:nth-child(3) { left: 40%; animation-delay: 2s; animation-duration: 7s; }
+    .particle:nth-child(4) { left: 55%; animation-delay: 0.5s; animation-duration: 9s; }
+    .particle:nth-child(5) { left: 70%; animation-delay: 1.5s; animation-duration: 6.5s; }
+    .particle:nth-child(6) { left: 85%; animation-delay: 3s; animation-duration: 8.5s; }
+    .particle:nth-child(7) { left: 15%; animation-delay: 2.5s; animation-duration: 7.5s; }
+    .particle:nth-child(8) { left: 60%; animation-delay: 0.8s; animation-duration: 6.2s; }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+
+    .hero-content {
+      text-align: center;
+      z-index: 2;
+      padding: 0 2rem;
+      max-width: 900px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(232, 168, 56, 0.1);
+      border: 1px solid rgba(232, 168, 56, 0.2);
+      padding: 0.5rem 1.25rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.5); }
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      line-height: 1;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    .hero-main {
+      background: linear-gradient(135deg, #f5f0eb 0%, #e8a838 40%, #d4722a 60%, #f5f0eb 100%);
+      background-size: 300% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+      filter: drop-shadow(0 0 20px rgba(232, 168, 56, 0.2));
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+      font-weight: 300;
+      animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease-out 0.6s both;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2.25rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-primary {
+      background: var(--gradient-warm);
+      color: var(--bg-primary);
+      box-shadow: 0 4px 20px rgba(232, 168, 56, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 35px rgba(232, 168, 56, 0.4);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      animation: fadeInUp 0.8s ease-out 1s both;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollPulse 2s infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 1; height: 40px; }
+      50% { opacity: 0.3; height: 25px; }
+    }
+
+    /* SECTIONS */
+    section { padding: 6rem 2rem; }
+
+    .section-container { max-width: 1200px; margin: 0 auto; }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      max-width: 550px;
+      margin: 0 auto;
+      font-weight: 300;
+    }
+
+    /* MARQUEE */
+    .marquee-section {
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      background: var(--bg-secondary);
+    }
+
+    .marquee {
+      display: flex;
+      animation: marquee 20s linear infinite;
+      width: max-content;
+    }
+
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      padding: 0 2rem;
+      white-space: nowrap;
+    }
+
+    .marquee-item span {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 3px;
+      color: var(--text-muted);
+    }
+
+    .marquee-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ABOUT */
+    .about { background: var(--bg-secondary); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .about-image {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      aspect-ratio: 4/5;
+      background: var(--bg-card);
+    }
+
+    .about-image-placeholder {
+      width: 100%;
+      height: 100%;
+      background:
+        linear-gradient(135deg, rgba(232, 168, 56, 0.1) 0%, transparent 50%),
+        linear-gradient(225deg, rgba(212, 114, 42, 0.1) 0%, transparent 50%),
+        var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8rem;
+    }
+
+    .about-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(232, 168, 56, 0.2);
+      border-radius: 20px;
+    }
+
+    .about-stats {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .stat-card {
+      flex: 1;
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(10px);
+      padding: 1rem;
+      border-radius: 12px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .stat-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.75rem;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .about-content h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+
+    .about-content h3 em {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .about-content p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-weight: 300;
+    }
+
+    .about-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .about-feature {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: var(--bg-card);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .about-feature-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(232, 168, 56, 0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .about-feature span {
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    /* MENU */
+    .menu { background: var(--bg-primary); }
+
+    .menu-categories {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .menu-cat {
+      padding: 0.6rem 1.5rem;
+      border-radius: 50px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 0.5px;
+    }
+
+    .menu-cat:hover, .menu-cat.active {
+      background: var(--accent);
+      color: var(--bg-primary);
+      border-color: var(--accent);
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .menu-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(232, 168, 56, 0.3);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    .menu-card-image {
+      height: 220px;
+      background: linear-gradient(135deg, rgba(232, 168, 56, 0.05) 0%, var(--bg-secondary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu-card-image::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(to top, var(--bg-card), transparent);
+    }
+
+    .menu-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--gradient-warm);
+      color: var(--bg-primary);
+      padding: 0.3rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      z-index: 1;
+    }
+
+    .menu-card-body { padding: 1.5rem; }
+
+    .menu-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+
+    .menu-card-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    .menu-card-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
+
+    .menu-card-desc {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 300;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .menu-card-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .menu-tag {
+      padding: 0.25rem 0.6rem;
+      background: rgba(232, 168, 56, 0.08);
+      border: 1px solid rgba(232, 168, 56, 0.15);
+      border-radius: 50px;
+      font-size: 0.65rem;
+      color: var(--accent);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    /* SPECIALS */
+    .specials { background: var(--bg-secondary); }
+
+    .specials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .special-card {
+      position: relative;
+      padding: 2.5rem 2rem;
+      background: var(--bg-card);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: all 0.4s;
+    }
+
+    .special-card:hover {
+      border-color: rgba(232, 168, 56, 0.3);
+      transform: translateY(-5px);
+    }
+
+    .special-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-warm);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .special-card:hover::before { opacity: 1; }
+
+    .special-icon {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .special-card h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.75rem;
+    }
+
+    .special-card p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* TESTIMONIALS */
+    .testimonials { background: var(--bg-primary); }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .testimonial-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+
+    .testimonial-card:hover {
+      border-color: rgba(232, 168, 56, 0.2);
+    }
+
+    .testimonial-stars {
+      color: var(--accent);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+    }
+
+    .testimonial-text {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 300;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .testimonial-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--gradient-warm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--bg-primary);
+      font-size: 0.85rem;
+    }
+
+    .testimonial-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .testimonial-role {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* GALLERY */
+    .gallery { background: var(--bg-secondary); padding: 6rem 0; }
+
+    .gallery .section-header { padding: 0 2rem; }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 250px);
+      gap: 0.75rem;
+      padding: 0 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .gallery-item {
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      cursor: pointer;
+      transition: all 0.4s;
+    }
+
+    .gallery-item:hover { transform: scale(1.02); }
+
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+
+    .gallery-item:nth-child(1) { grid-column: span 2; }
+    .gallery-item:nth-child(4) { grid-column: span 2; }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(232, 168, 56, 0.15);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .gallery-overlay span {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.25rem;
+      letter-spacing: 2px;
+      color: var(--text-primary);
+    }
+
+    /* RESERVATION */
+    .reservation {
+      background: var(--bg-primary);
+      position: relative;
+    }
+
+    .reservation-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .reservation-info h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .reservation-info h3 em { color: var(--accent); font-style: italic; }
+
+    .reservation-info p {
+      color: var(--text-secondary);
+      font-weight: 300;
+      margin-bottom: 2rem;
+    }
+
+    .reservation-details {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .reservation-detail {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .reservation-detail-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(232, 168, 56, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .reservation-detail-text strong {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .reservation-detail-text span {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 300;
+    }
+
+    .reservation-form {
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 2.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .reservation-form h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.3s;
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .form-group select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a09888' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+    }
+
+    .form-group select option { background: var(--bg-secondary); }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-submit {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    /* FOOTER */
+    .footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 4rem 2rem 2rem;
+    }
+
+    .footer-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-brand p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 300;
+      margin-top: 1rem;
+      line-height: 1.7;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.3s;
+      font-size: 0.85rem;
+    }
+
+    .footer-social a:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(232, 168, 56, 0.1);
+    }
+
+    .footer-col h4 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      margin-bottom: 1.25rem;
+    }
+
+    .footer-col ul { list-style: none; }
+
+    .footer-col li { margin-bottom: 0.75rem; }
+
+    .footer-col a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 300;
+      transition: color 0.3s;
+    }
+
+    .footer-col a:hover { color: var(--accent); }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-bottom p {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 300;
+    }
+
+    .footer-bottom a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* SCROLL ANIMATIONS */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* MOBILE NAV */
+    .mobile-nav {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      height: 100vh;
+      background: rgba(10, 10, 10, 0.98);
+      backdrop-filter: blur(20px);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .mobile-nav.open { right: 0; }
+
+    .mobile-nav a {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      letter-spacing: 3px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .mobile-nav a:hover { color: var(--accent); }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .about-image { max-height: 400px; }
+      .specials-grid { grid-template-columns: 1fr 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr 1fr; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 200px); }
+      .gallery-item:nth-child(1) { grid-column: span 2; }
+      .gallery-item:nth-child(4) { grid-column: span 1; }
+      .reservation-wrapper { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger-menu { display: flex; }
+      .nav-logo { font-size: 1.2rem; }
+      .logo-text { font-size: 1.2rem; letter-spacing: 2px; }
+      .logo-accent { font-size: 1.2rem; }
+      .logo-sub { font-size: 0.45rem; letter-spacing: 2px; }
+      section { padding: 4rem 1.25rem; }
+      .menu-grid { grid-template-columns: 1fr; }
+      .specials-grid { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .about-features { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(3, 180px);
+      }
+      .gallery-item:nth-child(1) { grid-column: span 2; }
+      .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title { letter-spacing: 0; }
+      .hero-buttons { flex-direction: column; align-items: center; }
+      .btn { width: 100%; justify-content: center; }
+      .gallery-grid { grid-template-columns: 1fr; grid-template-rows: repeat(6, 180px); }
+      .gallery-item:nth-child(1) { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <a href="#" class="nav-logo">
+      <span class="logo-main">
+        <span class="logo-text">WOODPECKER</span><span class="logo-accent">'S</span>
+      </span>
+      <span class="logo-sub">Av. Eramprunyà 16, Gavà</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#carta">Carta</a></li>
+      <li><a href="#opiniones">Opiniones</a></li>
+      <li><a href="#juegos">Juegos</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+      <li><a href="#reservas" class="nav-cta">Reservar Mesa</a></li>
+    </ul>
+    <button class="hamburger-menu" id="hamburgerMenu" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE NAV -->
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#carta" onclick="closeMobileNav()">Carta</a>
+    <a href="#opiniones" onclick="closeMobileNav()">Opiniones</a>
+    <a href="#juegos" onclick="closeMobileNav()">Juegos</a>
+    <a href="#contacto" onclick="closeMobileNav()">Contacto</a>
+    <a href="#reservas" onclick="closeMobileNav()">Reservar Mesa</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="inicio">
+    <div class="hero-bg"></div>
+    <div class="hero-particles">
+      <div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">Tu Bar en Gavà</div>
+      <h1 class="hero-title">
+        ¡Posiblemente las <span class="hero-main">mejores</span><br>hamburguesas del mundo!
+      </h1>
+      <p class="hero-subtitle">Ingredientes frescos, recetas únicas y sabor explosivo en el corazón de Gavà.</p>
+      <div class="hero-buttons">
+        <a href="http://carta.woodpeckers.es" class="btn btn-primary">Ver Carta</a>
+        <a href="#reservas" class="btn btn-outline">Reservar Ahora</a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-section">
+    <div class="marquee">
+      <div class="marquee-item"><span>HAMBURGUESAS</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>CERVEZAS</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>ALITAS DE POLLO</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>PINCHOS</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>TAPAS</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>JUEGOS RETRO</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>HAMBURGUESAS</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>CERVEZAS</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>ALITAS DE POLLO</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>PINCHOS</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>TAPAS</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>JUEGOS RETRO</span><div class="marquee-dot"></div></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="about" id="nosotros">
+    <div class="section-container">
+      <div class="about-grid">
+        <div class="about-image reveal">
+          <div class="about-image-placeholder">&#127828;</div>
+          <div class="about-stats">
+            <div class="stat-card">
+              <div class="stat-number">4.9</div>
+              <div class="stat-label">Google Rating</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">100+</div>
+              <div class="stat-label">Opiniones</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number">N°1</div>
+              <div class="stat-label">En Gavà</div>
+            </div>
+          </div>
+        </div>
+        <div class="about-content reveal">
+          <span class="section-label">Nuestra Historia</span>
+          <h3>Tu bar de siempre con las <em>mejores hamburguesas</em></h3>
+          <p>Woodpecker's es tu punto de encuentro en Gavà. Un lugar familiar y acogedor donde disfrutar de las mejores hamburguesas, tapas, pinchos y alitas de pollo. Relación calidad-precio inmejorable en un ambiente que te hará sentir como en casa.</p>
+          <p>Desde nuestra terraza hasta nuestra barra, cada rincón está pensado para que disfrutes de una experiencia gastronómica única. Ven a descubrir por qué somos el bar mejor valorado de la zona.</p>
+          <div class="about-features">
+            <div class="about-feature">
+              <div class="about-feature-icon">&#127828;</div>
+              <span>Hamburguesas únicas</span>
+            </div>
+            <div class="about-feature">
+              <div class="about-feature-icon">&#127831;</div>
+              <span>Alitas de pollo 10/10</span>
+            </div>
+            <div class="about-feature">
+              <div class="about-feature-icon">&#127860;</div>
+              <span>Pinchos y tapas</span>
+            </div>
+            <div class="about-feature">
+              <div class="about-feature-icon">&#127793;</div>
+              <span>Producto fresco y local</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENU -->
+  <section class="menu" id="carta">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <span class="section-label">Nuestra Carta</span>
+        <h2 class="section-title">NUESTRAS BURGERS</h2>
+        <p class="section-desc">Ingredientes frescos, recetas únicas y sabor explosivo. Descubre por qué somos los favoritos de Gavà.</p>
+      </div>
+
+      <div class="menu-categories reveal">
+        <button class="menu-cat active">Todas</button>
+        <button class="menu-cat">Clásicas</button>
+        <button class="menu-cat">Especiales</button>
+        <button class="menu-cat">Sides</button>
+      </div>
+
+      <div class="menu-grid">
+        <div class="menu-card reveal">
+          <div class="menu-card-image">&#127828;
+            <span class="menu-badge">Bestseller</span>
+          </div>
+          <div class="menu-card-body">
+            <div class="menu-card-top">
+              <h3 class="menu-card-name">N° 11 WOODPECKERS ESPECIAL</h3>
+              <span class="menu-card-price">€11.50</span>
+            </div>
+            <p class="menu-card-desc">Tendrás que venir para conocerla. La hamburguesa más famosa de la ciudad.</p>
+            <div class="menu-card-tags">
+              <span class="menu-tag">Especial</span>
+              <span class="menu-tag">Exclusiva</span>
+              <span class="menu-tag">La más famosa</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card reveal">
+          <div class="menu-card-image">&#127828;</div>
+          <div class="menu-card-body">
+            <div class="menu-card-top">
+              <h3 class="menu-card-name">N° 1 CLÁSICA CON QUESO</h3>
+              <span class="menu-card-price">€4.50</span>
+            </div>
+            <p class="menu-card-desc">Carne de res de primera calidad y queso fundido. Simple, perfecta y deliciosa.</p>
+            <div class="menu-card-tags">
+              <span class="menu-tag">Clásica</span>
+              <span class="menu-tag">Queso fundido</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-card reveal">
+          <div class="menu-card-image">&#127828;
+            <span class="menu-badge">La más pedida</span>
+          </div>
+          <div class="menu-card-body">
+            <div class="menu-card-top">
+              <h3 class="menu-card-name">N° 6 COMPLETA</h3>
+              <span class="menu-card-price">€5.80</span>
+            </div>
+            <p class="menu-card-desc">Nuestra clásica con queso, jamón dulce, cebolla, tomate y lechuga.</p>
+            <div class="menu-card-tags">
+              <span class="menu-tag">Completa</span>
+              <span class="menu-tag">Jamón dulce</span>
+              <span class="menu-tag">Fresca</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPECIALS -->
+  <section class="specials">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <span class="section-label">La Experiencia</span>
+        <h2 class="section-title">MÁS QUE HAMBURGUESAS</h2>
+        <p class="section-desc">Un espacio donde la buena comida se junta con el mejor ambiente en Gavà</p>
+      </div>
+      <div class="specials-grid">
+        <div class="special-card reveal">
+          <span class="special-icon">&#127866;</span>
+          <h3>CERVEZAS Y ALGO MÁS</h3>
+          <p>El sitio perfecto para tomarte unas cervezas. Buen ambiente, buena compañía y las mejores alitas de pollo de la zona.</p>
+        </div>
+        <div class="special-card reveal">
+          <span class="special-icon">&#127918;</span>
+          <h3>JUEGOS RETRO</h3>
+          <p>¿Mientras esperas... juegas! Flappy Bird, Arkanoid, Tetris, Snake y más clásicos para que la espera sea diversión pura.</p>
+        </div>
+        <div class="special-card reveal">
+          <span class="special-icon">&#127860;</span>
+          <h3>TAPAS Y PINCHOS</h3>
+          <p>Lugar perfecto para tapear. Pinchos geniales, la carne en salsa un 10 y un ambiente familiar y muy agradable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="gallery" id="galeria">
+    <div class="section-header reveal">
+      <span class="section-label">Galería</span>
+      <h2 class="section-title">EL AMBIENTE</h2>
+      <p class="section-desc">Un vistazo a lo que te espera cuando cruces nuestra puerta en Gavà</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item reveal">&#127828;
+        <div class="gallery-overlay"><span>HAMBURGUESAS</span></div>
+      </div>
+      <div class="gallery-item reveal">&#127831;
+        <div class="gallery-overlay"><span>ALITAS DE POLLO</span></div>
+      </div>
+      <div class="gallery-item reveal">&#127860;
+        <div class="gallery-overlay"><span>PINCHOS</span></div>
+      </div>
+      <div class="gallery-item reveal">&#127918;
+        <div class="gallery-overlay"><span>JUEGOS RETRO</span></div>
+      </div>
+      <div class="gallery-item reveal">&#127866;
+        <div class="gallery-overlay"><span>CERVEZAS</span></div>
+      </div>
+      <div class="gallery-item reveal">&#127864;
+        <div class="gallery-overlay"><span>TERRAZA</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JUEGOS -->
+  <section class="specials" id="juegos">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <span class="section-label">Entretenimiento</span>
+        <h2 class="section-title">¡MIENTRAS ESPERAS... JUEGA!</h2>
+        <p class="section-desc">Sabemos que la espera puede ser dura cuando el hambre aprieta... ¡pero hemos convertido la espera en diversión! Hemos preparado una selección de clásicos retro para que te entretengas mientras tu pedido está en camino. ¿Listo para superar tu récord en <strong>Flappy Bird</strong>, romper ladrillos en <strong>Arkanoid</strong>, encajar piezas en <strong>Tetris</strong> o evitar morderte la cola en el juego de la <strong>Serpiente</strong>?</p>
+      </div>
+      <div style="text-align: center; margin-top: 2rem;">
+        <a href="http://juegos.woodpeckers.es" class="btn btn-primary" target="_blank">&#127918; ¡A Jugar!</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section class="menu" id="contacto">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <span class="section-label">Contacto</span>
+        <h2 class="section-title">CONTACTA CON NOSOTROS</h2>
+        <p class="section-desc">¿Tienes alguna pregunta? ¿Quieres hacer una reserva para un grupo grande o un evento especial? Escríbenos y te responderemos lo antes posible.</p>
+      </div>
+      <div class="reservation-wrapper reveal">
+        <div class="reservation-info">
+          <h3>Información de <em>contacto</em></h3>
+          <div class="reservation-details" style="margin-top: 2rem;">
+            <div class="reservation-detail">
+              <div class="reservation-detail-icon">&#128205;</div>
+              <div class="reservation-detail-text">
+                <strong>Dirección</strong>
+                <span>Av. Eramprunyà 16 bajos, 08850 Gavà, Barcelona</span>
+              </div>
+            </div>
+            <div class="reservation-detail">
+              <div class="reservation-detail-icon">&#128222;</div>
+              <div class="reservation-detail-text">
+                <strong>Teléfono</strong>
+                <span><a href="tel:+34931234567" style="color: var(--accent); text-decoration: none;">+34 931 234 567</a></span>
+              </div>
+            </div>
+            <div class="reservation-detail">
+              <div class="reservation-detail-icon">&#9993;</div>
+              <div class="reservation-detail-text">
+                <strong>Email</strong>
+                <span><a href="mailto:info@woodpeckers.es" style="color: var(--accent); text-decoration: none;">info@woodpeckers.es</a></span>
+              </div>
+            </div>
+            <div class="reservation-detail">
+              <div class="reservation-detail-icon">&#128337;</div>
+              <div class="reservation-detail-text">
+                <strong>Horario</strong>
+                <span>Lun-Mar: Cerrado<br>Mie-Dom: 12:00 - 01:00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="reservation-form">
+          <h4>ENVÍANOS UN MENSAJE</h4>
+          <form onsubmit="event.preventDefault(); alert('¡Mensaje enviado! Te responderemos lo antes posible.');">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" placeholder="Tu nombre" required>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" placeholder="tu@email.com" required>
+            </div>
+            <div class="form-group">
+              <label>Asunto</label>
+              <input type="text" placeholder="¿En qué podemos ayudarte?">
+            </div>
+            <div class="form-group">
+              <label>Mensaje</label>
+              <textarea rows="4" placeholder="Escribe tu mensaje aquí..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary form-submit">Enviar Mensaje</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials" id="opiniones">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <span class="section-label">Opiniones</span>
+        <h2 class="section-title">LO QUE DICEN DE NOSOTROS</h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card reveal">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"Excelente. Lugar perfecto para tapear, tomar algo o cenar. Tanto Juan como el equipo que trabaja en barra, cocina y terraza. Además, relación calidad precio muy justa."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">LP</div>
+            <div>
+              <div class="testimonial-name">Laura PM</div>
+              <div class="testimonial-role">Clienta habitual</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"Buen sitio para tomarte unas cervezas. Las alitas de pollo 100% recomendables."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">JO</div>
+            <div>
+              <div class="testimonial-name">Jonathan</div>
+              <div class="testimonial-role">Cliente</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal">
+          <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p class="testimonial-text">"Lugar familiar y muy agradable, buen lugar para ir de tapas, la carne en salsa un 10 y los pinchos geniales también."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">ME</div>
+            <div>
+              <div class="testimonial-name">Maria Jesus Esteban</div>
+              <div class="testimonial-role">Clienta</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESERVATION -->
+  <section class="reservation" id="reservas">
+    <div class="section-container">
+      <div class="reservation-wrapper">
+        <div class="reservation-info reveal">
+          <span class="section-label">Reservas</span>
+          <h3>Asegura tu experiencia <em>Woodpecker's</em></h3>
+          <p>Asegura tu mesa, especialmente para noches y fines de semana. Para grupos grandes o peticiones especiales, contáctanos directamente.</p>
+          <div class="reservation-details">
+            <div class="reservation-detail">
+              <div class="reservation-detail-icon">&#128205;</div>
+              <div class="reservation-detail-text">
+                <strong>Dirección</strong>
+                <span>Av. Eramprunyà 16 bajos, 08850 Gavà, Barcelona</span>
+              </div>
+            </div>
+            <div class="reservation-detail">
+              <div class="reservation-detail-icon">&#128337;</div>
+              <div class="reservation-detail-text">
+                <strong>Horario</strong>
+                <span>Lun-Mar: Cerrado | Mie-Dom: 12:00 - 01:00</span>
+              </div>
+            </div>
+            <div class="reservation-detail">
+              <div class="reservation-detail-icon">&#128222;</div>
+              <div class="reservation-detail-text">
+                <strong>Teléfono</strong>
+                <span><a href="tel:+34931234567" style="color: inherit; text-decoration: none;">+34 931 234 567</a></span>
+              </div>
+            </div>
+            <div class="reservation-detail">
+              <div class="reservation-detail-icon">&#9993;</div>
+              <div class="reservation-detail-text">
+                <strong>Email</strong>
+                <span><a href="mailto:info@woodpeckers.es" style="color: inherit; text-decoration: none;">info@woodpeckers.es</a></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="reservation-form reveal">
+          <h4>RESERVAR MESA</h4>
+          <form onsubmit="event.preventDefault(); alert('¡Reserva enviada! Te confirmaremos por email.');">
+            <div class="form-group">
+              <label>Nombre</label>
+              <input type="text" placeholder="Tu nombre" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" required>
+              </div>
+              <div class="form-group">
+                <label>Hora</label>
+                <select required>
+                  <option value="">Seleccionar</option>
+                  <option>12:00</option>
+                  <option>12:30</option>
+                  <option>13:00</option>
+                  <option>13:30</option>
+                  <option>14:00</option>
+                  <option>20:00</option>
+                  <option>20:30</option>
+                  <option>21:00</option>
+                  <option>21:30</option>
+                  <option>22:00</option>
+                  <option>22:30</option>
+                  <option>23:00</option>
+                  <option>23:30</option>
+                  <option>00:00</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Personas</label>
+              <select required>
+                <option value="">Nº Personas</option>
+                <option>1 persona</option>
+                <option>2 personas</option>
+                <option>3 personas</option>
+                <option>4 personas</option>
+                <option>5+</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary form-submit">Reservar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+    <a href="#" class="nav-logo">WOODPECKER<span>'</span>S</a>
+        <p>Las mejores hamburguesas del mundo en el corazón de Gavà. Ingredientes frescos, recetas únicas y sabor explosivo. Tu bar de siempre.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram">IG</a>
+          <a href="#" aria-label="TikTok">TK</a>
+          <a href="#" aria-label="Twitter">X</a>
+          <a href="#" aria-label="Facebook">FB</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>NAVEGACIÓN</h4>
+        <ul>
+          <li><a href="#carta">Carta</a></li>
+          <li><a href="#opiniones">Opiniones</a></li>
+          <li><a href="http://carta.woodpeckers.es">Carta Completa</a></li>
+          <li><a href="http://juegos.woodpeckers.es">Juegos</a></li>
+          <li><a href="#reservas">Reservar Mesa</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>HORARIO</h4>
+        <ul>
+          <li><a href="#">Lunes: Cerrado</a></li>
+          <li><a href="#">Martes: Cerrado</a></li>
+          <li><a href="#">Mie - Dom: 12:00 - 01:00</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>CONTACTO</h4>
+        <ul>
+          <li><a href="#">Av. Eramprunyà 16 bajos</a></li>
+          <li><a href="#">08850 Gavà, Barcelona</a></li>
+          <li><a href="tel:+34931234567">+34 931 234 567</a></li>
+          <li><a href="mailto:info@woodpeckers.es">info@woodpeckers.es</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 Woodpecker's Gavà. Todos los derechos reservados.</p>
+      <p>Diseñado con &#10084; por el equipo Woodpecker's</p>
+    </div>
+  </footer>
+
+  <script>
+    // Navbar scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Hamburger menu
+    const hamburgerMenu = document.getElementById('hamburgerMenu');
+    const mobileNav = document.getElementById('mobileNav');
+
+    hamburgerMenu.addEventListener('click', () => {
+      hamburgerMenu.classList.toggle('active');
+      mobileNav.classList.toggle('open');
+      document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : '';
+    });
+
+    function closeMobileNav() {
+      hamburgerMenu.classList.remove('active');
+      mobileNav.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Scroll reveal
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, index * 100);
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // Menu category buttons
+    document.querySelectorAll('.menu-cat').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.menu-cat').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
