@@ -434,6 +434,27 @@ body::before {
 }
 @keyframes shimmer { 0%, 100% { left: -100%; } 50% { left: 100%; } }
 @keyframes pulse { 0%,100%{ transform: scale(1); opacity: 1;} 50%{ transform: scale(1.4); opacity: .7; } }
+  /* Open/closed status glow ring */
+  .hero-badge.is-open {
+    box-shadow: 0 8px 24px rgba(230,57,70,.35), inset 0 1px 0 rgba(255,255,255,.15),
+                0 0 0 2px #4ade80,
+                0 0 16px 6px rgba(74,222,128,.6),
+                0 0 32px 10px rgba(74,222,128,.25);
+  }
+  .hero-badge.is-open::before {
+    background: #4ade80;
+    box-shadow: 0 0 8px rgba(74,222,128,1);
+  }
+  .hero-badge.is-closed {
+    box-shadow: 0 8px 24px rgba(230,57,70,.35), inset 0 1px 0 rgba(255,255,255,.15),
+                0 0 0 2px #f97316,
+                0 0 16px 6px rgba(249,115,22,.65),
+                0 0 32px 10px rgba(249,115,22,.3);
+  }
+  .hero-badge.is-closed::before {
+    background: #f97316;
+    box-shadow: 0 0 8px rgba(249,115,22,1);
+  }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
 .hero h1 {
@@ -1064,14 +1085,10 @@ footer::before {
   section { padding: clamp(3rem, 8vw, 5rem) 1rem; }
   .hero { padding: calc(var(--nav-h) + 1.5rem) 0 3rem; padding-top: calc(var(--nav-h) + 1.5rem + env(safe-area-inset-top, 0px)); }
   .hero-bg {
-    background-size: 100% auto;
-    background-position: center top;
-    transform: scale(1);
-    animation: slowZoomMobile 25s ease-in-out infinite alternate;
-  }
-  @keyframes slowZoomMobile {
-    0%   { transform: scale(1)    translate(0, 0); }
-    100% { transform: scale(1.06) translate(-0.5%, -0.5%); }
+    background-size: auto;
+    background-position: center center;
+    transform: none;
+    animation: none;
   }
   .hero h1 { font-size: clamp(2.2rem, 10vw, 3.5rem); }
   .hero-cta { flex-direction: column; align-items: stretch; }
@@ -2215,6 +2232,30 @@ footer::before {
   }
 
 })();
+
+  // ── Open/Closed status glow ───────────────────────────────────────────
+  (function() {
+    function isOpenNow() {
+      const now = new Date();
+      const bcn = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' }));
+      const day = bcn.getDay();
+      const mins = bcn.getHours() * 60 + bcn.getMinutes();
+      if (day === 1 || day === 2) return false;
+      if (day === 0) return mins < 60 || mins >= 720;
+      return mins >= 720 || mins < 60;
+    }
+    const badge = document.querySelector('.hero-badge');
+    if (badge) {
+      if (isOpenNow()) {
+        badge.classList.add('is-open');
+        badge.title = 'Ahora abierto';
+      } else {
+        badge.classList.add('is-closed');
+        badge.title = 'Ahora cerrado';
+      }
+    }
+  })();
+  // ─────────────────────────────────────────────────────────────────────
 </script>
 
 </body>
