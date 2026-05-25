@@ -8,6 +8,8 @@
 <meta property="og:title" content="Woodpecker's Gavà · Las mejores hamburguesas del mundo" />
 <meta property="og:description" content="Ingredientes frescos, recetas únicas y sabor explosivo en el corazón de Gavà." />
 <meta property="og:type" content="restaurant.restaurant" />
+<meta property="og:image" content="img/hero.webp" />
+<meta name="robots" content="index, follow" />
 <title>Woodpecker's Gavà · Posiblemente las mejores hamburguesas del mundo</title>
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🪓%3C/text%3E%3C/svg%3E" />
@@ -17,7 +19,7 @@
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preconnect" href="https://maps.google.com">
 <link rel="dns-prefetch" href="https://maps.google.com">
-<link rel="preload" as="image" href="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=2070&auto=format&fit=crop" fetchpriority="high" />
+<link rel="preload" as="image" href="img/hero.webp" fetchpriority="high" />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=VT323&display=swap" rel="stylesheet">
 
 <style>
@@ -394,7 +396,7 @@ body::before {
   position: absolute; inset: 0;
   background:
     linear-gradient(180deg, rgba(14,10,8,.6) 0%, rgba(14,10,8,.3) 40%, var(--bg) 95%),
-    url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
+    url('img/hero.webp') center/cover no-repeat;
   transform: scale(1.05);
   animation: slowZoom 25s ease-in-out infinite alternate;
   will-change: transform;
@@ -438,7 +440,6 @@ body::before {
   font-size: clamp(2.4rem, 8vw, 7rem);
   font-weight: 700; line-height: .95; letter-spacing: -.03em;
   margin-top: 1.2rem; max-width: 1100px; word-break: break-word;
-  opacity: 0; animation: heroTitle 1s var(--ease-out) 1.4s forwards;
 }
 .hero h1 .word {
   display: inline-block; opacity: 0; transform: translateY(30px);
@@ -454,7 +455,6 @@ body::before {
   font-variation-settings: "opsz" 144; display: inline-block;
 }
 .hero h1 .accent { color: var(--ketchup); font-style: normal; display: inline-block; }
-@keyframes heroTitle { from { opacity: 0; } to { opacity: 1; } }
 @keyframes wordRise { to { opacity: 1; transform: none; } }
 
 .hero-sub {
@@ -557,11 +557,6 @@ body::before {
 }
 .stats div span { font-size: .72rem; color: var(--cream-dim); text-transform: uppercase; letter-spacing: .2em; margin-top: .3rem; display: block; }
 
-/* =========================
-   ABOUT VISUAL — FIX CRÍTICO
-   Cambiado de "position: absolute" a flujo normal para evitar
-   que la imagen crezca sin control durante reflows con sticky/static.
-========================= */
 .about-visual {
   position: sticky;
   top: calc(var(--nav-h) + 2rem);
@@ -571,6 +566,8 @@ body::before {
   opacity: 0;
   transform: translate3d(0, 40px, 0);
   transition: opacity .9s var(--ease-out) .2s, transform .9s var(--ease-out) .2s;
+  overflow: hidden;        /* FIX: prevents scaled img from overflowing border-radius */
+  border-radius: var(--radius);
 }
 .about-visual.visible { opacity: 1; transform: none; }
 
@@ -582,8 +579,13 @@ body::before {
   border-radius: var(--radius);
   display: block;
   filter: contrast(1.05) saturate(1.05);
-  box-shadow: inset 0 0 0 1px var(--border), 0 20px 60px rgba(0,0,0,.4);
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
   transition: transform .8s var(--ease-out);
+}
+.about-visual::after {
+  content: ""; position: absolute; inset: 0;
+  box-shadow: inset 0 0 0 1px var(--border);
+  border-radius: var(--radius); pointer-events: none;
 }
 .about-visual:hover img { transform: scale(1.03); }
 
@@ -620,7 +622,8 @@ body::before {
   opacity: 0; transform: translate3d(0, 20px, 0);
   contain: layout style;
 }
-.dish.visible { opacity: 1; transform: none; transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
+.dish.visible { opacity: 1; transform: none; transition: opacity .7s var(--ease-out), transform .7s var(--ease-out), border-color .3s, box-shadow .4s; }
+.dish.visible:hover { transition: transform .5s var(--ease-out), border-color .3s, box-shadow .4s; }
 .dish:hover {
   transform: translateY(-8px) scale(1.01);
   border-color: rgba(252,191,73,.4);
@@ -1132,6 +1135,113 @@ footer::before {
   .hero { min-height: auto; padding: 2rem 0; }
   .hero-bg { display: none; }
 }
+
+/* =========================
+   CUSTOM CURSOR
+========================= */
+@media (hover: hover) and (pointer: fine) {
+  * { cursor: none !important; }
+
+  .c-cursor {
+    position: fixed; top: 0; left: 0; z-index: 99999; pointer-events: none;
+  }
+  .c-dot {
+    position: fixed; top: 0; left: 0;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--mustard);
+    transition: width .3s var(--ease-spring), height .3s var(--ease-spring),
+                background .25s, border-radius .3s var(--ease-spring);
+    will-change: transform;
+  }
+  .c-ring {
+    position: fixed; top: 0; left: 0;
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1.5px solid rgba(254,245,231,.35);
+    transition: width .45s var(--ease-spring), height .45s var(--ease-spring),
+                border-radius .4s var(--ease-spring), border-color .3s, opacity .25s;
+    will-change: transform;
+  }
+  .c-cursor.is-link .c-dot { width: 13px; height: 13px; background: var(--ketchup); }
+  .c-cursor.is-link .c-ring { width: 58px; height: 58px; border-color: var(--mustard); }
+  .c-cursor.is-card .c-ring { width: 62px; height: 62px; border-radius: 14px; border-color: rgba(252,191,73,.55); }
+  .c-cursor.is-img .c-ring { width: 52px; height: 52px; border-color: rgba(254,245,231,.6); }
+  .c-cursor.is-hidden { opacity: 0; }
+}
+
+/* =========================
+   LIGHTBOX
+========================= */
+#lightbox {
+  position: fixed; inset: 0; z-index: 9500;
+  background: rgba(5,3,2,.97);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .45s var(--ease-smooth), visibility .45s;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+#lightbox.lb-open { opacity: 1; visibility: visible; pointer-events: all; }
+
+.lb-img-wrap {
+  max-width: min(88vw, 1100px); max-height: 80vh;
+  transform: scale(.93) translateY(20px);
+  transition: transform .55s var(--ease-out);
+}
+#lightbox.lb-open .lb-img-wrap { transform: none; }
+
+.lb-img {
+  max-width: 100%; max-height: 80vh; object-fit: contain;
+  border-radius: var(--radius); display: block;
+  box-shadow: 0 50px 120px rgba(0,0,0,.7);
+}
+.lb-caption {
+  text-align: center; margin-top: 1rem;
+  color: var(--cream-dim); font-size: .88rem; font-style: italic; line-height: 1.4;
+}
+.lb-close {
+  position: fixed; top: 1.25rem; right: 1.25rem; z-index: 9501;
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(254,245,231,.08); border: 1px solid var(--border-strong);
+  color: var(--cream); font-size: 1.3rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .3s, transform .4s var(--ease-spring), border-color .3s;
+}
+.lb-close:hover { background: var(--ketchup); border-color: var(--ketchup); transform: scale(1.1) rotate(90deg); }
+
+.lb-btn {
+  position: fixed; top: 50%; transform: translateY(-50%); z-index: 9501;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: rgba(254,245,231,.06); border: 1px solid var(--border);
+  color: var(--cream); font-size: 1.1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .3s, transform .3s var(--ease-spring);
+}
+.lb-btn:hover { background: rgba(254,245,231,.18); transform: translateY(-50%) scale(1.12); }
+#lb-prev { left: 1.25rem; }
+#lb-next { right: 1.25rem; }
+
+.lb-counter {
+  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+  font-family: 'VT323', monospace; font-size: 1rem; color: var(--cream-dim);
+  letter-spacing: .2em; background: rgba(14,10,8,.85);
+  padding: .35rem 1.2rem; border-radius: 999px; border: 1px solid var(--border);
+  pointer-events: none;
+}
+.gallery-item { cursor: zoom-in; }
+
+@media (max-width: 640px) {
+  .lb-btn { display: none; }
+  .lb-img-wrap { max-width: 94vw; }
+}
+
+/* =========================
+   TEXT SCRAMBLE
+========================= */
+.scramble-char { color: var(--mustard); opacity: .8; font-style: normal; }
+
+/* =========================
+   PRINT: hide new elements
+========================= */
+@media print { #lightbox, .c-cursor { display: none !important; } }
 </style>
 </head>
 <body>
@@ -1263,8 +1373,8 @@ footer::before {
 
 <div class="marquee" aria-hidden="true">
   <div class="marquee-track">
-    <span>Hamburguesas Numeradas <span class="dot">◆</span> Alitas de pollo <span class="dot">◆</span> Carne en salsa <span class="dot">◆</span> Pinchos caseros <span class="dot">◆</span> Club de Petanca <span class="dot">◆</span> Cervezas frías <span class="dot">◆</span> Ambiente familiar <span class="dot">◆</span> Tapa y caña <span class="dot">◆</span></span>
-    <span>Hamburguesas Numeradas <span class="dot">◆</span> Alitas de pollo <span class="dot">◆</span> Carne en salsa <span class="dot">◆</span> Pinchos caseros <span class="dot">◆</span> Club de Petanca <span class="dot">◆</span> Cervezas frías <span class="dot">◆</span> Ambiente familiar <span class="dot">◆</span> Tapa y caña <span class="dot">◆</span></span>
+    <span>Tapas de calidad <span class="dot">◆</span> Alitas de pollo <span class="dot">◆</span> Carne en salsa <span class="dot">◆</span> Refrescos <span class="dot">◆</span> Club de Petanca <span class="dot">◆</span> Cervezas frías <span class="dot">◆</span> Ambiente familiar <span class="dot">◆</span> Ingredientes cercanos <span class="dot">◆</span></span>
+    <span>Tapas de calidad <span class="dot">◆</span> Alitas de pollo <span class="dot">◆</span> Carne en salsa <span class="dot">◆</span> Refrescos <span class="dot">◆</span> Club de Petanca <span class="dot">◆</span> Cervezas frías <span class="dot">◆</span> Ambiente familiar <span class="dot">◆</span> Ingredientes cercanos <span class="dot">◆</span></span>
   </div>
 </div>
 
@@ -1603,7 +1713,7 @@ footer::before {
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
           </div>
           <strong>Teléfono</strong>
-          <p><a href="tel:+34931234567">+34 931 234 567</a></p>
+          <p><a href="tel:+34931234567">+34 931 234 567</a></p><!-- TODO: reemplazar con número real -->
         </div>
 
         <div class="info-block reveal" style="--delay: .4s;">
@@ -1615,7 +1725,7 @@ footer::before {
         </div>
       </div>
 
-      <a href="https://maps.google.com/?q=Av.+Eramprunyà+16+Gavà+Barcelona" target="_blank" rel="noopener" class="btn btn-primary cta-map">
+      <a href="https://maps.google.com/?q=Av.+Eramprunyà+16+Gavà+Barcelona" target="_blank" rel="noopener noreferrer" class="btn btn-primary cta-map">
         Abrir en Google Maps
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       </a>
@@ -1652,7 +1762,7 @@ footer::before {
       <ul>
         <li><a href="tel:+34931234567">+34 931 234 567</a></li>
         <li><a href="mailto:juan@woodpeckers.es">juan@woodpeckers.es</a></li>
-        <li><a href="https://maps.google.com/?q=Av.+Eramprunyà+16+Gavà" target="_blank" rel="noopener">Av. Eramprunyà 16</a></li>
+        <li><a href="https://maps.google.com/?q=Av.+Eramprunyà+16+Gavà" target="_blank" rel="noopener noreferrer">Av. Eramprunyà 16</a></li>
         <li>08850 Gavà, Barcelona</li>
       </ul>
     </div>
@@ -1758,6 +1868,14 @@ footer::before {
         closeMenu();
         toggle.focus();
       }
+      // Focus trap: keep Tab inside the menu while open
+      if (e.key === 'Tab' && toggle.getAttribute('aria-expanded') === 'true') {
+        const focusable = [...menu.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])')];
+        if (!focusable.length) return;
+        const first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
     });
 
     menu.addEventListener('click', (e) => {
@@ -1767,18 +1885,19 @@ footer::before {
 
   /* Game cards cursor effect */
   const gameCards = document.querySelectorAll('.game-card');
-  let mouseRAF = null;
   gameCards.forEach(card => {
+    let cardRAF = null; // Each card has its own RAF reference to avoid cross-card lock
     card.addEventListener('mousemove', (e) => {
-      if (mouseRAF) return;
-      mouseRAF = requestAnimationFrame(() => {
+      if (cardRAF) return;
+      cardRAF = requestAnimationFrame(() => {
         const rect = card.getBoundingClientRect();
         card.style.setProperty('--x', ((e.clientX - rect.left) / rect.width) * 100 + '%');
         card.style.setProperty('--y', ((e.clientY - rect.top) / rect.height) * 100 + '%');
-        mouseRAF = null;
+        cardRAF = null;
       });
     });
     card.addEventListener('mouseleave', () => {
+      if (cardRAF) { cancelAnimationFrame(cardRAF); cardRAF = null; } // Cancel pending RAF on leave
       card.style.setProperty('--x', '50%');
       card.style.setProperty('--y', '50%');
     });
@@ -1797,7 +1916,6 @@ footer::before {
 
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-    /* about-visual observer separado (sin blur) */
     const aboutVisual = document.querySelector('.about-visual');
     if (aboutVisual) {
       const visualObserver = new IntersectionObserver((entries) => {
@@ -1811,7 +1929,6 @@ footer::before {
       visualObserver.observe(aboutVisual);
     }
 
-    /* Stagger dish reveal */
     const dishes = document.querySelectorAll('.dish');
     const dishObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -1824,7 +1941,6 @@ footer::before {
     const menuGrid = document.querySelector('.menu-grid');
     if (menuGrid) dishObserver.observe(menuGrid);
 
-    /* Counter animation */
     const counterObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -1859,7 +1975,7 @@ footer::before {
       if (!target) return;
       e.preventDefault();
       const navHeight = nav ? nav.offsetHeight : 0;
-      const top = target.getBoundingClientRect().top + window.pageYOffset - navHeight - 16;
+      const top = target.getBoundingClientRect().top + window.scrollY - navHeight - 16;
       window.scrollTo({ top, behavior: 'smooth' });
       setTimeout(() => { target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }); }, 500);
     });
@@ -1875,7 +1991,7 @@ footer::before {
       btn.textContent = 'LOADING...';
       setTimeout(() => {
         btn.textContent = '¡PRÓXIMAMENTE!';
-        setTimeout(() => { btn.textContent = original; btn.dataset.loading = 'false'; }, 1800);
+        setTimeout(() => { btn.textContent = original; delete btn.dataset.loading; }, 1800);
       }, 700);
     });
     card.addEventListener('keydown', (e) => {
@@ -1886,6 +2002,206 @@ footer::before {
   if (prefersReducedMotion) {
     const heroBg = document.querySelector('.hero-bg');
     if (heroBg) heroBg.style.animation = 'none';
+  }
+
+  /* ===========================
+     CUSTOM CURSOR
+  =========================== */
+  const isPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (isPointer) {
+    const cur = document.createElement('div');
+    cur.className = 'c-cursor';
+    cur.innerHTML = '<div class="c-dot"></div><div class="c-ring"></div>';
+    document.body.appendChild(cur);
+    const cDot = cur.querySelector('.c-dot');
+    const cRing = cur.querySelector('.c-ring');
+
+    let mx = -200, my = -200, rx = -200, ry = -200;
+
+    document.addEventListener('mousemove', (e) => {
+      mx = e.clientX; my = e.clientY;
+      // Dot follows instantly
+      cDot.style.transform = `translate(${mx - 4}px, ${my - 4}px)`;
+    });
+
+    // Ring follows with smooth lag
+    (function animRing() {
+      rx += (mx - rx) * 0.13;
+      ry += (my - ry) * 0.13;
+      cRing.style.transform = `translate(${rx - 20}px, ${ry - 20}px)`;
+      requestAnimationFrame(animRing);
+    })();
+
+    // Cursor state: links & buttons
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => { cur.classList.remove('is-card', 'is-img'); cur.classList.add('is-link'); });
+      el.addEventListener('mouseleave', () => cur.classList.remove('is-link'));
+    });
+    // Cursor state: interactive cards
+    document.querySelectorAll('.dish, .testi-card').forEach(el => {
+      el.addEventListener('mouseenter', () => { cur.classList.remove('is-link', 'is-img'); cur.classList.add('is-card'); });
+      el.addEventListener('mouseleave', () => cur.classList.remove('is-card'));
+    });
+    // Cursor state: gallery / images
+    document.querySelectorAll('.gallery-item').forEach(el => {
+      el.addEventListener('mouseenter', () => { cur.classList.remove('is-link', 'is-card'); cur.classList.add('is-img'); });
+      el.addEventListener('mouseleave', () => cur.classList.remove('is-img'));
+    });
+    document.addEventListener('mouseleave', () => cur.classList.add('is-hidden'));
+    document.addEventListener('mouseenter', () => cur.classList.remove('is-hidden'));
+  }
+
+  /* ===========================
+     GALLERY LIGHTBOX
+  =========================== */
+  (() => {
+    const lb = document.createElement('div');
+    lb.id = 'lightbox';
+    lb.setAttribute('role', 'dialog');
+    lb.setAttribute('aria-modal', 'true');
+    lb.setAttribute('aria-label', 'Galería ampliada');
+    lb.innerHTML = `
+      <button class="lb-close" aria-label="Cerrar galería">✕</button>
+      <button class="lb-btn" id="lb-prev" aria-label="Imagen anterior">←</button>
+      <div class="lb-img-wrap">
+        <img class="lb-img" src="" alt="" />
+        <p class="lb-caption"></p>
+      </div>
+      <button class="lb-btn" id="lb-next" aria-label="Imagen siguiente">→</button>
+      <div class="lb-counter"></div>
+    `;
+    document.body.appendChild(lb);
+
+    const galleryImgs = [...document.querySelectorAll('.gallery-item img')];
+    let lbIdx = 0;
+
+    const lbShow = (i) => {
+      lbIdx = ((i % galleryImgs.length) + galleryImgs.length) % galleryImgs.length;
+      const img = galleryImgs[lbIdx];
+      lb.querySelector('.lb-img').src = img.src.replace(/w=\d+/, 'w=1600');
+      lb.querySelector('.lb-img').alt = img.alt;
+      lb.querySelector('.lb-caption').textContent = img.alt;
+      lb.querySelector('.lb-counter').textContent = `${lbIdx + 1} · ${galleryImgs.length}`;
+    };
+    const lbOpen = (i) => {
+      lbShow(i); lb.classList.add('lb-open');
+      document.body.style.overflow = 'hidden';
+      lb.querySelector('.lb-close').focus();
+    };
+    const lbClose = () => {
+      lb.classList.remove('lb-open');
+      document.body.style.overflow = '';
+    };
+
+    galleryImgs.forEach((img, i) => {
+      const item = img.closest('.gallery-item');
+      item.addEventListener('click', () => lbOpen(i));
+      item.setAttribute('tabindex', '0');
+      item.setAttribute('role', 'button');
+      item.setAttribute('aria-label', `Ampliar imagen: ${img.alt}`);
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); lbOpen(i); }
+      });
+    });
+
+    lb.querySelector('.lb-close').addEventListener('click', lbClose);
+    lb.querySelector('#lb-prev').addEventListener('click', () => lbShow(lbIdx - 1));
+    lb.querySelector('#lb-next').addEventListener('click', () => lbShow(lbIdx + 1));
+    lb.addEventListener('click', (e) => { if (e.target === lb) lbClose(); });
+
+    // Swipe support (mobile)
+    let lbTouchX = 0;
+    lb.addEventListener('touchstart', (e) => { lbTouchX = e.touches[0].clientX; }, { passive: true });
+    lb.addEventListener('touchend', (e) => {
+      const dx = lbTouchX - e.changedTouches[0].clientX;
+      if (Math.abs(dx) > 50) lbShow(lbIdx + (dx > 0 ? 1 : -1));
+    }, { passive: true });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (!lb.classList.contains('lb-open')) return;
+      if (e.key === 'Escape') lbClose();
+      if (e.key === 'ArrowLeft') lbShow(lbIdx - 1);
+      if (e.key === 'ArrowRight') lbShow(lbIdx + 1);
+    });
+  })();
+
+  /* ===========================
+     3D TILT ON CARDS
+  =========================== */
+  if (isPointer && !prefersReducedMotion) {
+    document.querySelectorAll('.dish, .testi-card').forEach(card => {
+      let tiltRAF = null;
+      card.addEventListener('mousemove', (e) => {
+        if (tiltRAF) return;
+        tiltRAF = requestAnimationFrame(() => {
+          const r = card.getBoundingClientRect();
+          const rotX = ((e.clientY - r.top - r.height / 2) / (r.height / 2)) * -5;
+          const rotY = ((e.clientX - r.left - r.width / 2) / (r.width / 2)) * 5;
+          card.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-10px) scale(1.01)`;
+          card.style.transition = 'transform .08s linear, border-color .3s, box-shadow .4s';
+          tiltRAF = null;
+        });
+      });
+      card.addEventListener('mouseleave', () => {
+        if (tiltRAF) { cancelAnimationFrame(tiltRAF); tiltRAF = null; }
+        card.style.transform = '';
+        card.style.transition = '';
+      });
+    });
+  }
+
+  /* ===========================
+     MAGNETIC BUTTONS
+  =========================== */
+  if (isPointer && !prefersReducedMotion) {
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const r = btn.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width / 2)) * 0.26;
+        const dy = (e.clientY - (r.top + r.height / 2)) * 0.26;
+        btn.style.transform = `translate(${dx}px, ${dy - 3}px)`;
+      });
+      btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+    });
+  }
+
+  /* ===========================
+     TEXT SCRAMBLE ON EYEBROWS
+  =========================== */
+  if (hasIO && !prefersReducedMotion) {
+    const GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#·%!';
+    const scrambleEl = (el) => {
+      const orig = el.textContent.trim();
+      let f = 0;
+      const TOTAL = 22;
+      const tick = () => {
+        const progress = f / TOTAL;
+        let out = '';
+        for (let i = 0; i < orig.length; i++) {
+          if (orig[i] === ' ') { out += ' '; continue; }
+          if (i < orig.length * progress * 1.4) {
+            out += orig[i]; // Character revealed
+          } else {
+            out += `<span class="scramble-char">${GLYPHS[Math.floor(Math.random() * GLYPHS.length)]}</span>`;
+          }
+        }
+        el.innerHTML = out;
+        if (f++ < TOTAL) requestAnimationFrame(tick);
+        else el.textContent = orig; // Clean final state
+      };
+      tick();
+    };
+
+    const scrambleObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          scrambleEl(entry.target);
+          scrambleObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('.eyebrow').forEach(el => scrambleObs.observe(el));
   }
 
 })();
