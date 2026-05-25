@@ -8,7 +8,7 @@
 <meta property="og:title" content="Woodpecker's Gavà · Las mejores hamburguesas del mundo" />
 <meta property="og:description" content="Ingredientes frescos, recetas únicas y sabor explosivo en el corazón de Gavà." />
 <meta property="og:type" content="restaurant.restaurant" />
-<meta property="og:image" content="img/hero.webp" />
+<meta property="og:image" content="/img/hero.webp" />
 <meta name="robots" content="index, follow" />
 <title>Woodpecker's Gavà · Posiblemente las mejores hamburguesas del mundo</title>
 
@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preconnect" href="https://maps.google.com">
 <link rel="dns-prefetch" href="https://maps.google.com">
-<link rel="preload" as="image" href="img/hero.webp" fetchpriority="high" />
+<link rel="preload" as="image" href="/img/hero.webp" fetchpriority="high" />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=VT323&display=swap" rel="stylesheet">
 
 <style>
@@ -396,7 +396,7 @@ body::before {
   position: absolute; inset: 0;
   background:
     linear-gradient(180deg, rgba(14,10,8,.6) 0%, rgba(14,10,8,.3) 40%, var(--bg) 95%),
-    url('img/hero.webp') center/cover no-repeat;
+    url('/img/hero.webp') center/cover no-repeat;
   transform: scale(1.05);
   animation: slowZoom 25s ease-in-out infinite alternate;
   will-change: transform;
@@ -1063,6 +1063,16 @@ footer::before {
 @media (max-width: 640px) {
   section { padding: clamp(3rem, 8vw, 5rem) 1rem; }
   .hero { padding: calc(var(--nav-h) + 1.5rem) 0 3rem; padding-top: calc(var(--nav-h) + 1.5rem + env(safe-area-inset-top, 0px)); }
+  .hero-bg {
+    background-size: 100% auto;
+    background-position: center top;
+    transform: scale(1);
+    animation: slowZoomMobile 25s ease-in-out infinite alternate;
+  }
+  @keyframes slowZoomMobile {
+    0%   { transform: scale(1)    translate(0, 0); }
+    100% { transform: scale(1.06) translate(-0.5%, -0.5%); }
+  }
   .hero h1 { font-size: clamp(2.2rem, 10vw, 3.5rem); }
   .hero-cta { flex-direction: column; align-items: stretch; }
   .hero-cta .btn { width: 100%; }
