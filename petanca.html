@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#0e0a08" />
+<meta name="description" content="Petanca Woodpecker's — el juego oficial de petanca de Woodpecker's Gavà. Apunta, lanza tus bolas y acércate más al boliche que la CPU. Jugable desde el móvil." />
+<meta property="og:title" content="Petanca Woodpecker's · El juego" />
+<meta property="og:description" content="Apunta, lanza y gana la mène. Petanca original jugable desde tu móvil." />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="es_ES" />
+<meta property="og:site_name" content="Woodpecker's Gavà" />
+<title>Petanca Woodpecker's · El juego oficial de la pista</title>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎯%3C/text%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+
+<style>
+/* =========================
+   RESET & BASE (plantilla Woodpecker's)
+========================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+:root {
+  --bg: #0e0a08;
+  --bg-2: #1a1310;
+  --surface: #221814;
+  --wood: #3a2418;
+  --cream: #fef5e7;
+  --cream-dim: #d8c8b4;
+  --ketchup: #e63946;
+  --ketchup-dark: #b52d38;
+  --mustard: #fcbf49;
+  --mustard-glow: rgba(252, 191, 73, 0.3);
+  --lettuce: #a7c957;
+  --pixel: #7be495;
+  --clay: #c9a876;
+  --clay-dark: #8b6f47;
+  --border: rgba(254, 245, 231, 0.12);
+  --border-strong: rgba(254, 245, 231, 0.2);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --max: 1280px;
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease-smooth: cubic-bezier(.4, 0, .2, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --nav-h: 72px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --grad-mustard: linear-gradient(135deg, var(--mustard), #f9d27a);
+  --grad-clay: linear-gradient(135deg, var(--clay), #e0c48e);
+  --grad-ketchup-mustard: linear-gradient(90deg, var(--mustard), var(--ketchup));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--cream);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+body.menu-open { overflow: hidden; }
+body.menu-open::after {
+  content: ""; position: fixed; inset: 0;
+  background: rgba(0,0,0,.5); z-index: 140;
+  animation: fadeIn .4s var(--ease-smooth) both;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+img, video, svg, canvas { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+.grad-text-mustard { background: var(--grad-mustard); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+.grad-text-clay { background: var(--grad-clay); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+
+.skip-link { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; z-index: 10000; }
+.skip-link:focus { position: fixed; top: 1rem; left: 1rem; width: auto; height: auto; padding: .8rem 1.2rem; background: var(--cream); color: var(--bg); border-radius: var(--radius-sm); font-weight: 600; z-index: 10000; }
+
+:focus-visible { outline: 2px solid var(--mustard); outline-offset: 3px; border-radius: 4px; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--mustard); outline-offset: 4px; }
+
+h1, h2, h3, h4 { font-family: 'Fraunces', Georgia, serif; font-weight: 500; line-height: 1.05; letter-spacing: -0.02em; text-wrap: balance; }
+::selection { background: var(--mustard); color: var(--bg); }
+
+html { scrollbar-color: var(--wood) var(--bg-2); scrollbar-width: thin; }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-2); }
+::-webkit-scrollbar-thumb { background: var(--wood); border-radius: 99px; border: 2px solid var(--bg-2); }
+
+section { position: relative; padding: clamp(4rem, 10vw, 8rem) clamp(1.25rem, 4vw, 2rem); scroll-margin-top: var(--nav-h); }
+.container { max-width: var(--max); margin: 0 auto; width: 100%; }
+
+.eyebrow { display: inline-block; font-size: .75rem; font-weight: 600; letter-spacing: .25em; text-transform: uppercase; color: var(--mustard); }
+.eyebrow::before { content: ""; display: inline-block; width: 24px; height: 2px; border-radius: 2px; background: var(--mustard); margin-right: .6rem; vertical-align: middle; }
+
+/* LOADER */
+#loader { position: fixed; inset: 0; z-index: 9999; background: var(--bg); display: flex; align-items: center; justify-content: center; transition: opacity 1s var(--ease-out), visibility 1s; }
+#loader.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-logo { font-family: 'Fraunces', serif; font-weight: 700; font-size: clamp(1.8rem, 6vw, 3.2rem); letter-spacing: -.02em; color: var(--cream); display: flex; align-items: center; gap: .1rem; white-space: nowrap; }
+.loader-logo span { display: inline-block; opacity: 0; transform: translateY(20px) scale(0.9); }
+.loader-logo span:nth-child(1){ color: var(--ketchup); animation: loaderRise .9s var(--ease-spring) .1s forwards; }
+.loader-logo span:nth-child(2){ animation: loaderRise .9s var(--ease-spring) .2s forwards; }
+.loader-logo span:nth-child(3){ color: var(--mustard); animation: loaderRise .9s var(--ease-spring) .3s forwards; }
+.loader-logo span:nth-child(4){ animation: loaderRise .9s var(--ease-spring) .4s forwards; }
+@keyframes loaderRise { to { opacity: 1; transform: none; } }
+
+/* NAV */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 150; padding: 1rem clamp(1.25rem, 4vw, 2rem); display: flex; align-items: center; justify-content: space-between; transition: background .5s var(--ease-smooth), padding .5s var(--ease-smooth), border-color .5s var(--ease-smooth); border-bottom: 1px solid transparent; padding-top: calc(1rem + env(safe-area-inset-top, 0px)); }
+.nav.scrolled { background: rgba(14, 10, 8, .85); -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%); padding: .7rem clamp(1.25rem, 4vw, 2rem); padding-top: calc(.7rem + env(safe-area-inset-top, 0px)); border-bottom-color: var(--border); }
+.brand { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 700; letter-spacing: -.02em; display: flex; align-items: baseline; gap: .02rem; line-height: 1; flex-shrink: 0; transition: transform .3s var(--ease-spring); z-index: 160; position: relative; }
+.brand:hover { transform: scale(1.05); }
+.brand em { font-style: normal; color: var(--ketchup); }
+.brand .apos { color: var(--mustard); }
+.nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+.nav-links a { font-size: .9rem; font-weight: 400; color: var(--cream-dim); position: relative; padding: .25rem 0; transition: color .3s var(--ease-smooth); }
+.nav-links a::after { content: ""; position: absolute; left: 0; bottom: -2px; height: 1.5px; width: 0; background: var(--grad-ketchup-mustard); transition: width .4s var(--ease-out); border-radius: 2px; }
+.nav-links a:hover { color: var(--cream); }
+.nav-links a:hover::after { width: 100%; }
+.nav-links a.active { color: var(--cream); }
+.nav-links a.active::after { width: 100%; }
+.menu-toggle { display: none; width: 48px; height: 48px; border: 1px solid var(--border); border-radius: 12px; position: relative; z-index: 160; background: rgba(14,10,8,.6); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); flex-shrink: 0; transition: border-color .3s, background .3s; }
+.menu-toggle:hover { border-color: var(--mustard); background: rgba(252,191,73,.1); }
+.menu-toggle .bar { position: absolute; left: 50%; width: 20px; height: 1.5px; background: var(--cream); transition: transform .45s var(--ease-spring); border-radius: 2px; transform-origin: center; }
+.menu-toggle .bar:nth-child(1) { top: calc(50% - 4px); transform: translateX(-50%); }
+.menu-toggle .bar:nth-child(2) { top: calc(50% + 4px); transform: translateX(-50%); }
+.menu-toggle.active .bar:nth-child(1) { top: 50%; transform: translate(-50%, 0) rotate(45deg); }
+.menu-toggle.active .bar:nth-child(2) { top: 50%; transform: translate(-50%, 0) rotate(-45deg); }
+
+/* MOBILE MENU */
+.mobile-menu { position: fixed; inset: 0; z-index: 145; background: var(--bg); display: flex; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-top: calc(80px + env(safe-area-inset-top, 0px)); padding-bottom: calc(2rem + var(--safe-bottom)); transform: translateX(100%); transition: transform .55s var(--ease-out); visibility: hidden; }
+.mobile-menu.open { transform: none; visibility: visible; }
+.mobile-menu-nav { flex: 1; padding: 1.5rem clamp(1.5rem, 5vw, 2.5rem); display: flex; flex-direction: column; gap: .1rem; }
+.mobile-menu-item { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid rgba(254,245,231,.06); color: var(--cream); opacity: 0; transform: translateX(20px); transition: opacity .4s var(--ease-out), transform .4s var(--ease-out), color .3s; }
+.mobile-menu.open .mobile-menu-item { opacity: 1; transform: none; }
+.mobile-menu.open .mobile-menu-item:nth-child(1) { transition-delay: .08s; }
+.mobile-menu.open .mobile-menu-item:nth-child(2) { transition-delay: .13s; }
+.mobile-menu.open .mobile-menu-item:nth-child(3) { transition-delay: .18s; }
+.mobile-menu.open .mobile-menu-item:nth-child(4) { transition-delay: .23s; }
+.mobile-menu.open .mobile-menu-item:nth-child(5) { transition-delay: .28s; }
+.mobile-menu-item:hover, .mobile-menu-item:focus-visible { color: var(--mustard); }
+.mobile-menu-icon { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 12px; flex-shrink: 0; font-size: 1.2rem; transition: transform .3s var(--ease-spring); }
+.mobile-menu-item:hover .mobile-menu-icon { transform: scale(1.1); }
+.mobile-menu-icon.hero-icon { background: rgba(230,57,70,.12); }
+.mobile-menu-icon.cart-icon, .mobile-menu-icon.gallery-icon { background: rgba(252,191,73,.12); }
+.mobile-menu-icon.arcade-icon { background: rgba(123,228,149,.12); }
+.mobile-menu-icon.petanca-icon { background: rgba(201,168,118,.12); }
+.mobile-menu-icon.contact-icon { background: rgba(167,201,87,.12); }
+.mobile-menu-text { flex: 1; }
+.mobile-menu-text h3 { font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 500; letter-spacing: -.01em; line-height: 1.1; }
+.mobile-menu-text p { font-size: .82rem; color: var(--cream-dim); margin-top: .25rem; line-height: 1.3; }
+.mobile-menu-arrow { color: var(--cream-dim); font-size: .85rem; transition: transform .3s var(--ease-out), color .3s; flex-shrink: 0; opacity: .5; }
+.mobile-menu-item:hover .mobile-menu-arrow { transform: translateX(4px); color: var(--mustard); opacity: 1; }
+
+/* BUTTONS */
+.btn { display: inline-flex; align-items: center; gap: .6rem; padding: .85rem 1.4rem; border-radius: 999px; font-size: .9rem; font-weight: 500; transition: transform .4s var(--ease-out), box-shadow .4s var(--ease-out), background .4s var(--ease-out), color .4s var(--ease-out), border-color .4s var(--ease-out); border: 1px solid transparent; white-space: nowrap; text-align: center; justify-content: center; line-height: 1; position: relative; overflow: hidden; }
+.btn svg { flex-shrink: 0; transition: transform .3s var(--ease-out); }
+.btn:hover svg { transform: translateX(2px); }
+.btn-primary { background: var(--ketchup); color: var(--cream); box-shadow: 0 4px 16px rgba(230,57,70,.25), inset 0 1px 0 rgba(255,255,255,.15); }
+.btn-primary:hover { background: var(--mustard); color: var(--bg); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(252,191,73,.35), inset 0 1px 0 rgba(255,255,255,.2); }
+.btn-ghost { border: 1px solid var(--border-strong); color: var(--cream); background: rgba(254,245,231,0.03); }
+.btn-ghost:hover { border-color: var(--mustard); color: var(--mustard); background: rgba(252,191,73,.08); transform: translateY(-3px); }
+.btn-clay { background: linear-gradient(135deg, var(--clay), var(--clay-dark)); color: var(--bg); font-weight: 600; box-shadow: 0 4px 16px rgba(201,168,118,.3), inset 0 1px 0 rgba(255,255,255,.2); }
+.btn-clay:hover { background: linear-gradient(135deg, #d4b384, var(--clay)); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(201,168,118,.4), inset 0 1px 0 rgba(255,255,255,.25); }
+
+/* REVEAL */
+.reveal { opacity: 0; transform: translate3d(0, 40px, 0); transition: opacity .9s var(--ease-out), transform .9s var(--ease-out); transition-delay: var(--delay, 0s); }
+.reveal.visible { opacity: 1; transform: none; }
+.reveal.blur { filter: blur(8px); transition: opacity .9s var(--ease-out), transform .9s var(--ease-out), filter .9s var(--ease-out); }
+.reveal.blur.visible { filter: blur(0); }
+
+/* =========================
+   GAME PAGE
+========================= */
+.pet-page { padding-top: calc(var(--nav-h) + clamp(1.5rem, 6vw, 3.5rem)); padding-bottom: clamp(3rem, 8vw, 5rem); }
+.game-hero { text-align: center; max-width: 760px; margin: 0 auto clamp(1.6rem, 4vw, 2.4rem); }
+.game-hero h1 { font-size: clamp(2.1rem, 8vw, 3.6rem); font-weight: 500; margin: .7rem 0 .8rem; }
+.game-hero h1 em { font-style: normal; }
+.game-hero p { color: var(--cream-dim); max-width: 560px; margin: 0 auto; font-size: clamp(.95rem, 2.6vw, 1.05rem); }
+.game-back { display: inline-flex; align-items: center; gap: .4rem; font-size: .85rem; color: var(--cream-dim); margin-bottom: .4rem; transition: color .3s; }
+.game-back:hover { color: var(--mustard); }
+
+/* --reserve ≈ alto del marcador + controles + márgenes alrededor del canvas */
+.pet-game { width: 100%; max-width: 480px; margin: 0 auto; --reserve: 210px; }
+/* Cap el ancho del juego según la ALTURA disponible para que el canvas
+   vertical (400x560) quepa entero en pantalla sin recortarse en móvil.
+   0.7143 = 400/560. */
+@supports (height: 100svh) {
+  .pet-game { max-width: min(480px, calc((100svh - var(--reserve)) * 0.7143)); }
+}
+
+/* HUD */
+.pet-hud { display: flex; align-items: stretch; gap: .55rem; margin-bottom: .8rem; }
+.pet-team { flex: 1 1 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: .55rem .7rem; transition: border-color .3s, box-shadow .3s, transform .3s; }
+.pet-team.active { transform: translateY(-2px); }
+.pet-team--you.active { border-color: var(--mustard); box-shadow: 0 0 0 1px var(--mustard), 0 8px 22px var(--mustard-glow); }
+.pet-team--cpu.active { border-color: var(--ketchup); box-shadow: 0 0 0 1px var(--ketchup), 0 8px 22px rgba(230,57,70,.28); }
+.pet-team .pet-label { display:flex; align-items:center; gap:.4rem; font-size: .68rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--cream-dim); }
+.pet-team .pet-chip { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; box-shadow: inset 0 0 0 1.5px rgba(0,0,0,.3); }
+.pet-team--you .pet-chip { background: radial-gradient(circle at 32% 30%, #fff 0%, var(--mustard) 55%, #b07d1f 100%); }
+.pet-team--cpu .pet-chip { background: radial-gradient(circle at 32% 30%, #fff 0%, var(--ketchup) 55%, #7d1a22 100%); }
+.pet-team .pet-score { font-family: 'Fraunces', serif; font-weight: 700; font-size: 1.9rem; line-height: 1; margin-top: .15rem; }
+.pet-team--you .pet-score { color: var(--mustard); }
+.pet-team--cpu .pet-score { color: var(--ketchup); }
+.pet-boules { display: flex; gap: 4px; margin-top: .45rem; min-height: 12px; }
+.pet-boules .b { width: 11px; height: 11px; border-radius: 50%; border: 1px solid rgba(254,245,231,.18); background: rgba(254,245,231,.05); transition: background .3s, border-color .3s; }
+.pet-team--you .pet-boules .b.live { background: radial-gradient(circle at 32% 30%, #fff 0%, var(--mustard) 60%, #8b6f1a 100%); border-color: transparent; }
+.pet-team--cpu .pet-boules .b.live { background: radial-gradient(circle at 32% 30%, #fff 0%, var(--ketchup) 60%, #7d1a22 100%); border-color: transparent; }
+.pet-center { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 .2rem; min-width: 74px; }
+.pet-center .pet-mene { font-family: 'Fraunces', serif; font-size: 1.05rem; color: var(--cream); white-space: nowrap; }
+.pet-center .pet-goal { font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; color: var(--cream-dim); margin-top: .15rem; }
+
+/* STAGE */
+.pet-stage { position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border-strong); box-shadow: 0 24px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.04); background: #1a1009; touch-action: none; }
+#petCanvas { width: 100%; height: auto; aspect-ratio: 400 / 560; display: block; touch-action: none; cursor: crosshair; }
+.pet-banner { position: absolute; top: .65rem; left: 50%; transform: translateX(-50%); background: rgba(14,10,8,.78); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border: 1px solid var(--border); color: var(--cream); font-size: .8rem; font-weight: 500; padding: .42rem .9rem; border-radius: 999px; white-space: nowrap; max-width: 92%; overflow: hidden; text-overflow: ellipsis; pointer-events: none; transition: opacity .3s; }
+.pet-banner.you { border-color: var(--mustard); }
+.pet-banner.cpu { border-color: var(--ketchup); }
+
+.pet-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: .4rem; padding: 1.6rem; background: rgba(11,8,6,.86); -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px); opacity: 0; visibility: hidden; transition: opacity .4s var(--ease-out), visibility .4s; z-index: 5; }
+.pet-overlay.show { opacity: 1; visibility: visible; }
+.pet-overlay .pet-big { font-size: clamp(2.6rem, 14vw, 4rem); line-height: 1; }
+.pet-overlay h2 { font-size: clamp(1.5rem, 7vw, 2.1rem); font-weight: 500; }
+.pet-overlay p { color: var(--cream-dim); font-size: .95rem; max-width: 320px; }
+.pet-overlay .btn { margin-top: .8rem; }
+
+/* CONTROLS */
+.pet-controls { display: flex; align-items: center; justify-content: center; gap: .6rem; margin-top: 1rem; flex-wrap: wrap; }
+.pet-iconbtn { width: 46px; height: 46px; border-radius: 12px; border: 1px solid var(--border-strong); background: rgba(254,245,231,.03); display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; transition: border-color .3s, background .3s, transform .3s; }
+.pet-iconbtn:hover { border-color: var(--mustard); background: rgba(252,191,73,.08); transform: translateY(-2px); }
+.pet-hint { flex-basis: 100%; text-align: center; font-size: .8rem; color: var(--cream-dim); margin-top: .2rem; }
+
+/* HOW TO PLAY */
+.pet-how { max-width: 720px; margin: clamp(2.5rem, 7vw, 4rem) auto 0; }
+.pet-how h2 { font-size: clamp(1.6rem, 5vw, 2.2rem); text-align: center; margin-bottom: 1.6rem; }
+.pet-how h2 em { font-style: normal; }
+.pet-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+.pet-step { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.3rem 1.2rem; }
+.pet-step .num { font-family: 'Fraunces', serif; font-size: 1.6rem; color: var(--clay); line-height: 1; }
+.pet-step h3 { font-size: 1.1rem; margin: .55rem 0 .4rem; font-weight: 500; }
+.pet-step p { font-size: .88rem; color: var(--cream-dim); line-height: 1.5; }
+
+/* FOOTER */
+footer { padding: 3.5rem 1.25rem 2rem; padding-bottom: calc(2rem + var(--safe-bottom)); border-top: 1px solid var(--border); background: var(--bg); position: relative; margin-top: clamp(3rem, 8vw, 6rem); }
+.footer-top { max-width: var(--max); margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.2rem; padding-bottom: 2.5rem; }
+.footer-brand .brand { font-size: 1.8rem; }
+.footer-brand p { margin-top: .9rem; color: var(--cream-dim); font-size: .9rem; max-width: 340px; line-height: 1.6; }
+.socials { display: flex; gap: .7rem; margin-top: 1.2rem; }
+.socials a { width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; color: var(--cream-dim); transition: border-color .3s, color .3s, transform .3s; }
+.socials a svg { width: 18px; height: 18px; }
+.socials a:hover { border-color: var(--mustard); color: var(--mustard); transform: translateY(-2px); }
+.footer-col h4 { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--mustard); margin-bottom: 1rem; font-family: 'Inter', sans-serif; font-weight: 600; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .55rem; }
+.footer-col a, .footer-col li { color: var(--cream-dim); font-size: .9rem; transition: color .3s; }
+.footer-col a:hover { color: var(--cream); }
+.footer-bottom { max-width: var(--max); margin: 1.6rem auto 0; padding-top: 1.6rem; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: .6rem; justify-content: space-between; font-size: .82rem; color: var(--cream-dim); }
+.heart { color: var(--ketchup); }
+
+/* SETTINGS / PANELES */
+.pet-panel { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: .7rem; padding: 1.4rem; background: rgba(11,8,6,.92); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); opacity: 0; visibility: hidden; transition: opacity .35s var(--ease-out), visibility .35s; z-index: 8; overflow-y: auto; }
+.pet-panel.show { opacity: 1; visibility: visible; }
+.pet-panel h2 { font-size: clamp(1.4rem, 6vw, 1.9rem); font-weight: 500; }
+.pet-panel h2 em { font-style: normal; }
+.pet-panel .sub { color: var(--cream-dim); font-size: .85rem; margin-top: -.3rem; }
+.pet-field { width: 100%; max-width: 340px; text-align: left; }
+.pet-field > label { display: block; font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--mustard); margin: 0 0 .35rem 2px; font-weight: 600; }
+.pet-seg { display: flex; gap: 4px; background: rgba(254,245,231,.04); border: 1px solid var(--border); border-radius: 10px; padding: 4px; }
+.seg-btn { flex: 1 1 0; padding: .5rem .3rem; border-radius: 7px; font-size: .8rem; font-weight: 500; color: var(--cream-dim); transition: background .25s, color .25s; line-height: 1.1; }
+.seg-btn[aria-pressed="true"] { background: var(--grad-clay); color: var(--bg); font-weight: 600; }
+.pet-panel .btn { margin-top: .3rem; }
+.pet-panel-foot { display: flex; gap: .6rem; flex-wrap: wrap; justify-content: center; margin-top: .4rem; }
+
+/* STATS */
+.pet-stats { display: flex; gap: 1.4rem; flex-wrap: wrap; justify-content: center; margin: .2rem 0; }
+.pet-stat { text-align: center; }
+.pet-stat b { display: block; font-family: 'Fraunces', serif; font-size: 1.6rem; color: var(--cream); line-height: 1; }
+.pet-stat span { font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--cream-dim); }
+.pet-goals { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: .35rem; margin-top: .3rem; }
+.pet-goal-row { display: flex; align-items: center; gap: .55rem; font-size: .82rem; text-align: left; color: var(--cream-dim); background: rgba(254,245,231,.03); border: 1px solid var(--border); border-radius: 8px; padding: .45rem .6rem; }
+.pet-goal-row.done { color: var(--cream); border-color: rgba(167,201,87,.4); }
+.pet-goal-row .gi { font-size: 1rem; filter: grayscale(1); opacity: .5; }
+.pet-goal-row.done .gi { filter: none; opacity: 1; }
+
+/* TOAST objetivos */
+.pet-toast { position: absolute; left: 50%; bottom: .8rem; transform: translateX(-50%) translateY(140%); background: linear-gradient(135deg, var(--clay), var(--clay-dark)); color: var(--bg); font-weight: 600; font-size: .82rem; padding: .55rem 1rem; border-radius: 999px; box-shadow: 0 10px 28px rgba(0,0,0,.45); display: flex; align-items: center; gap: .45rem; z-index: 9; transition: transform .5s var(--ease-spring); max-width: 90%; pointer-events: none; }
+.pet-toast.show { transform: translateX(-50%) translateY(0); }
+
+/* botón Lanzar (modo toque) */
+#btnLaunch { display: none; }
+#btnLaunch.show { display: inline-flex; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  :root { --nav-h: 64px; }
+  .nav-links { display: none; }
+  .menu-toggle { display: flex; align-items: center; justify-content: center; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 1.8rem; }
+}
+@media (max-width: 480px) {
+  .footer-top { grid-template-columns: 1fr; }
+  .pet-team .pet-score { font-size: 1.6rem; }
+  .pet-center { min-width: 62px; }
+  /* menos relleno arriba y héroe más compacto para llegar antes al juego */
+  .pet-page { padding-top: calc(var(--nav-h) + .8rem); }
+  .game-hero { margin-bottom: 1rem; }
+  .game-hero p { display: none; }
+  .pet-controls { gap: .45rem; margin-top: .7rem; }
+}
+/* Pantallas bajas (móvil apaisado o ventanas pequeñas): compacta aún más */
+@media (max-height: 720px) {
+  .pet-game { --reserve: 180px; }
+  .game-hero h1 { font-size: clamp(1.5rem, 6vw, 2rem); }
+  .game-hero p { display: none; }
+}
+@media print { .nav, #loader, .mobile-menu, .menu-toggle { display: none; } }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#juego">Saltar al juego</a>
+
+<!-- LOADER -->
+<div id="loader" aria-hidden="true">
+  <div class="loader-logo">
+    <span>Wood</span><span>pecker</span><span>'</span><span>s</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<header class="nav" id="nav" role="banner">
+  <a href="index.html" class="brand" aria-label="Woodpecker's Gavà - Inicio">
+    Wood<em>pecker</em><span class="apos">'</span>s
+  </a>
+  <nav aria-label="Navegación principal">
+    <ul class="nav-links">
+      <li><a href="index.html#historia">Nosotros</a></li>
+      <li><a href="index.html#carta">Carta</a></li>
+      <li><a href="index.html#arcade">Arcade</a></li>
+      <li><a href="petanca.html" class="active" aria-current="page">Petanca</a></li>
+      <li><a href="index.html#galeria">Galería</a></li>
+      <li><a href="index.html#visita">Contacto</a></li>
+    </ul>
+  </nav>
+  <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileMenu" type="button">
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </button>
+</header>
+
+<!-- MOBILE MENU -->
+<nav class="mobile-menu" id="mobileMenu" aria-label="Menú de navegación móvil" aria-hidden="true">
+  <div class="mobile-menu-nav">
+    <a href="index.html" class="mobile-menu-item">
+      <span class="mobile-menu-icon hero-icon" aria-hidden="true">🏠</span>
+      <div class="mobile-menu-text"><h3>Inicio</h3><p>Volver a Woodpecker's</p></div>
+      <span class="mobile-menu-arrow" aria-hidden="true">→</span>
+    </a>
+    <a href="index.html#carta" class="mobile-menu-item">
+      <span class="mobile-menu-icon cart-icon" aria-hidden="true">🍔</span>
+      <div class="mobile-menu-text"><h3>Carta</h3><p>Hamburguesas numeradas y tapas</p></div>
+      <span class="mobile-menu-arrow" aria-hidden="true">→</span>
+    </a>
+    <a href="index.html#arcade" class="mobile-menu-item">
+      <span class="mobile-menu-icon arcade-icon" aria-hidden="true">🕹️</span>
+      <div class="mobile-menu-text"><h3>Arcade</h3><p>Juega mientras esperas</p></div>
+      <span class="mobile-menu-arrow" aria-hidden="true">→</span>
+    </a>
+    <a href="petanca.html" class="mobile-menu-item">
+      <span class="mobile-menu-icon petanca-icon" aria-hidden="true">🎯</span>
+      <div class="mobile-menu-text"><h3>Petanca · El juego</h3><p>Apunta, lanza y gana la mène</p></div>
+      <span class="mobile-menu-arrow" aria-hidden="true">→</span>
+    </a>
+    <a href="index.html#galeria" class="mobile-menu-item">
+      <span class="mobile-menu-icon gallery-icon" aria-hidden="true">📸</span>
+      <div class="mobile-menu-text"><h3>Galería</h3><p>Momentos en imágenes</p></div>
+      <span class="mobile-menu-arrow" aria-hidden="true">→</span>
+    </a>
+    <a href="index.html#visita" class="mobile-menu-item">
+      <span class="mobile-menu-icon contact-icon" aria-hidden="true">📍</span>
+      <div class="mobile-menu-text"><h3>Contacto</h3><p>Dónde encontrarnos</p></div>
+      <span class="mobile-menu-arrow" aria-hidden="true">→</span>
+    </a>
+  </div>
+</nav>
+
+<main id="juego">
+<section class="pet-page">
+  <div class="container">
+    <div class="game-hero reveal blur">
+      <a href="index.html#petanca" class="game-back">← Volver al club de petanca</a>
+      <span class="eyebrow">Petanca Woodpecker's</span>
+      <h1>Tira tus bolas, <em class="grad-text-clay">acércate al boliche</em> y gana la <span class="grad-text-mustard">mène</span>.</h1>
+      <p>Petanca de verdad, jugable con un dedo. Arrastra para apuntar, suelta para lanzar y deja tus bolas más cerca del boliche que la CPU. Primero en llegar a <strong>13 puntos</strong> gana la partida.</p>
+    </div>
+
+    <div class="pet-game reveal" style="--delay:.1s;">
+      <!-- HUD -->
+      <div class="pet-hud" aria-hidden="false">
+        <div class="pet-team pet-team--you active" id="teamYou">
+          <div class="pet-label"><span class="pet-chip"></span> Tú</div>
+          <div class="pet-score" id="scoreYou">0</div>
+          <div class="pet-boules" id="boulesYou"></div>
+        </div>
+        <div class="pet-center">
+          <div class="pet-mene" id="meneLabel">Mène 1</div>
+          <div class="pet-goal">a 13 pts</div>
+        </div>
+        <div class="pet-team pet-team--cpu" id="teamCpu">
+          <div class="pet-label"><span class="pet-chip"></span> CPU</div>
+          <div class="pet-score" id="scoreCpu">0</div>
+          <div class="pet-boules" id="boulesCpu"></div>
+        </div>
+      </div>
+
+      <!-- STAGE -->
+      <div class="pet-stage">
+        <canvas id="petCanvas" role="img" aria-label="Pista de petanca. Arrastra sobre la pista para apuntar y suelta para lanzar tu bola."></canvas>
+        <div class="pet-banner you" id="banner">Tu turno · arrastra para lanzar</div>
+
+        <!-- toast de objetivos -->
+        <div class="pet-toast" id="toast" aria-live="polite"></div>
+
+        <!-- overlay genérico (mène / fin / tutorial) -->
+        <div class="pet-overlay" id="overlay" role="alertdialog" aria-live="polite">
+          <div class="pet-big" id="overlayIcon" aria-hidden="true">🎯</div>
+          <h2 id="overlayTitle">¡Listo!</h2>
+          <p id="overlayText"></p>
+          <button class="btn btn-clay" id="overlayBtn" type="button">Continuar</button>
+        </div>
+
+        <!-- panel de ajustes -->
+        <div class="pet-panel" id="settings" role="dialog" aria-label="Ajustes de la partida">
+          <h2>Ajustes de <em class="grad-text-mustard">partida</em></h2>
+          <div class="pet-field">
+            <label>Dificultad</label>
+            <div class="pet-seg" data-key="difficulty">
+              <button class="seg-btn" type="button" data-val="facil">Fácil</button>
+              <button class="seg-btn" type="button" data-val="normal">Normal</button>
+              <button class="seg-btn" type="button" data-val="dificil">Difícil</button>
+            </div>
+          </div>
+          <div class="pet-field">
+            <label>Modalidad (bolas por lado)</label>
+            <div class="pet-seg" data-key="boules">
+              <button class="seg-btn" type="button" data-val="3">Individual · 3</button>
+              <button class="seg-btn" type="button" data-val="4">Dobles · 4</button>
+              <button class="seg-btn" type="button" data-val="6">Triples · 6</button>
+            </div>
+          </div>
+          <div class="pet-field">
+            <label>Bordes de la pista</label>
+            <div class="pet-seg" data-key="walls">
+              <button class="seg-btn" type="button" data-val="bounce">Rebote (arcade)</button>
+              <button class="seg-btn" type="button" data-val="dead">Línea muerta (real)</button>
+            </div>
+          </div>
+          <div class="pet-field">
+            <label>Control</label>
+            <div class="pet-seg" data-key="control">
+              <button class="seg-btn" type="button" data-val="drag">Arrastrar</button>
+              <button class="seg-btn" type="button" data-val="tap">Toque</button>
+            </div>
+          </div>
+          <div class="pet-field">
+            <label>Audio</label>
+            <div class="pet-seg" data-key="music">
+              <button class="seg-btn" type="button" data-val="off">Música off</button>
+              <button class="seg-btn" type="button" data-val="on">Música ambiente</button>
+            </div>
+          </div>
+          <div class="pet-panel-foot">
+            <button class="btn btn-ghost" id="settingsStats" type="button">Estadísticas</button>
+            <button class="btn btn-clay" id="settingsApply" type="button">Aplicar y jugar</button>
+          </div>
+        </div>
+
+        <!-- panel de estadísticas / objetivos -->
+        <div class="pet-panel" id="statsPanel" role="dialog" aria-label="Estadísticas y objetivos">
+          <h2>Tus <em class="grad-text-clay">marcas</em></h2>
+          <div class="pet-stats">
+            <div class="pet-stat"><b id="stPlayed">0</b><span>Partidas</span></div>
+            <div class="pet-stat"><b id="stWon">0</b><span>Ganadas</span></div>
+            <div class="pet-stat"><b id="stStreak">0</b><span>Mejor racha</span></div>
+          </div>
+          <div class="pet-goals" id="goalsList"></div>
+          <button class="btn btn-clay" id="statsClose" type="button">Volver</button>
+        </div>
+      </div>
+
+      <!-- CONTROLS -->
+      <div class="pet-controls">
+        <button class="pet-iconbtn" id="btnSound" type="button" aria-label="Activar o silenciar sonido" title="Sonido">🔊</button>
+        <button class="btn btn-ghost" id="btnNew" type="button">Nueva partida</button>
+        <button class="btn btn-clay" id="btnLaunch" type="button">🎯 Lanzar</button>
+        <button class="pet-iconbtn" id="btnSettings" type="button" aria-label="Ajustes" title="Ajustes">⚙️</button>
+        <button class="pet-iconbtn" id="btnHelp" type="button" aria-label="Cómo se juega" title="Cómo se juega">❔</button>
+        <span class="pet-hint" id="hint">Arrastra desde el círculo de tiro hacia el boliche. Cuanto más lejos arrastres, más fuerte lanzas.</span>
+      </div>
+    </div>
+
+    <!-- HOW TO PLAY -->
+    <div class="pet-how reveal blur">
+      <h2>Cómo se <em class="grad-text-mustard">juega</em></h2>
+      <div class="pet-steps">
+        <div class="pet-step">
+          <div class="num">01</div>
+          <h3>Apunta</h3>
+          <p>Mantén pulsado sobre la pista y arrastra. Verás una guía y un círculo que marca dónde caerá tu bola.</p>
+        </div>
+        <div class="pet-step">
+          <div class="num">02</div>
+          <h3>Regula la fuerza</h3>
+          <p>Cuanto más lejos arrastres del círculo de tiro, con más fuerza saldrá la bola. Suelta para lanzar.</p>
+        </div>
+        <div class="pet-step">
+          <div class="num">03</div>
+          <h3>Acércate o golpea</h3>
+          <p>Deja la bola pegada al boliche... o lánzala fuerte para apartar las bolas de la CPU. ¡Vale todo!</p>
+        </div>
+        <div class="pet-step">
+          <div class="num">04</div>
+          <h3>Gana la mène</h3>
+          <p>Quien tenga la bola más cerca puntúa. Suma 1 punto por cada bola más cercana que la mejor del rival. A 13 ganas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- FOOTER -->
+<footer role="contentinfo">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="brand" aria-hidden="true">Wood<em>pecker</em><span class="apos">'</span>s</div>
+      <p>¡Posiblemente las mejores hamburguesas del mundo! Y también el mejor rincón de petanca de Gavà.</p>
+      <div class="socials" aria-label="Redes sociales">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 22v-8h3l1-4h-4V7.5c0-1.1.5-2 2-2h2V2h-3c-3 0-5 1.8-5 5v3H6v4h3v8h4z"/></svg></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navegar</h4>
+      <ul>
+        <li><a href="index.html#historia">Nosotros</a></li>
+        <li><a href="index.html#carta">Carta</a></li>
+        <li><a href="index.html#arcade">Arcade</a></li>
+        <li><a href="petanca.html">Petanca</a></li>
+        <li><a href="index.html#galeria">Galería</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a href="tel:+34931234567">+34 931 234 567</a></li>
+        <li><a href="mailto:juan@woodpeckers.es">juan@woodpeckers.es</a></li>
+        <li>Av. Eramprunyà 16</li>
+        <li>08850 Gavà, Barcelona</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Horario</h4>
+      <ul>
+        <li>Lun — Mar · Cerrado</li>
+        <li>Mie — Dom · 12:00 — 01:00</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© <span id="footerYear">2026</span> Woodpecker's Gavà · Todos los derechos reservados</span>
+    <span>Petanca hecha con <span class="heart" aria-label="amor">♥</span> en Gavà</span>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   PLANTILLA: loader, nav, menú móvil, reveal, año
+============================================================ */
+(function () {
+  'use strict';
+  const loader = document.getElementById('loader');
+  const hideLoader = () => { if (loader && !loader.classList.contains('hide')) { loader.classList.add('hide'); setTimeout(() => loader.remove(), 1000); } };
+  window.addEventListener('load', () => setTimeout(hideLoader, 300));
+  setTimeout(hideLoader, 3500);
+
+  const nav = document.getElementById('nav');
+  let tickingNav = false;
+  const updateNav = () => { if (nav) nav.classList.toggle('scrolled', window.scrollY > 30); tickingNav = false; };
+  window.addEventListener('scroll', () => { if (!tickingNav) { requestAnimationFrame(updateNav); tickingNav = true; } }, { passive: true });
+  updateNav();
+
+  const toggle = document.getElementById('menuToggle');
+  const menu = document.getElementById('mobileMenu');
+  function closeMenu() { if (!toggle || !menu) return; toggle.classList.remove('active'); toggle.setAttribute('aria-expanded', 'false'); menu.classList.remove('open'); menu.setAttribute('aria-hidden', 'true'); document.body.classList.remove('menu-open'); }
+  function openMenu() { if (!toggle || !menu) return; toggle.classList.add('active'); toggle.setAttribute('aria-expanded', 'true'); menu.classList.add('open'); menu.setAttribute('aria-hidden', 'false'); document.body.classList.add('menu-open'); }
+  if (toggle && menu) {
+    toggle.addEventListener('click', () => { toggle.getAttribute('aria-expanded') === 'true' ? closeMenu() : openMenu(); });
+    menu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+  }
+
+  if ('IntersectionObserver' in window) {
+    const ro = new IntersectionObserver((entries) => {
+      entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('visible'); ro.unobserve(en.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+  }
+  const fy = document.getElementById('footerYear'); if (fy) fy.textContent = new Date().getFullYear();
+})();
+
+/* ============================================================
+   JUEGO DE PETANCA — Woodpecker's
+   Mundo lógico fijo (400 x 560) escalado al canvas.
+   Mejoras: dificultad, trayectoria con rebotes, línea muerta,
+   modalidades, práctica, partículas+huellas, medición en cm,
+   háptica, zoom de cámara, control por toque, localStorage,
+   reduced-motion, pausa, objetivos, sonidos+música, tutorial.
+============================================================ */
+(function () {
+  'use strict';
+
+  const W = 400, H = 560, WALL = 14, R = 15, JR = 7;
+  const LAUNCH = { x: 200, y: 512 };
+  const TARGET = 13;
+  const FRICTION = 0.978, STOP = 0.34, REST = 0.92, WALLD = 0.5;
+  const POWER_K = 1.95, MIN_TRAVEL = 40, MAX_TRAVEL = 600, SUB = 4;
+  const CM = 0.27; // unidad lógica -> "cm" de pista (cosmético)
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const DIFF = {
+    facil:   { sigma: 32, shoot: 0.20, terr: 0.10 },
+    normal:  { sigma: 18, shoot: 0.50, terr: 0.06 },
+    dificil: { sigma: 9,  shoot: 0.72, terr: 0.035 }
+  };
+  const GOALS = [
+    { id: 'first_win', icon: '🥇', text: 'Gana tu primera partida' },
+    { id: 'shutout',   icon: '🧹', text: 'Gana sin que la CPU puntúe' },
+    { id: 'streak3',   icon: '🔥', text: 'Gana 3 partidas seguidas' },
+    { id: 'carreau',   icon: '💥', text: 'Golpea y aparta una bola rival' },
+    { id: 'bigmene',   icon: '🎯', text: 'Gana una mène de 4+ puntos' },
+    { id: 'comeback',  icon: '🛡️', text: 'Gana yendo 6+ puntos por detrás' }
+  ];
+
+  /* ---------- almacenamiento ---------- */
+  const SKEY = 'wpk_pet_settings', STKEY = 'wpk_pet_stats', SEEN = 'wpk_pet_seen';
+  function loadJSON(k, def) { try { const v = JSON.parse(localStorage.getItem(k)); return v && typeof v === 'object' ? Object.assign({}, def, v) : Object.assign({}, def); } catch (e) { return Object.assign({}, def); } }
+  function saveJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  let settings = loadJSON(SKEY, { difficulty: 'normal', boules: 3, walls: 'bounce', control: 'drag', music: 'off', muted: false });
+  let stats = loadJSON(STKEY, { played: 0, won: 0, lost: 0, streak: 0, best: 0, goals: {} });
+  if (!stats.goals) stats.goals = {};
+
+  /* ---------- DOM ---------- */
+  const $ = (id) => document.getElementById(id);
+  const canvas = $('petCanvas'), ctx = canvas.getContext('2d');
+  const elScoreYou = $('scoreYou'), elScoreCpu = $('scoreCpu');
+  const elBoulesYou = $('boulesYou'), elBoulesCpu = $('boulesCpu');
+  const elMene = $('meneLabel'), teamYou = $('teamYou'), teamCpu = $('teamCpu');
+  const banner = $('banner'), toast = $('toast');
+  const overlay = $('overlay'), overlayIcon = $('overlayIcon'), overlayTitle = $('overlayTitle'), overlayText = $('overlayText'), overlayBtn = $('overlayBtn');
+  const settingsPanel = $('settings'), statsPanel = $('statsPanel');
+  const btnNew = $('btnNew'), btnSound = $('btnSound'), btnHelp = $('btnHelp'), btnSettings = $('btnSettings'), btnLaunch = $('btnLaunch');
+  const hint = $('hint');
+
+  /* ---------- estado ---------- */
+  let bodies = [], boules = [], jack = null, marks = [], parts = [];
+  let score = { you: 0, cpu: 0 }, left = { you: 0, cpu: 0 };
+  let meneStarter = 'you', meneNo = 1, current = 'you';
+  let state = 'idle';           // idle|ready|aiming|thrown|cpuWait|counting|mene|over
+  let aim = null, tapTarget = null, overlayAction = null;
+  let BPS = 3, practice = false;
+  let jackDead = false, carreauMatch = false, minDiff = 0;
+  let cam = { zoom: 1, x: W / 2, y: H / 2 }, camTween = null, pendingReveal = null;
+  let paused = false, settleFrames = 0;
+  let draft = null;
+
+  /* ---------- textura de tierra ---------- */
+  const speck = [];
+  for (let i = 0; i < 90; i++) speck.push({ x: WALL + Math.random() * (W - WALL * 2), y: WALL + Math.random() * (H - WALL * 2), r: Math.random() * 1.6 + .3, t: Math.random() });
+
+  /* ====================== AUDIO ====================== */
+  let actx = null, noiseBuf = null, music = null;
+  function ac() { if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} } return actx; }
+  function resumeAudio() { const c = ac(); if (c && c.state === 'suspended') c.resume(); }
+  function getNoise() {
+    const c = ac(); if (!c) return null;
+    if (!noiseBuf) { noiseBuf = c.createBuffer(1, c.sampleRate * 0.25, c.sampleRate); const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+    return noiseBuf;
+  }
+  function tone(freq, dur, type, vol) {
+    if (settings.muted) return; const c = ac(); if (!c) return;
+    try { const o = c.createOscillator(), g = c.createGain(); o.type = type || 'sine'; o.frequency.value = freq; const t = c.currentTime; g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + .02); } catch (e) {}
+  }
+  let sndBudget = 0;
+  function playImpact(wood, impact) {
+    if (settings.muted || sndBudget > 0) return; sndBudget = 2;
+    const c = ac(); if (!c) return; const vol = Math.min(.04 + impact * 0.02, .2);
+    try {
+      const src = c.createBufferSource(); src.buffer = getNoise();
+      const f = c.createBiquadFilter(); f.type = wood ? 'lowpass' : 'bandpass';
+      f.frequency.value = wood ? 420 : 2600; f.Q.value = wood ? 1 : 6;
+      const g = c.createGain(); const t = c.currentTime;
+      g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + (wood ? .16 : .09));
+      src.connect(f); f.connect(g); g.connect(c.destination); src.start(t); src.stop(t + .2);
+    } catch (e) {}
+    tone(wood ? 150 : 320 + Math.min(impact, 8) * 50, wood ? .14 : .07, 'triangle', vol * .5);
+  }
+  function throwSound() { tone(120, .14, 'sine', .07); }
+  function winSound(win) {
+    if (settings.muted) return;
+    const seq = win ? [523, 659, 784, 1046] : [392, 330, 262];
+    seq.forEach((f, i) => setTimeout(() => tone(f, .18, win ? 'triangle' : 'sine', .09), i * 95));
+  }
+  function startMusic() {
+    if (settings.muted || settings.music !== 'on' || music) return; const c = ac(); if (!c) return;
+    try {
+      const g = c.createGain(); g.gain.value = 0.0; g.connect(c.destination);
+      const o1 = c.createOscillator(), o2 = c.createOscillator(), lf = c.createOscillator(), lg = c.createGain();
+      o1.type = 'sine'; o1.frequency.value = 110; o2.type = 'sine'; o2.frequency.value = 110 * 1.5;
+      lf.type = 'sine'; lf.frequency.value = 0.07; lg.gain.value = 0.018;
+      lf.connect(lg); lg.connect(g.gain); o1.connect(g); o2.connect(g);
+      const t = c.currentTime; g.gain.setValueAtTime(0.0, t); g.gain.linearRampToValueAtTime(0.022, t + 2);
+      o1.start(); o2.start(); lf.start();
+      music = { g, o1, o2, lf };
+    } catch (e) {}
+  }
+  function stopMusic() { if (!music) return; try { const c = ac(); music.g.gain.linearRampToValueAtTime(0.0001, c.currentTime + 0.6); const m = music; setTimeout(() => { try { m.o1.stop(); m.o2.stop(); m.lf.stop(); } catch (e) {} }, 700); } catch (e) {} music = null; }
+  function syncMusic() { if (settings.music === 'on' && !settings.muted) startMusic(); else stopMusic(); }
+  function vibrate(ms) { try { if (navigator.vibrate && !settings.muted) navigator.vibrate(ms); } catch (e) {} }
+
+  /* ====================== HELPERS ====================== */
+  const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+  const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+  const speedForTravel = (t) => clamp(t, MIN_TRAVEL, MAX_TRAVEL) * (1 - FRICTION) + STOP;
+  const gauss = (s) => (Math.random() + Math.random() + Math.random() - 1.5) * s;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  function makeBody(x, y, r, mass, team) { return { x, y, vx: 0, vy: 0, r, mass, team, wasMoving: false, dead: false }; }
+
+  /* ====================== PARTÍCULAS / HUELLAS ====================== */
+  function spawnDust(x, y, n, power) {
+    if (reduceMotion) return;
+    for (let i = 0; i < n; i++) { const a = Math.random() * 6.283, s = Math.random() * power * 0.4 + 0.2; parts.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 0.4, life: 300 + Math.random() * 320, max: 620, r: Math.random() * 1.9 + 0.6, c: Math.random() > .5 ? '#6a5238' : '#3a2c1e' }); }
+  }
+  function updateParts(dt) {
+    const k = dt / 16;
+    for (let i = parts.length - 1; i >= 0; i--) { const p = parts[i]; p.x += p.vx * k; p.y += p.vy * k; p.vy += 0.04 * k; p.vx *= 0.95; p.vy *= 0.95; p.life -= dt; if (p.life <= 0) parts.splice(i, 1); }
+  }
+
+  /* ====================== FLUJO DE PARTIDA ====================== */
+  function applySettings() {
+    BPS = Number(settings.boules) || 3;
+    elMene.parentElement.querySelector('.pet-goal') && (elMene.parentElement.querySelector('.pet-goal').textContent = 'a ' + TARGET + ' pts');
+    hint.textContent = settings.control === 'tap'
+      ? 'Toca dónde quieres que caiga la bola y pulsa “Lanzar”.'
+      : 'Arrastra desde el círculo de tiro hacia el boliche. Cuanto más lejos, más fuerte.';
+    syncMusic();
+  }
+
+  function newGame() {
+    practice = false;
+    score = { you: 0, cpu: 0 };
+    meneStarter = 'you'; meneNo = 1; carreauMatch = false; minDiff = 0;
+    hideOverlay(); hidePanels();
+    startMene();
+  }
+  function startPractice() {
+    practice = true;
+    score = { you: 0, cpu: 0 }; meneNo = 1;
+    hideOverlay(); hidePanels();
+    newMeneSetup();
+    left = { you: BPS, cpu: 0 };
+    current = 'you'; state = 'ready'; tapTarget = null;
+    updateHUD(); setBanner('Práctica libre · lanza sin rival', 'you'); syncLaunchBtn();
+  }
+  function newMeneSetup() {
+    bodies = []; boules = []; marks = []; parts = []; jackDead = false;
+    cam = { zoom: 1, x: W / 2, y: H / 2 }; camTween = null;
+    jack = makeBody(rnd(130, 270), rnd(95, 215), JR, 0.4, 'jack');
+    bodies.push(jack);
+  }
+  function startMene() {
+    newMeneSetup();
+    left = { you: BPS, cpu: BPS };
+    current = meneStarter; tapTarget = null;
+    hideOverlay(); updateHUD();
+    proceed(true);
+  }
+
+  function closestHolder() { if (!boules.length) return null; let best = Infinity, t = null; for (const b of boules) { const d = dist(b, jack); if (d < best) { best = d; t = b.team; } } return t; }
+  function closest(team) { let best = Infinity, ball = null; for (const b of boules) { if (b.team !== team) continue; const d = dist(b, jack); if (d < best) { best = d; ball = b; } } return { d: best, ball }; }
+
+  function decideNext() {
+    if (practice) return left.you > 0 ? 'you' : null;
+    if (left.you === 0 && left.cpu === 0) return null;
+    if (left.you === 0) return 'cpu';
+    if (left.cpu === 0) return 'you';
+    const h = closestHolder();
+    if (h === null) return meneStarter;
+    return h === 'you' ? 'cpu' : 'you';
+  }
+
+  function proceed(first) {
+    const next = decideNext();
+    if (next === null) { if (practice) endPracticeTanda(); else endMene(); return; }
+    current = next; updateHUD(); tapTarget = null;
+    if (next === 'you') { state = 'ready'; setBanner(practice ? 'Práctica · lanza libremente' : (first ? '¡Empiezas tú! Apunta y lanza' : 'Tu turno · apunta y lanza'), 'you'); }
+    else { state = 'cpuWait'; setBanner('Turno de la CPU…', 'cpu'); setTimeout(cpuThrow, first ? 700 : 920); }
+    syncLaunchBtn();
+  }
+
+  function throwBoule(team, vx, vy) {
+    const b = makeBody(LAUNCH.x, LAUNCH.y, R, 1, team);
+    b.vx = vx; b.vy = vy; b.wasMoving = true;
+    boules.push(b); bodies.push(b);
+    left[team]--; state = 'thrown'; settleFrames = 0;
+    tapTarget = null; syncLaunchBtn(); updateHUD();
+    throwSound(); vibrate(15);
+  }
+
+  function cpuThrow() {
+    if (state !== 'cpuWait') return;
+    const d = DIFF[settings.difficulty] || DIFF.normal;
+    const yb = closest('you'), cb = closest('cpu');
+    const playerHolds = yb.ball && (!cb.ball || yb.d < cb.d);
+    let target, travel;
+    if (playerHolds && yb.d < 130 && Math.random() < d.shoot) {
+      target = { x: yb.ball.x + gauss(d.sigma * 0.6), y: yb.ball.y + gauss(d.sigma * 0.6) };
+      travel = dist(LAUNCH, target) * 1.28;
+    } else {
+      target = { x: jack.x + gauss(d.sigma), y: jack.y + gauss(d.sigma) };
+      travel = dist(LAUNCH, target) * (1 + gauss(d.terr));
+    }
+    const dx = target.x - LAUNCH.x, dy = target.y - LAUNCH.y, dd = Math.hypot(dx, dy) || 1;
+    const v = speedForTravel(travel);
+    throwBoule('cpu', dx / dd * v, dy / dd * v);
+  }
+
+  function onSettle() {
+    // limpieza de bolas/boliche fuera (modo línea muerta)
+    if (jack && jack.dead) jackDead = true;
+    for (let i = boules.length - 1; i >= 0; i--) if (boules[i].dead) { spawnDust(boules[i].x, boules[i].y, 8, 3); boules.splice(i, 1); }
+    bodies = bodies.filter(b => !b.dead);
+    if (!jackDead) for (const b of boules) if (!b.markAdded) { b.markAdded = true; marks.push({ x: b.x, y: b.y, r: b.r * 0.9 }); }
+
+    if (jackDead) { voidMene(); return; }
+    proceed(false);
+  }
+
+  function voidMene() {
+    state = 'mene';
+    setBanner('¡El boliche se fue! Mène nula', 'cpu');
+    showOverlay('🚫', 'Mène nula', 'El boliche salió de la pista, así que esta mène no cuenta. Se vuelve a jugar.', 'Repetir mène', () => startMene());
+  }
+
+  function endPracticeTanda() {
+    state = 'mene';
+    const yb = closest('you');
+    const cm = yb.ball ? Math.round(yb.d * CM) : '—';
+    showOverlay('🎯', 'Tanda completada', 'Tu bola más cercana quedó a ' + cm + ' cm del boliche. ¿Seguimos practicando?', 'Otra tanda', () => startPractice());
+  }
+
+  function endMene() {
+    state = 'counting';
+    const yb = closest('you'), cb = closest('cpu');
+    let winner = null, pts = 0;
+    if (yb.ball && cb.ball) {
+      if (yb.d < cb.d) { winner = 'you'; pts = boules.filter(b => b.team === 'you' && dist(b, jack) < cb.d).length; }
+      else { winner = 'cpu'; pts = boules.filter(b => b.team === 'cpu' && dist(b, jack) < yb.d).length; }
+    } else if (yb.ball) { winner = 'you'; pts = boules.filter(b => b.team === 'you').length; }
+    else if (cb.ball) { winner = 'cpu'; pts = boules.filter(b => b.team === 'cpu').length; }
+    pts = Math.max(1, pts);
+    pendingReveal = { winner, pts };
+    if (!reduceMotion && jack) startCamTo(jack.x, jack.y, 1.85, 700, revealMene);
+    else revealMene();
+  }
+
+  function revealMene() {
+    const { winner, pts } = pendingReveal; pendingReveal = null;
+    if (winner) { score[winner] += pts; meneStarter = winner; }
+    minDiff = Math.min(minDiff, score.you - score.cpu);
+    updateHUD();
+    if (winner === 'you' && pts >= 4) unlockGoal('bigmene');
+    if (score.you >= TARGET || score.cpu >= TARGET) { if (!reduceMotion) startCamTo(W / 2, H / 2, 1, 450, gameOver); else gameOver(); return; }
+    if (!reduceMotion) startCamTo(W / 2, H / 2, 1, 450, null);
+    const yw = winner === 'you';
+    state = 'mene';
+    setBanner(yw ? `¡Ganas la mène! +${pts}` : `La CPU gana la mène +${pts}`, yw ? 'you' : 'cpu');
+    showOverlay(yw ? '🎉' : '🤖', yw ? '¡Mène para ti!' : 'Mène para la CPU',
+      `${yw ? 'Tus bolas' : 'Sus bolas'} quedaron más cerca. Sumas ${pts} punto${pts > 1 ? 's' : ''}. Marcador ${score.you}–${score.cpu}.`,
+      'Siguiente mène', () => { meneNo++; startMene(); });
+  }
+
+  function gameOver() {
+    state = 'over';
+    const yw = score.you >= TARGET;
+    winSound(yw);
+    if (!practice) {
+      stats.played++;
+      if (yw) { stats.won++; stats.streak++; stats.best = Math.max(stats.best, stats.streak); unlockGoal('first_win'); if (score.cpu === 0) unlockGoal('shutout'); if (stats.streak >= 3) unlockGoal('streak3'); if (minDiff <= -6) unlockGoal('comeback'); }
+      else { stats.lost++; stats.streak = 0; }
+      saveJSON(STKEY, stats);
+    }
+    setBanner(yw ? '¡PARTIDA GANADA!' : 'Partida perdida', yw ? 'you' : 'cpu');
+    showOverlay(yw ? '🏆' : '😅', yw ? '¡Campeón de la pista!' : 'Te gana la CPU',
+      `Resultado final ${score.you}–${score.cpu}. ${yw ? '¡Invita a una ronda en Woodpecker\'s!' : '¡La revancha está servida!'}`,
+      'Jugar otra vez', () => newGame());
+  }
+
+  /* ====================== OBJETIVOS / UI ====================== */
+  function unlockGoal(id) { if (stats.goals[id]) return; stats.goals[id] = true; saveJSON(STKEY, stats); const g = GOALS.find(x => x.id === id); if (g) showToast(g.icon, '¡Objetivo! ' + g.text); }
+  let toastT = null;
+  function showToast(icon, text) { toast.innerHTML = '<span>' + icon + '</span> ' + text; toast.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => toast.classList.remove('show'), 2600); }
+
+  function setBanner(t, who) { banner.textContent = t; banner.classList.remove('you', 'cpu'); if (who) banner.classList.add(who); banner.style.opacity = '1'; }
+  function showOverlay(icon, title, text, btn, action) { overlayIcon.textContent = icon; overlayTitle.textContent = title; overlayText.textContent = text; overlayBtn.textContent = btn; overlayBtn.style.display = btn ? '' : 'none'; overlayAction = action; overlay.classList.add('show'); }
+  function hideOverlay() { overlay.classList.remove('show'); overlayAction = null; }
+  function hidePanels() { settingsPanel.classList.remove('show'); statsPanel.classList.remove('show'); }
+
+  function updateHUD() {
+    elScoreYou.textContent = score.you; elScoreCpu.textContent = score.cpu;
+    elMene.textContent = practice ? 'Práctica' : 'Mène ' + meneNo;
+    renderDots(elBoulesYou, left.you); renderDots(elBoulesCpu, practice ? 0 : left.cpu);
+    teamYou.classList.toggle('active', current === 'you' && (state === 'ready' || state === 'aiming'));
+    teamCpu.classList.toggle('active', current === 'cpu' && (state === 'cpuWait' || state === 'thrown'));
+  }
+  function renderDots(el, n) { let h = ''; for (let i = 0; i < BPS; i++) h += '<span class="b' + (i < n ? ' live' : '') + '"></span>'; el.innerHTML = h; }
+  function syncLaunchBtn() { const show = settings.control === 'tap' && state === 'ready' && current === 'you' && tapTarget; btnLaunch.classList.toggle('show', !!show); }
+
+  /* ====================== FÍSICA ====================== */
+  function tick() {
+    sndBudget = Math.max(0, sndBudget - 1);
+    for (let s = 0; s < SUB; s++) {
+      for (const b of bodies) { if (b.dead) continue; b.x += b.vx / SUB; b.y += b.vy / SUB; }
+      for (const b of bodies) {
+        if (b.dead) continue;
+        if (settings.walls === 'dead') {
+          if (b.x < WALL || b.x > W - WALL || b.y < WALL || b.y > H - WALL) { b.dead = true; b.vx = 0; b.vy = 0; }
+        } else {
+          const lo = WALL + b.r, hiX = W - WALL - b.r, hiY = H - WALL - b.r;
+          if (b.x < lo) { b.x = lo; b.vx = -b.vx * WALLD; } else if (b.x > hiX) { b.x = hiX; b.vx = -b.vx * WALLD; }
+          if (b.y < lo) { b.y = lo; b.vy = -b.vy * WALLD; } else if (b.y > hiY) { b.y = hiY; b.vy = -b.vy * WALLD; }
+        }
+      }
+      collide();
+    }
+    for (const b of bodies) {
+      if (b.dead) continue;
+      b.vx *= FRICTION; b.vy *= FRICTION;
+      const sp = Math.hypot(b.vx, b.vy);
+      if (sp < STOP) { if (b.wasMoving) { b.wasMoving = false; if (b.team !== 'jack') spawnDust(b.x, b.y, 5, 1.5); } b.vx = 0; b.vy = 0; }
+      else b.wasMoving = true;
+    }
+  }
+  function collide() {
+    for (let i = 0; i < bodies.length; i++) for (let j = i + 1; j < bodies.length; j++) {
+      const a = bodies[i], b = bodies[j]; if (a.dead || b.dead) continue;
+      let dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy); const rsum = a.r + b.r;
+      if (d >= rsum || d === 0) continue;
+      const nx = dx / d, ny = dy / d, ov = rsum - d, tot = a.mass + b.mass;
+      a.x -= nx * ov * (b.mass / tot); a.y -= ny * ov * (b.mass / tot);
+      b.x += nx * ov * (a.mass / tot); b.y += ny * ov * (a.mass / tot);
+      const vn = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+      if (vn < 0) {
+        const imp = -(1 + REST) * vn / (1 / a.mass + 1 / b.mass);
+        a.vx -= imp * nx / a.mass; a.vy -= imp * ny / a.mass; b.vx += imp * nx / b.mass; b.vy += imp * ny / b.mass;
+        const impact = -vn, wood = a.team === 'jack' || b.team === 'jack';
+        playImpact(wood, impact);
+        if (impact > 2.5) { spawnDust((a.x + b.x) / 2, (a.y + b.y) / 2, Math.min(10, 4 + impact | 0), impact); if (impact > 3.5) vibrate(22); }
+        const rivals = (a.team === 'you' && b.team === 'cpu') || (a.team === 'cpu' && b.team === 'you');
+        if (rivals && impact > 3 && !practice) { const youHit = boules.some(x => x.team === 'you' && x.wasMoving); if (youHit) { carreauMatch = true; unlockGoal('carreau'); showToast('💥', '¡Carreau!'); } }
+      }
+    }
+  }
+  function allStopped() { for (const b of bodies) if (!b.dead && (b.vx !== 0 || b.vy !== 0)) return false; return true; }
+
+  /* ====================== CÁMARA ====================== */
+  function startCamTo(x, y, zoom, dur, cb) { camTween = { x0: cam.x, y0: cam.y, z0: cam.zoom, x1: x, y1: y, z1: zoom, t: 0, dur: dur, cb: cb }; }
+  function updateCam(dt) {
+    if (!camTween) return;
+    camTween.t += dt; const k = clamp(camTween.t / camTween.dur, 0, 1), e = 1 - Math.pow(1 - k, 3);
+    cam.x = camTween.x0 + (camTween.x1 - camTween.x0) * e;
+    cam.y = camTween.y0 + (camTween.y1 - camTween.y0) * e;
+    cam.zoom = camTween.z0 + (camTween.z1 - camTween.z0) * e;
+    if (k >= 1) { const cb = camTween.cb; camTween = null; if (cb) cb(); }
+  }
+
+  /* ====================== TRAYECTORIA ====================== */
+  function predictPath(ux, uy, travel) {
+    let x = LAUNCH.x, y = LAUNCH.y, v = speedForTravel(travel), vx = ux * v, vy = uy * v;
+    const pts = [{ x, y }];
+    for (let i = 0; i < 260; i++) {
+      x += vx; y += vy;
+      if (settings.walls === 'dead') { if (x < WALL || x > W - WALL || y < WALL || y > H - WALL) { pts.push({ x, y }); break; } }
+      else { const lo = WALL + R, hiX = W - WALL - R, hiY = H - WALL - R; if (x < lo) { x = lo; vx = -vx * WALLD; } else if (x > hiX) { x = hiX; vx = -vx * WALLD; } if (y < lo) { y = lo; vy = -vy * WALLD; } else if (y > hiY) { y = hiY; vy = -vy * WALLD; } }
+      vx *= FRICTION; vy *= FRICTION;
+      if (Math.hypot(vx, vy) < STOP) { pts.push({ x, y }); break; }
+      if (i % 3 === 0) pts.push({ x, y });
+    }
+    return pts;
+  }
+  function computeAim() {
+    let dx, dy, travel;
+    if (settings.control === 'tap') { if (!tapTarget) return null; dx = tapTarget.x - LAUNCH.x; dy = tapTarget.y - LAUNCH.y; const raw = Math.hypot(dx, dy) || 1; travel = clamp(raw, MIN_TRAVEL, MAX_TRAVEL); return { ux: dx / raw, uy: dy / raw, travel }; }
+    if (!aim) return null; dx = aim.px - LAUNCH.x; dy = aim.py - LAUNCH.y; const raw = Math.hypot(dx, dy); if (raw < 4) return null; travel = clamp(raw * POWER_K, MIN_TRAVEL, MAX_TRAVEL); return { ux: dx / raw, uy: dy / raw, travel };
+  }
+
+  /* ====================== RENDER ====================== */
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.save();
+    ctx.translate(W / 2, H / 2); ctx.scale(cam.zoom, cam.zoom); ctx.translate(-cam.x, -cam.y);
+
+    // suelo
+    const g = ctx.createRadialGradient(W / 2, H * 0.42, 40, W / 2, H * 0.5, H * 0.75);
+    g.addColorStop(0, '#3a2a1c'); g.addColorStop(0.55, '#2c1f15'); g.addColorStop(1, '#21160e');
+    roundRect(WALL, WALL, W - WALL * 2, H - WALL * 2, 8); ctx.fillStyle = g; ctx.fill();
+
+    ctx.save(); roundRect(WALL, WALL, W - WALL * 2, H - WALL * 2, 8); ctx.clip();
+    for (const s of speck) { ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 7); ctx.fillStyle = s.t > .5 ? 'rgba(255,230,190,.06)' : 'rgba(0,0,0,.18)'; ctx.fill(); }
+    ctx.strokeStyle = 'rgba(255,235,200,.05)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(WALL, H * 0.34); ctx.lineTo(W - WALL, H * 0.34); ctx.stroke();
+    // huellas
+    for (const m of marks) { ctx.beginPath(); ctx.ellipse(m.x, m.y + m.r * .5, m.r, m.r * .5, 0, 0, 7); ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.fill(); }
+    // partículas
+    for (const p of parts) { ctx.globalAlpha = clamp(p.life / p.max, 0, 1) * .8; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fillStyle = p.c; ctx.fill(); }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+
+    drawFrame();
+
+    // círculo de tiro
+    ctx.save(); ctx.setLineDash([6, 6]); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(201,168,118,.6)'; ctx.beginPath(); ctx.arc(LAUNCH.x, LAUNCH.y, 24, 0, 7); ctx.stroke(); ctx.restore();
+
+    if ((state === 'mene' || state === 'counting' || state === 'ready') && boules.length) drawMeasures();
+
+    for (const b of bodies) if (!b.dead) drawShadow(b);
+    if (jack && !jack.dead) drawJack(jack);
+    for (const b of boules) drawBoule(b);
+
+    if ((state === 'aiming' || (settings.control === 'tap' && state === 'ready' && current === 'you')) && computeAim()) drawAim();
+    else if (state === 'ready' && current === 'you') drawGhost();
+
+    ctx.restore();
+  }
+  function roundRect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+  function drawFrame() {
+    ctx.lineWidth = WALL; const lg = ctx.createLinearGradient(0, 0, W, H); lg.addColorStop(0, '#4a2f1d'); lg.addColorStop(.5, '#3a2418'); lg.addColorStop(1, '#2a1a10'); ctx.strokeStyle = lg;
+    roundRect(WALL / 2, WALL / 2, W - WALL, H - WALL, 12); ctx.stroke();
+    ctx.lineWidth = 1.5; ctx.strokeStyle = settings.walls === 'dead' ? 'rgba(230,57,70,.3)' : 'rgba(255,220,170,.12)'; roundRect(WALL, WALL, W - WALL * 2, H - WALL * 2, 8); ctx.stroke();
+  }
+  function drawShadow(b) { ctx.beginPath(); ctx.ellipse(b.x + b.r * .28, b.y + b.r * .42, b.r * 1.02, b.r * .72, 0, 0, 7); ctx.fillStyle = 'rgba(0,0,0,.32)'; ctx.fill(); }
+  function drawJack(b) {
+    const g = ctx.createRadialGradient(b.x - b.r * .4, b.y - b.r * .4, b.r * .15, b.x, b.y, b.r);
+    g.addColorStop(0, '#ffd9a0'); g.addColorStop(.5, '#e08a2c'); g.addColorStop(1, '#8a4a14');
+    ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 7); ctx.fillStyle = g; ctx.fill();
+    ctx.beginPath(); ctx.arc(b.x - b.r * .35, b.y - b.r * .35, b.r * .25, 0, 7); ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.fill();
+  }
+  function drawBoule(b) {
+    const accent = b.team === 'you' ? '#fcbf49' : '#e63946';
+    const g = ctx.createRadialGradient(b.x - b.r * .42, b.y - b.r * .42, b.r * .15, b.x + b.r * .2, b.y + b.r * .3, b.r * 1.15);
+    g.addColorStop(0, '#fbfdff'); g.addColorStop(.28, '#cfd6dd'); g.addColorStop(.62, '#9aa3ab'); g.addColorStop(1, '#535a61');
+    ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 7); ctx.fillStyle = g; ctx.fill();
+    ctx.save(); ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 7); ctx.clip(); ctx.strokeStyle = 'rgba(40,46,52,.4)'; ctx.lineWidth = 1;
+    for (let i = -2; i <= 2; i++) { ctx.beginPath(); ctx.moveTo(b.x - b.r, b.y + i * 5 + 1); ctx.lineTo(b.x + b.r, b.y + i * 5 - 2); ctx.stroke(); }
+    ctx.restore();
+    ctx.beginPath(); ctx.arc(b.x, b.y, b.r - 1, 0, 7); ctx.lineWidth = 2.2; ctx.strokeStyle = accent; ctx.stroke();
+    ctx.beginPath(); ctx.arc(b.x - b.r * .35, b.y - b.r * .38, b.r * .26, 0, 7); ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.fill();
+  }
+  function drawMeasures() {
+    const yb = closest('you'), cb = closest('cpu');
+    ctx.save(); ctx.setLineDash([4, 5]); ctx.lineWidth = 1.4;
+    if (yb.ball) measure(yb.ball, 'rgba(252,191,73,.6)', '#fcbf49', yb.d);
+    if (cb.ball) measure(cb.ball, 'rgba(230,57,70,.6)', '#e63946', cb.d);
+    ctx.restore();
+    function measure(ball, line, txt, d) {
+      ctx.strokeStyle = line; ctx.beginPath(); ctx.moveTo(jack.x, jack.y); ctx.lineTo(ball.x, ball.y); ctx.stroke();
+      const mx = (jack.x + ball.x) / 2, my = (jack.y + ball.y) / 2;
+      ctx.setLineDash([]); ctx.font = '700 10px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const label = Math.round(d * CM) + ' cm'; const wpx = ctx.measureText(label).width + 8;
+      ctx.fillStyle = 'rgba(11,8,6,.78)'; roundRect(mx - wpx / 2, my - 7, wpx, 14, 4); ctx.fill();
+      ctx.fillStyle = txt; ctx.fillText(label, mx, my); ctx.setLineDash([4, 5]);
+    }
+  }
+  function drawGhost() {
+    ctx.save(); ctx.globalAlpha = .5; drawBoule({ x: LAUNCH.x, y: LAUNCH.y, r: R, team: 'you' }); ctx.restore();
+    if (!reduceMotion) { ctx.save(); ctx.globalAlpha = .6 + Math.sin(Date.now() / 350) * .25; ctx.fillStyle = 'rgba(254,245,231,.7)'; ctx.font = '600 12px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.fillText(settings.control === 'tap' ? '· toca dónde lanzar ·' : '↑ arrastra para lanzar ↑', LAUNCH.x, LAUNCH.y - 34); ctx.restore(); }
+  }
+  function drawAim() {
+    const a = computeAim(); if (!a) { drawGhost(); return; }
+    const path = predictPath(a.ux, a.uy, a.travel), land = path[path.length - 1];
+    const power = (a.travel - MIN_TRAVEL) / (MAX_TRAVEL - MIN_TRAVEL);
+    const col = power < .5 ? '#7be495' : power < .8 ? '#fcbf49' : '#e63946';
+    drawBoule({ x: LAUNCH.x, y: LAUNCH.y, r: R, team: 'you' });
+    ctx.save();
+    ctx.strokeStyle = col; ctx.lineWidth = 2.4; ctx.setLineDash([2, 8]); ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(path[0].x, path[0].y); for (let i = 1; i < path.length; i++) ctx.lineTo(path[i].x, path[i].y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(land.x, land.y, R, 0, 7); ctx.lineWidth = 2.2; ctx.strokeStyle = col; ctx.stroke();
+    ctx.beginPath(); ctx.arc(land.x, land.y, 2.5, 0, 7); ctx.fillStyle = col; ctx.fill();
+    ctx.beginPath(); ctx.arc(LAUNCH.x, LAUNCH.y, 30, -Math.PI / 2, -Math.PI / 2 + power * 6.283); ctx.lineWidth = 4; ctx.strokeStyle = col; ctx.stroke();
+    ctx.restore();
+  }
+
+  /* ====================== BUCLE ====================== */
+  let last = performance.now(), acc = 0; const DT = 1000 / 60;
+  function frame(now) {
+    requestAnimationFrame(frame);
+    let dt = now - last; last = now; if (dt > 250) dt = 250;
+    if (paused) { draw(); return; }
+    updateCam(dt); updateParts(dt);
+    if (state === 'thrown') {
+      acc += dt; while (acc >= DT) { tick(); acc -= DT; }
+      if (allStopped()) { settleFrames++; if (settleFrames > 4) { settleFrames = 0; onSettle(); } } else settleFrames = 0;
+    } else acc = 0;
+    draw();
+  }
+
+  /* ====================== INPUT ====================== */
+  function toLogical(cx, cy) { const r = canvas.getBoundingClientRect(); return { x: (cx - r.left) * (W / r.width), y: (cy - r.top) * (H / r.height) }; }
+  function canAim() { return state === 'ready' && current === 'you' && cam.zoom < 1.02; }
+  function onDown(e) {
+    if (!canAim()) return; resumeAudio(); e.preventDefault();
+    const p = toLogical(e.clientX, e.clientY);
+    if (settings.control === 'tap') { tapTarget = p; setBanner('Pulsa “Lanzar” o toca otro punto', 'you'); syncLaunchBtn(); return; }
+    aim = { px: p.x, py: p.y }; state = 'aiming'; updateHUD();
+    try { canvas.setPointerCapture(e.pointerId); } catch (x) {}
+  }
+  function onMove(e) { if (state !== 'aiming' || !aim) return; e.preventDefault(); const p = toLogical(e.clientX, e.clientY); aim.px = p.x; aim.py = p.y; }
+  function onUp(e) {
+    if (state !== 'aiming' || !aim) return; e.preventDefault();
+    const dx = aim.px - LAUNCH.x, dy = aim.py - LAUNCH.y, raw = Math.hypot(dx, dy);
+    if (raw < 12) { state = 'ready'; aim = null; updateHUD(); return; }
+    const ux = dx / raw, uy = dy / raw, v = speedForTravel(clamp(raw * POWER_K, MIN_TRAVEL, MAX_TRAVEL));
+    aim = null; throwBoule('you', ux * v, uy * v);
+  }
+  canvas.addEventListener('pointerdown', onDown);
+  canvas.addEventListener('pointermove', onMove);
+  canvas.addEventListener('pointerup', onUp);
+  canvas.addEventListener('pointercancel', () => { if (state === 'aiming') { state = 'ready'; aim = null; updateHUD(); } });
+  canvas.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+
+  btnLaunch.addEventListener('click', () => {
+    if (!(settings.control === 'tap' && state === 'ready' && current === 'you' && tapTarget)) return;
+    resumeAudio();
+    const a = computeAim(); if (!a) return; const v = speedForTravel(a.travel);
+    throwBoule('you', a.ux * v, a.uy * v);
+  });
+
+  /* ====================== PANELES / BOTONES ====================== */
+  overlayBtn.addEventListener('click', () => { const a = overlayAction; hideOverlay(); if (a) a(); });
+  btnNew.addEventListener('click', () => { resumeAudio(); newGame(); });
+  btnSound.addEventListener('click', () => { settings.muted = !settings.muted; btnSound.textContent = settings.muted ? '🔇' : '🔊'; saveJSON(SKEY, settings); if (settings.muted) stopMusic(); else { resumeAudio(); syncMusic(); } });
+  btnHelp.addEventListener('click', () => showTutorial(0));
+
+  function openSettings() {
+    draft = Object.assign({}, settings);
+    document.querySelectorAll('.pet-seg').forEach(seg => { const key = seg.dataset.key; seg.querySelectorAll('.seg-btn').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.val === String(draft[key])))); });
+    statsPanel.classList.remove('show'); settingsPanel.classList.add('show');
+  }
+  btnSettings.addEventListener('click', () => { resumeAudio(); openSettings(); });
+  document.querySelectorAll('.pet-seg').forEach(seg => {
+    const key = seg.dataset.key;
+    seg.addEventListener('click', (e) => { const b = e.target.closest('.seg-btn'); if (!b) return; seg.querySelectorAll('.seg-btn').forEach(x => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true'); if (draft) draft[key] = b.dataset.val; });
+  });
+  $('settingsApply').addEventListener('click', () => { if (draft) { draft.boules = Number(draft.boules); settings = Object.assign({}, settings, draft); saveJSON(SKEY, settings); } applySettings(); hidePanels(); newGame(); });
+  $('settingsStats').addEventListener('click', () => { renderStats(); settingsPanel.classList.remove('show'); statsPanel.classList.add('show'); });
+  $('statsClose').addEventListener('click', () => { statsPanel.classList.remove('show'); openSettings(); });
+
+  function renderStats() {
+    $('stPlayed').textContent = stats.played; $('stWon').textContent = stats.won; $('stStreak').textContent = stats.best;
+    $('goalsList').innerHTML = GOALS.map(g => '<div class="pet-goal-row' + (stats.goals[g.id] ? ' done' : '') + '"><span class="gi">' + g.icon + '</span>' + (stats.goals[g.id] ? g.text : g.text) + (stats.goals[g.id] ? ' ✓' : '') + '</div>').join('');
+  }
+
+  // botón práctica dentro de ajustes
+  (function injectPractice() {
+    const foot = settingsPanel.querySelector('.pet-panel-foot');
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'btn btn-ghost'; b.textContent = 'Práctica libre';
+    b.addEventListener('click', () => { if (draft) { draft.boules = Number(draft.boules); settings = Object.assign({}, settings, draft); saveJSON(SKEY, settings); } applySettings(); hidePanels(); startPractice(); });
+    foot.insertBefore(b, foot.firstChild);
+  })();
+
+  /* ====================== TUTORIAL ====================== */
+  const TUT = [
+    { icon: '🎯', title: 'Bienvenido a la pista', text: 'Juegas contra la CPU. Gana la mène quien deje su bola más cerca del boliche (la bolita naranja). Primero a 13 puntos gana la partida.' },
+    { icon: '👉', title: 'Apunta y lanza', text: 'Arrastra desde el círculo de tiro hacia el boliche. La línea (con sus rebotes) y el aro te muestran dónde caerá la bola. Cuanto más lejos arrastres, más fuerte.' },
+    { icon: '💥', title: 'Estrategia', text: 'Puedes acercarte al boliche… o lanzar fuerte para apartar las bolas de la CPU (¡carreau!). Cambia control, dificultad y modalidad en ⚙️.' }
+  ];
+  function showTutorial(i) {
+    const t = TUT[i];
+    showOverlay(t.icon, t.title, t.text, i < TUT.length - 1 ? 'Siguiente' : '¡A jugar!', () => { if (i < TUT.length - 1) showTutorial(i + 1); else { try { localStorage.setItem(SEEN, '1'); } catch (e) {} if (state === 'idle') newGame(); } });
+  }
+
+  /* ====================== PAUSA / RESIZE ====================== */
+  document.addEventListener('visibilitychange', () => { paused = document.hidden; if (!paused) last = performance.now(); });
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5), r = canvas.getBoundingClientRect();
+    canvas.width = Math.round(r.width * dpr); canvas.height = Math.round(r.height * dpr);
+    ctx.setTransform((r.width / W) * dpr, 0, 0, (r.height / H) * dpr, 0, 0);
+  }
+  window.addEventListener('resize', resize);
+  if ('ResizeObserver' in window) new ResizeObserver(resize).observe(canvas);
+  window.addEventListener('pointerdown', resumeAudio, { once: true });
+
+  /* ====================== ARRANQUE ====================== */
+  btnSound.textContent = settings.muted ? '🔇' : '🔊';
+  applySettings();
+  resize();
+  let seen = false; try { seen = !!localStorage.getItem(SEEN); } catch (e) {}
+  if (seen) newGame(); else showTutorial(0);
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
