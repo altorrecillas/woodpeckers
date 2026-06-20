@@ -9,6 +9,11 @@
 <meta property="og:description" content="Ingredientes frescos, recetas únicas y sabor explosivo en el corazón de Gavà." />
 <meta property="og:type" content="restaurant.restaurant" />
 <meta property="og:image" content="img/hero.webp" />
+<meta property="og:locale" content="es_ES" />
+<meta property="og:site_name" content="Woodpecker's Gavà" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Woodpecker's Gavà · Las mejores hamburguesas del mundo" />
+<meta name="twitter:description" content="Ingredientes frescos, recetas únicas y sabor explosivo en el corazón de Gavà." />
 <meta name="robots" content="index, follow" />
 <title>Woodpecker's Gavà · Posiblemente las mejores hamburguesas del mundo</title>
 
@@ -21,6 +26,38 @@
 <link rel="dns-prefetch" href="https://maps.google.com">
 <link rel="preload" as="image" href="img/hero.webp" fetchpriority="high" />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "Woodpecker's Gavà",
+  "image": "img/hero.webp",
+  "servesCuisine": ["Hamburguesas", "Tapas", "Comida americana"],
+  "priceRange": "€",
+  "telephone": "+34931234567",
+  "email": "juan@woodpeckers.es",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Av. Eramprunyà 16, bajos",
+    "addressLocality": "Gavà",
+    "addressRegion": "Barcelona",
+    "postalCode": "08850",
+    "addressCountry": "ES"
+  },
+  "openingHoursSpecification": [{
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "opens": "12:00",
+    "closes": "01:00"
+  }],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "bestRating": "5"
+  }
+}
+</script>
 
 <style>
 /* =========================
@@ -142,7 +179,28 @@ button:focus-visible, a:focus-visible {
   outline-offset: 4px;
 }
 
-h1, h2, h3, h4 { font-family: 'Fraunces', Georgia, serif; font-weight: 500; line-height: 1.05; letter-spacing: -0.02em; }
+h1, h2, h3, h4 { font-family: 'Fraunces', Georgia, serif; font-weight: 500; line-height: 1.05; letter-spacing: -0.02em; text-wrap: balance; }
+
+::selection { background: var(--mustard); color: var(--bg); }
+
+html { scrollbar-color: var(--wood) var(--bg-2); scrollbar-width: thin; }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-2); }
+::-webkit-scrollbar-thumb { background: var(--wood); border-radius: 99px; border: 2px solid var(--bg-2); }
+::-webkit-scrollbar-thumb:hover { background: var(--clay-dark); }
+
+.eyebrow {
+  display: inline-block;
+  font-size: .75rem; font-weight: 600;
+  letter-spacing: .25em; text-transform: uppercase;
+  color: var(--mustard);
+}
+.eyebrow::before {
+  content: ""; display: inline-block;
+  width: 24px; height: 2px; border-radius: 2px;
+  background: var(--mustard);
+  vertical-align: middle; margin-right: .7rem;
+}
 
 section { position: relative; padding: clamp(4rem, 10vw, 8rem) clamp(1.25rem, 4vw, 2rem); scroll-margin-top: var(--nav-h); }
 .container { max-width: var(--max); margin: 0 auto; width: 100%; }
@@ -229,6 +287,8 @@ body::before {
 }
 .nav-links a:hover { color: var(--cream); }
 .nav-links a:hover::after { width: 100%; }
+.nav-links a.active { color: var(--cream); }
+.nav-links a.active::after { width: 100%; }
 
 .menu-toggle {
   display: none;
@@ -455,6 +515,9 @@ body::before {
     background: #f97316;
     box-shadow: 0 0 8px rgba(249,115,22,1);
   }
+  .hero-badge .badge-status { font-weight: 700; }
+  .hero-badge.is-open .badge-status { color: #bbf7d0; }
+  .hero-badge.is-closed .badge-status { color: #fed7aa; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
 .hero h1 {
@@ -923,7 +986,7 @@ body::before {
 .feature {
   min-height: 55vh; display: flex; align-items: center; justify-content: center; text-align: center;
   background: linear-gradient(rgba(14,10,8,.75), rgba(14,10,8,.9)),
-  url('https://images.unsplash.com/photo-1586190848861-99aa4a171e90?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
+  url('https://images.unsplash.com/photo-1586190848861-99aa4a171e90?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat;
   background-attachment: fixed; padding: clamp(4rem, 12vw, 7rem) 1.25rem; position: relative;
 }
 @supports not (background-attachment: fixed) { .feature { background-attachment: scroll; } }
@@ -1085,7 +1148,7 @@ footer::before {
   section { padding: clamp(3rem, 8vw, 5rem) 1rem; }
   .hero { padding: calc(var(--nav-h) + 1.5rem) 0 3rem; padding-top: calc(var(--nav-h) + 1.5rem + env(safe-area-inset-top, 0px)); }
   .hero-bg {
-    background-size: auto;
+    background-size: cover;
     background-position: center center;
     transform: none;
     animation: none;
@@ -1473,7 +1536,7 @@ footer::before {
       <article class="dish" role="listitem">
         <div class="dish-img">
           <span class="dish-badge">Bestseller</span>
-          <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1899&auto=format&fit=crop" alt="Hamburguesa N° 11 Woodpecker's Especial" loading="lazy" decoding="async" width="400" height="300" />
+          <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=800&auto=format&fit=crop" alt="Hamburguesa N° 11 Woodpecker's Especial" loading="lazy" decoding="async" width="400" height="300" />
         </div>
         <div class="dish-body">
           <span class="dish-num">N° 11</span>
@@ -1484,7 +1547,7 @@ footer::before {
 
       <article class="dish" role="listitem">
         <div class="dish-img">
-          <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?q=80&w=2070&auto=format&fit=crop" alt="Hamburguesa N° 1 Clásica con Queso" loading="lazy" decoding="async" width="400" height="300" />
+          <img src="https://images.unsplash.com/photo-1586190848861-99aa4a171e90?q=80&w=800&auto=format&fit=crop" alt="Hamburguesa N° 1 Clásica con Queso" loading="lazy" decoding="async" width="400" height="300" />
         </div>
         <div class="dish-body">
           <span class="dish-num">N° 1</span>
@@ -1496,7 +1559,7 @@ footer::before {
       <article class="dish" role="listitem">
         <div class="dish-img">
           <span class="dish-badge alt">La más pedida</span>
-          <img src="https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?q=80&w=2070&auto=format&fit=crop" alt="Hamburguesa N° 6 Completa" loading="lazy" decoding="async" width="400" height="300" />
+          <img src="https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?q=80&w=800&auto=format&fit=crop" alt="Hamburguesa N° 6 Completa" loading="lazy" decoding="async" width="400" height="300" />
         </div>
         <div class="dish-body">
           <span class="dish-num">N° 6</span>
@@ -1507,7 +1570,7 @@ footer::before {
 
       <article class="dish" role="listitem">
         <div class="dish-img">
-          <img src="https://images.unsplash.com/photo-1527477396000-e27163b481c2?q=80&w=2070&auto=format&fit=crop" alt="Alitas de pollo" loading="lazy" decoding="async" width="400" height="300" />
+          <img src="https://images.unsplash.com/photo-1527477396000-e27163b481c2?q=80&w=800&auto=format&fit=crop" alt="Alitas de pollo" loading="lazy" decoding="async" width="400" height="300" />
         </div>
         <div class="dish-body">
           <span class="dish-num">N° EXTRA</span>
@@ -1518,7 +1581,7 @@ footer::before {
 
       <article class="dish" role="listitem">
         <div class="dish-img">
-          <img src="https://images.unsplash.com/photo-1625944525533-473f1b3d9684?q=80&w=1887&auto=format&fit=crop" alt="Carne en salsa" loading="lazy" decoding="async" width="400" height="300" />
+          <img src="https://images.unsplash.com/photo-1625944525533-473f1b3d9684?q=80&w=800&auto=format&fit=crop" alt="Carne en salsa" loading="lazy" decoding="async" width="400" height="300" />
         </div>
         <div class="dish-body">
           <span class="dish-num">N° TAPA</span>
@@ -1529,7 +1592,7 @@ footer::before {
 
       <article class="dish" role="listitem">
         <div class="dish-img">
-          <img src="https://images.unsplash.com/photo-1601050690597-df05a8f70950?q=80&w=2070&auto=format&fit=crop" alt="Pinchos caseros" loading="lazy" decoding="async" width="400" height="300" />
+          <img src="https://images.unsplash.com/photo-1601050690597-df05a8f70950?q=80&w=800&auto=format&fit=crop" alt="Pinchos caseros" loading="lazy" decoding="async" width="400" height="300" />
         </div>
         <div class="dish-body">
           <span class="dish-num">N° PINCHO</span>
@@ -1802,7 +1865,7 @@ footer::before {
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 Woodpecker's Gavà · Todos los derechos reservados</span>
+    <span>© <span id="footerYear">2026</span> Woodpecker's Gavà · Todos los derechos reservados</span>
     <span>Diseñado con <span class="heart" aria-label="amor">♥</span> por el equipo Woodpecker's</span>
   </div>
 </footer>
@@ -1943,6 +2006,24 @@ footer::before {
 
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
+    /* Scrollspy: resalta la sección activa en la navegación */
+    const navLinks = [...document.querySelectorAll('.nav-links a[href^="#"]')];
+    const spySections = navLinks.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    if (spySections.length) {
+      const spyObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          navLinks.forEach(a => {
+            const active = a.getAttribute('href') === '#' + entry.target.id;
+            a.classList.toggle('active', active);
+            if (active) a.setAttribute('aria-current', 'true');
+            else a.removeAttribute('aria-current');
+          });
+        });
+      }, { rootMargin: '-35% 0px -55% 0px' });
+      spySections.forEach(s => spyObserver.observe(s));
+    }
+
     const aboutVisual = document.querySelector('.about-visual');
     if (aboutVisual) {
       const visualObserver = new IntersectionObserver((entries) => {
@@ -1974,6 +2055,7 @@ footer::before {
           const el = entry.target;
           const target = parseInt(el.dataset.count, 10);
           if (isNaN(target)) return;
+          if (prefersReducedMotion) { el.textContent = target; counterObserver.unobserve(el); return; }
           const duration = 1500;
           const startTime = performance.now();
           const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
@@ -2003,7 +2085,7 @@ footer::before {
       e.preventDefault();
       const navHeight = nav ? nav.offsetHeight : 0;
       const top = target.getBoundingClientRect().top + window.scrollY - navHeight - 16;
-      window.scrollTo({ top, behavior: 'smooth' });
+      window.scrollTo({ top, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
       setTimeout(() => { target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }); }, 500);
     });
   });
@@ -2030,6 +2112,10 @@ footer::before {
     const heroBg = document.querySelector('.hero-bg');
     if (heroBg) heroBg.style.animation = 'none';
   }
+
+  /* Año dinámico en el footer */
+  const yearEl = document.getElementById('footerYear');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   /* ===========================
      CUSTOM CURSOR
@@ -2110,7 +2196,9 @@ footer::before {
       lb.querySelector('.lb-caption').textContent = img.alt;
       lb.querySelector('.lb-counter').textContent = `${lbIdx + 1} · ${galleryImgs.length}`;
     };
+    let lbLastFocus = null;
     const lbOpen = (i) => {
+      lbLastFocus = document.activeElement;
       lbShow(i); lb.classList.add('lb-open');
       document.body.style.overflow = 'hidden';
       lb.querySelector('.lb-close').focus();
@@ -2118,6 +2206,7 @@ footer::before {
     const lbClose = () => {
       lb.classList.remove('lb-open');
       document.body.style.overflow = '';
+      if (lbLastFocus && typeof lbLastFocus.focus === 'function') lbLastFocus.focus();
     };
 
     galleryImgs.forEach((img, i) => {
@@ -2150,6 +2239,13 @@ footer::before {
       if (e.key === 'Escape') lbClose();
       if (e.key === 'ArrowLeft') lbShow(lbIdx - 1);
       if (e.key === 'ArrowRight') lbShow(lbIdx + 1);
+      if (e.key === 'Tab') {
+        const focusable = [...lb.querySelectorAll('button')].filter(b => b.offsetParent !== null);
+        if (!focusable.length) return;
+        const first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && (document.activeElement === last || !lb.contains(document.activeElement))) { e.preventDefault(); first.focus(); }
+      }
     });
   })();
 
@@ -2240,19 +2336,21 @@ footer::before {
       const bcn = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Madrid' }));
       const day = bcn.getDay();
       const mins = bcn.getHours() * 60 + bcn.getMinutes();
-      if (day === 1 || day === 2) return false;
-      if (day === 0) return mins < 60 || mins >= 720;
-      return mins >= 720 || mins < 60;
+      const openDays = [0, 3, 4, 5, 6]; // mié-dom, abren 12:00 y cierran 01:00
+      // De 00:00 a 01:00 el horario pertenece al día anterior
+      if (mins < 60) return openDays.includes((day + 6) % 7);
+      return openDays.includes(day) && mins >= 720;
     }
     const badge = document.querySelector('.hero-badge');
     if (badge) {
-      if (isOpenNow()) {
-        badge.classList.add('is-open');
-        badge.title = 'Ahora abierto';
-      } else {
-        badge.classList.add('is-closed');
-        badge.title = 'Ahora cerrado';
-      }
+      const open = isOpenNow();
+      badge.classList.add(open ? 'is-open' : 'is-closed');
+      badge.title = open ? 'Ahora abierto' : 'Ahora cerrado';
+      badge.setAttribute('aria-label', 'Gavà, Barcelona — ' + badge.title.toLowerCase());
+      const status = document.createElement('span');
+      status.className = 'badge-status';
+      status.textContent = open ? '· Abierto' : '· Cerrado';
+      badge.appendChild(status);
     }
   })();
   // ─────────────────────────────────────────────────────────────────────
