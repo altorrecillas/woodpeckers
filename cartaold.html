@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carta - Woodpecker's Gavà</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #111111;
+      --bg-card: #1a1a1a;
+      --accent: #e8a838;
+      --accent-hover: #f0b848;
+      --accent-dark: #c4882a;
+      --text-primary: #f5f0eb;
+      --text-secondary: #a09888;
+      --text-muted: #6b6358;
+      --border: #2a2520;
+      --gradient-warm: linear-gradient(135deg, #e8a838 0%, #d4722a 100%);
+      --gradient-dark: linear-gradient(180deg, #0a0a0a 0%, #1a1510 100%);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    ::selection { background: var(--accent); color: var(--bg-primary); }
+
+    /* NAVBAR */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .navbar.scrolled {
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 0.75rem 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      position: relative;
+      line-height: 1;
+    }
+
+    .logo-main {
+      white-space: nowrap;
+      display: flex;
+      align-items: baseline;
+    }
+
+    .logo-text {
+      font-size: 1.25rem;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #f5f0eb 0%, #e8a838 50%, #f5f0eb 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s linear infinite;
+      filter: drop-shadow(0 0 8px rgba(232, 168, 56, 0.3));
+    }
+
+    .logo-accent {
+      font-size: 1.25rem;
+      color: var(--accent);
+      text-shadow: 0 0 10px rgba(232, 168, 56, 0.5), 0 0 20px rgba(232, 168, 56, 0.3);
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    .logo-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.5rem;
+      font-weight: 300;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 2px;
+      transition: color 0.3s;
+    }
+
+    .nav-logo:hover .logo-text {
+      filter: drop-shadow(0 0 12px rgba(232, 168, 56, 0.6));
+    }
+
+    .nav-logo:hover .logo-sub { color: var(--accent); }
+
+    @keyframes shimmer {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    @keyframes glow {
+      0% { text-shadow: 0 0 10px rgba(232, 168, 56, 0.5), 0 0 20px rgba(232, 168, 56, 0.3); }
+      100% { text-shadow: 0 0 15px rgba(232, 168, 56, 0.8), 0 0 30px rgba(232, 168, 56, 0.5), 0 0 45px rgba(232, 168, 56, 0.3); }
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .hamburger-menu {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      z-index: 1001;
+      background: none;
+      border: none;
+      padding: 5px;
+    }
+
+    .hamburger-menu span {
+      width: 28px;
+      height: 2px;
+      background: var(--text-primary);
+      transition: all 0.3s;
+      border-radius: 2px;
+    }
+
+    .hamburger-menu.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger-menu.active span:nth-child(2) { opacity: 0; }
+    .hamburger-menu.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    .mobile-nav {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      height: 100vh;
+      background: rgba(10, 10, 10, 0.98);
+      backdrop-filter: blur(20px);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .mobile-nav.open { right: 0; }
+
+    .mobile-nav a {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      letter-spacing: 3px;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .mobile-nav a:hover { color: var(--accent); }
+
+    /* HERO */
+    .carta-hero {
+      min-height: 35vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding-top: 80px;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(232, 168, 56, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(212, 114, 42, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(232, 168, 56, 0.04) 0%, transparent 50%);
+    }
+
+    .hero-particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 50%;
+      opacity: 0;
+      animation: float 6s infinite;
+    }
+
+    .particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 8s; }
+    .particle:nth-child(2) { left: 25%; animation-delay: 1s; animation-duration: 6s; }
+    .particle:nth-child(3) { left: 40%; animation-delay: 2s; animation-duration: 7s; }
+    .particle:nth-child(4) { left: 55%; animation-delay: 0.5s; animation-duration: 9s; }
+    .particle:nth-child(5) { left: 70%; animation-delay: 1.5s; animation-duration: 6.5s; }
+    .particle:nth-child(6) { left: 85%; animation-delay: 3s; animation-duration: 8.5s; }
+    .particle:nth-child(7) { left: 15%; animation-delay: 2.5s; animation-duration: 7.5s; }
+    .particle:nth-child(8) { left: 60%; animation-delay: 0.8s; animation-duration: 6.2s; }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+
+    .hero-content {
+      text-align: center;
+      z-index: 2;
+      padding: 0 2rem;
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      line-height: 1;
+      letter-spacing: 2px;
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    .hero-main {
+      background: linear-gradient(135deg, #f5f0eb 0%, #e8a838 40%, #d4722a 60%, #f5f0eb 100%);
+      background-size: 300% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+      filter: drop-shadow(0 0 20px rgba(232, 168, 56, 0.2));
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SECTIONS */
+    section { padding: 4rem 2rem; }
+
+    .section-container { max-width: 1200px; margin: 0 auto; }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: 2px;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      max-width: 550px;
+      margin: 0 auto;
+      font-weight: 300;
+      font-size: 0.95rem;
+    }
+
+    /* MENU SECTION */
+    .menu-section {
+      padding: 4rem 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .menu-section:nth-child(even) { background: var(--bg-secondary); }
+
+    .menu-section-inner { max-width: 1200px; margin: 0 auto; }
+
+    .menu-section-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .menu-section-header h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
+    }
+
+    .menu-section-header h2 span { color: var(--accent); }
+
+    .menu-section-header p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 300;
+    }
+
+    /* MENU ITEMS */
+    .menu-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1rem;
+    }
+
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 1.25rem;
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+      gap: 1rem;
+    }
+
+    .menu-item:hover {
+      border-color: rgba(232, 168, 56, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .menu-item-info { flex: 1; }
+
+    .menu-item-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.15rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.25rem;
+    }
+
+    .menu-item-desc {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.4;
+    }
+
+    .menu-item-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.35rem;
+      color: var(--accent);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* SUGERENCIAS */
+    .sugerencias-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .sugerencia-tag {
+      padding: 0.6rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      transition: all 0.3s;
+    }
+
+    .sugerencia-tag:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(232, 168, 56, 0.05);
+    }
+
+    /* FOOTER */
+    .footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+    }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.3s;
+      font-size: 0.85rem;
+    }
+
+    .footer-social a:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(232, 168, 56, 0.1);
+    }
+
+    .footer-bottom {
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-bottom p {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 300;
+    }
+
+    .footer-bottom a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* SCROLL REVEAL */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger-menu { display: flex; }
+      .nav-logo { font-size: 1.2rem; }
+      .logo-text { font-size: 1.2rem; letter-spacing: 2px; }
+      .logo-accent { font-size: 1.2rem; }
+      .logo-sub { font-size: 0.45rem; letter-spacing: 2px; }
+    }
+
+    @media (max-width: 480px) {
+      .menu-items { grid-template-columns: 1fr; }
+      .menu-item { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <a href="wood.html" class="nav-logo">
+      <span class="logo-main">
+        <span class="logo-text">WOODPECKER</span><span class="logo-accent">'S</span>
+      </span>
+      <span class="logo-sub">Av. Eramprunyà 16, Gavà</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="wood.html">Inicio</a></li>
+      <li><a href="#hamburguesas">Hamburguesas</a></li>
+      <li><a href="#raciones">Raciones</a></li>
+      <li><a href="#bocadillos">Bocadillos</a></li>
+      <li><a href="#varios">Varios</a></li>
+      <li><a href="#sugerencias">Sugerencias</a></li>
+    </ul>
+    <button class="hamburger-menu" id="hamburgerMenu" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE NAV -->
+  <div class="mobile-nav" id="mobileNav">
+    <a href="wood.html" onclick="closeMobileNav()">Inicio</a>
+    <a href="#hamburguesas" onclick="closeMobileNav()">Hamburguesas</a>
+    <a href="#raciones" onclick="closeMobileNav()">Raciones</a>
+    <a href="#bocadillos" onclick="closeMobileNav()">Bocadillos</a>
+    <a href="#varios" onclick="closeMobileNav()">Varios</a>
+    <a href="#sugerencias" onclick="closeMobileNav()">Sugerencias</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="carta-hero">
+    <div class="hero-bg"></div>
+    <div class="hero-particles">
+      <div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div>
+      <div class="particle"></div><div class="particle"></div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="hero-main">Nuestra Carta</span>
+      </h1>
+    </div>
+  </section>
+
+  <!-- HAMBURGUESAS -->
+  <section class="menu-section" id="hamburguesas">
+    <div class="menu-section-inner">
+      <div class="menu-section-header reveal">
+        <span class="section-label">Clásicas</span>
+        <h2>Hamburguesas de <span>Carne o Pollo</span></h2>
+        <p>Todas las hamburguesas van acompañadas de mayonesa</p>
+      </div>
+      <div class="menu-items">
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº1 Hamburguesa con Queso</div>
+            <div class="menu-item-desc">Hamburguesa amb formatge</div>
+          </div>
+          <div class="menu-item-price">4,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº2 Hamburguesa con Cebolla</div>
+            <div class="menu-item-desc">Hamburguesa amb ceba</div>
+          </div>
+          <div class="menu-item-price">4,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº3 Hamburguesa con Queso y Cebolla</div>
+            <div class="menu-item-desc">Hamburguesa amb formatge i ceba</div>
+          </div>
+          <div class="menu-item-price">4,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº4 Hamburguesa con Pepinillo, Cebolla, Lechuga y Beicon</div>
+            <div class="menu-item-desc">Hamburguesa amb cogombre, ceba, enciam i bacó</div>
+          </div>
+          <div class="menu-item-price">5,60€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº5 Hamburguesa con Queso, Cebolla y Pimiento</div>
+            <div class="menu-item-desc">Hamburguesa amb formatge, ceba i pebrot</div>
+          </div>
+          <div class="menu-item-price">5,20€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº6 Hamburguesa con Queso, Jamón Dulce, Cebolla, Tomate y Lechuga</div>
+            <div class="menu-item-desc">Hamburguesa amb formatge, pernil dolç, ceba, tomàquet i enciam</div>
+          </div>
+          <div class="menu-item-price">5,80€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº7 Hamburguesa con Huevo, Beicon y Lomo</div>
+            <div class="menu-item-desc">Hamburguesa amb ou, bacó i llom</div>
+          </div>
+          <div class="menu-item-price">7,00€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº8 Hamburguesa con Queso, Jamón Dulce, Lechuga y Tortilla de Patatas</div>
+            <div class="menu-item-desc">Hamburguesa amb formatge, pernil dolç, enciam i truita de patata</div>
+          </div>
+          <div class="menu-item-price">6,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº9 Hamburguesa con Atún, Queso, Lechuga, Tomate y Cebolla</div>
+            <div class="menu-item-desc">Hamburguesa amb tonyina, formatge, enciam, tomàquet i ceba</div>
+          </div>
+          <div class="menu-item-price">5,80€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº10 Dos Hamburguesas con Beicon, Lechuga, Queso, Jamón Dulce y Huevo</div>
+            <div class="menu-item-desc">Dues hamburgueses amb bacó, enciam, formatge, pernil dolç i ou</div>
+          </div>
+          <div class="menu-item-price">10,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº11 Dos Hamburguesas con Beicon, Lomo, Tomate, Lechuga, Queso, Jamón Dulce y Tortilla de Patatas</div>
+            <div class="menu-item-desc">Dues hamburgueses amb bacó, llom, tomàquet, enciam, formatge, pernil dolç i truita de patates</div>
+          </div>
+          <div class="menu-item-price">11,50€</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HAMBURGUESAS ESPECIALES -->
+  <section class="menu-section" id="especiales">
+    <div class="menu-section-inner">
+      <div class="menu-section-header reveal">
+        <span class="section-label">Premium</span>
+        <h2>Hamburguesas <span>Especiales</span></h2>
+        <p>De carne o pollo, con ingredientes selectos</p>
+      </div>
+      <div class="menu-items">
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº15 Hamburguesa con Roquefort y Beicon</div>
+            <div class="menu-item-desc">Hamburguesa amb Rocafort i bacó</div>
+          </div>
+          <div class="menu-item-price">6,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº16 Hamburguesa 200g de Ternera con Huevo y Beicon</div>
+            <div class="menu-item-desc">Hamburguesa 200g de vedella amb ou i bacó</div>
+          </div>
+          <div class="menu-item-price">9,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº17 Hamburguesa Tropical con Piña, Tomate, Lechuga y Pepinillo</div>
+            <div class="menu-item-desc">Hamburguesa tropical amb pinya, tomàquet, enciam i cogombre</div>
+          </div>
+          <div class="menu-item-price">6,00€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº18 Hamburguesa Serrana con Jamón Serrano, Pimiento y Lomo</div>
+            <div class="menu-item-desc">Hamburguesa serrana amb pernil serrà, pebrot i llom</div>
+          </div>
+          <div class="menu-item-price">6,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº19 Hamburguesa Hot con Beicon, Jalapeños, Queso y Salsa Pepper</div>
+            <div class="menu-item-desc">Hamburguesa hot amb bacó, jalapeños, formatge i salsa pepper</div>
+          </div>
+          <div class="menu-item-price">6,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº20 Hamburguesa Diablo con Picante, Cebolla y Queso</div>
+            <div class="menu-item-desc">Hamburguesa diable amb picant, ceba i formatge</div>
+          </div>
+          <div class="menu-item-price">4,80€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº21 Hamburguesa con Cebolla Caramelizada, Beicon y Queso</div>
+            <div class="menu-item-desc">Hamburguesa amb ceba caramel·litzada, bacó i formatge</div>
+          </div>
+          <div class="menu-item-price">6,40€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº22 Hamburguesa con Queso de Cabra, Beicon y Cebolla Caramelizada</div>
+            <div class="menu-item-desc">Hamburguesa amb formatge de cabra, bacó i ceba</div>
+          </div>
+          <div class="menu-item-price">7,70€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nº23 Hamburguesa Mixta de 1 Carne y 1 Pollo, Huevo y Beicon</div>
+            <div class="menu-item-desc">Hamburguesa mixta de carn i pollastre amb ou i bacó</div>
+          </div>
+          <div class="menu-item-price">10,00€</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SANDWICH / MIXTOS -->
+  <section class="menu-section" id="sandwich">
+    <div class="menu-section-inner">
+      <div class="menu-section-header reveal">
+        <span class="section-label">Sándwich</span>
+        <h2>Sándwich / <span>Mixtos</span></h2>
+      </div>
+      <div class="menu-items">
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">S. Bikini de Jamón Dulce y Queso</div>
+            <div class="menu-item-desc">Mixt de pernil dolç i formatge</div>
+          </div>
+          <div class="menu-item-price">4,00€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">S. Mallorquín</div>
+            <div class="menu-item-desc">Mallorquí</div>
+          </div>
+          <div class="menu-item-price">4,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">S. Bikini de la Casa</div>
+            <div class="menu-item-desc">Mixt de la casa (pernil, formatge, llom, bacó i ou)</div>
+          </div>
+          <div class="menu-item-price">6,20€</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RACIONES CALIENTES -->
+  <section class="menu-section" id="raciones">
+    <div class="menu-section-inner">
+      <div class="menu-section-header reveal">
+        <span class="section-label">Para Compartir</span>
+        <h2>Raciones <span>Calientes</span></h2>
+        <p>Racions calents</p>
+      </div>
+      <div class="menu-items">
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Morros Fritos</div>
+          </div>
+          <div class="menu-item-price">6,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Callos a la Madrileña</div>
+            <div class="menu-item-desc">Tripes a la madrilenya</div>
+          </div>
+          <div class="menu-item-price">9,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Queso Provolone</div>
+            <div class="menu-item-desc">Formatge Provolone</div>
+          </div>
+          <div class="menu-item-price">6,00€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Champiñones a la Plancha</div>
+            <div class="menu-item-desc">Xampinyons a la planxa</div>
+          </div>
+          <div class="menu-item-price">6,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Jamón Canario</div>
+            <div class="menu-item-desc">Lacón</div>
+          </div>
+          <div class="menu-item-price">8,00€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Montaditos de Lomo</div>
+            <div class="menu-item-desc">Barquetes de llom</div>
+          </div>
+          <div class="menu-item-price">5,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Calamares a la Romana</div>
+            <div class="menu-item-desc">Calamars a la romana</div>
+          </div>
+          <div class="menu-item-price">7,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Chocos</div>
+            <div class="menu-item-desc">Rabes de calamar</div>
+          </div>
+          <div class="menu-item-price">7,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Croquetas de Cocido (8u)</div>
+            <div class="menu-item-desc">Croquetes de carn d'olla</div>
+          </div>
+          <div class="menu-item-price">9,00€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Tallarinas</div>
+            <div class="menu-item-desc">Pichinas</div>
+          </div>
+          <div class="menu-item-price">10,00€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Pinchos con Pan y Tomate</div>
+            <div class="menu-item-desc">Pinxos amb pa i tomàquet</div>
+          </div>
+          <div class="menu-item-price">9,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Patatas Fritas Naturales</div>
+            <div class="menu-item-desc">Patates fregides</div>
+          </div>
+          <div class="menu-item-price">5,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Cazón en Adobo</div>
+            <div class="menu-item-desc">Caella en adob</div>
+          </div>
+          <div class="menu-item-price">6,80€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Nuggets de Pollo (8u)</div>
+            <div class="menu-item-desc">Nuggets de pollastre</div>
+          </div>
+          <div class="menu-item-price">6,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Alitas de Pollo (10u)</div>
+            <div class="menu-item-desc">Aletes de pollastre</div>
+          </div>
+          <div class="menu-item-price">8,70€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Pies de Cerdo</div>
+            <div class="menu-item-desc">Peus de porc</div>
+          </div>
+          <div class="menu-item-price">10,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Oreja a la Gallega</div>
+            <div class="menu-item-desc">Orella a la gallega</div>
+          </div>
+          <div class="menu-item-price">6,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Almejas</div>
+            <div class="menu-item-desc">Cloïsses</div>
+          </div>
+          <div class="menu-item-price">8,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Buñuelos de Bacalao</div>
+            <div class="menu-item-desc">Bunyols de bacallà</div>
+          </div>
+          <div class="menu-item-price">6,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Carne en Salsa</div>
+            <div class="menu-item-desc">Carn amb salsa</div>
+          </div>
+          <div class="menu-item-price">8,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Boquerones Fritos</div>
+            <div class="menu-item-desc">Seitons fregits</div>
+          </div>
+          <div class="menu-item-price">7,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Tempura de Verduras</div>
+            <div class="menu-item-desc">Tempura verdura</div>
+          </div>
+          <div class="menu-item-price">7,00€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Galtas</div>
+            <div class="menu-item-desc">Gallets de porc</div>
+          </div>
+          <div class="menu-item-price">10,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Pulpo a la Brasa</div>
+            <div class="menu-item-desc">Pop brasa</div>
+          </div>
+          <div class="menu-item-price">15,00€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Codillo</div>
+            <div class="menu-item-desc">Coixí de porc</div>
+          </div>
+          <div class="menu-item-price">10,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Choricitos Picantes</div>
+            <div class="menu-item-desc">Xoricets picants</div>
+          </div>
+          <div class="menu-item-price">8,00€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Mejillones al Vapor o Marinera</div>
+            <div class="menu-item-desc">Musclos</div>
+          </div>
+          <div class="menu-item-price">8,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Caracoles con Salsa Picante</div>
+            <div class="menu-item-desc">Cargols picants</div>
+          </div>
+          <div class="menu-item-price">8,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Chuletón de Ternera 350g</div>
+            <div class="menu-item-desc">Xuletó de vedella</div>
+          </div>
+          <div class="menu-item-price">16,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Albóndigas a la Cerveza</div>
+            <div class="menu-item-desc">Mandonguilles</div>
+          </div>
+          <div class="menu-item-price">8,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Torrezno de Soria</div>
+            <div class="menu-item-desc">Torrezno de Soria</div>
+          </div>
+          <div class="menu-item-price">8,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Churrasco 2 Piezas</div>
+            <div class="menu-item-desc">Xurrasco</div>
+          </div>
+          <div class="menu-item-price">14,00€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Butifarra con Mongetas</div>
+            <div class="menu-item-desc">Botifarra amb mongetes</div>
+          </div>
+          <div class="menu-item-price">9,00€</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOCADILLOS -->
+  <section class="menu-section" id="bocadillos">
+    <div class="menu-section-inner">
+      <div class="menu-section-header reveal">
+        <span class="section-label">Entrepan</span>
+        <h2>Bocadillos <span>Calientes</span></h2>
+        <p>Entrepans calents</p>
+      </div>
+      <div class="menu-items">
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Beicon Solo o con Queso</div>
+            <div class="menu-item-desc">Bacon o amb formatge</div>
+          </div>
+          <div class="menu-item-price">4,20€ / 4,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Lomo Solo o con Queso</div>
+            <div class="menu-item-desc">Llom o amb formatge</div>
+          </div>
+          <div class="menu-item-price">4,30€ / 4,60€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Tortilla al Gusto o de Patatas</div>
+            <div class="menu-item-desc">Truita al gust o de patates</div>
+          </div>
+          <div class="menu-item-price">4,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Salchichas del País</div>
+            <div class="menu-item-desc">Salsitxes del país</div>
+          </div>
+          <div class="menu-item-price">4,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Butifarra con Alioli</div>
+            <div class="menu-item-desc">Botifarra amb all i oli</div>
+          </div>
+          <div class="menu-item-price">6,00€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Lomo, Beicon y Queso</div>
+            <div class="menu-item-desc">Llom, bacó i formatge</div>
+          </div>
+          <div class="menu-item-price">6,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Calamares con Mayonesa</div>
+            <div class="menu-item-desc">Calamars amb maionesa</div>
+          </div>
+          <div class="menu-item-price">4,80€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. de Bistec</div>
+            <div class="menu-item-desc">De bistec</div>
+          </div>
+          <div class="menu-item-price">6,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Sobrasada</div>
+            <div class="menu-item-desc">Sobrassada</div>
+          </div>
+          <div class="menu-item-price">4,80€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Lomo, Pimiento y Queso</div>
+            <div class="menu-item-desc">Llom, pebrot i formatge</div>
+          </div>
+          <div class="menu-item-price">5,60€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Pechuga de Pollo o con Queso</div>
+            <div class="menu-item-desc">Pit de pollastre o amb formatge</div>
+          </div>
+          <div class="menu-item-price">4,30€ / 4,60€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Pechuga de Pollo con Beicon y Huevo</div>
+            <div class="menu-item-desc">Pit de pollastre amb bacó i ou</div>
+          </div>
+          <div class="menu-item-price">6,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Serranito (Jamón Serrano, Lomo y Pimiento)</div>
+            <div class="menu-item-desc">Serranito (pernil serrà, llom i pebrot)</div>
+          </div>
+          <div class="menu-item-price">6,70€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Pinchos</div>
+            <div class="menu-item-desc">Pinxos</div>
+          </div>
+          <div class="menu-item-price">5,80€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Pechuga de Pollo con Beicon y Roquefort</div>
+            <div class="menu-item-desc">Pit de pollastre amb bacó i Rocafort</div>
+          </div>
+          <div class="menu-item-price">6,30€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Vegetal de Pollo o Atún, Lechuga, Queso, Tomate y Mayonesa</div>
+            <div class="menu-item-desc">Vegetal de pollastre amb enciam, formatge, tomàquet i maionesa</div>
+          </div>
+          <div class="menu-item-price">6,70€</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VARIOS -->
+  <section class="menu-section" id="varios">
+    <div class="menu-section-inner">
+      <div class="menu-section-header reveal">
+        <span class="section-label">Frankfurts, Cervela o Pikantwurst</span>
+        <h2>Bocadillos <span>de Salchicha</span></h2>
+      </div>
+      <div class="menu-items">
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Frankfurt</div>
+          </div>
+          <div class="menu-item-price">4,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Frankfurt Cebolla o Cebolla Caramelizada</div>
+            <div class="menu-item-desc">Frankfurt ceba o ceba caramel·litzada</div>
+          </div>
+          <div class="menu-item-price">4,60€ / 4,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Frankfurt con Beicon, Queso y Pimiento</div>
+            <div class="menu-item-desc">Frankfurt amb bacó, formatge i pebrot</div>
+          </div>
+          <div class="menu-item-price">5,20€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Cervela</div>
+          </div>
+          <div class="menu-item-price">4,80€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Pikantwurst</div>
+          </div>
+          <div class="menu-item-price">4,70€</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOCADILLOS FRIOS -->
+  <section class="menu-section" id="frios">
+    <div class="menu-section-inner">
+      <div class="menu-section-header reveal">
+        <span class="section-label">Fríos</span>
+        <h2>Bocadillos <span>Fríos</span></h2>
+        <p>Entrepans freds</p>
+      </div>
+      <div class="menu-items">
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Jamón Serrano</div>
+            <div class="menu-item-desc">Pernil serrano</div>
+          </div>
+          <div class="menu-item-price">4,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Queso Manchego</div>
+            <div class="menu-item-desc">Formatge manxec</div>
+          </div>
+          <div class="menu-item-price">4,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Atún</div>
+            <div class="menu-item-desc">Tonyina</div>
+          </div>
+          <div class="menu-item-price">4,00€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Longaniza o Fuet</div>
+            <div class="menu-item-desc">Llonganissa o fuet</div>
+          </div>
+          <div class="menu-item-price">3,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">B. Anchoas, Atún y Olivas</div>
+            <div class="menu-item-desc">Anxoves, tonyina i olives</div>
+          </div>
+          <div class="menu-item-price">5,60€</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RACIONES FRIAS -->
+  <section class="menu-section" id="raciones-frias">
+    <div class="menu-section-inner">
+      <div class="menu-section-header reveal">
+        <span class="section-label">Frías</span>
+        <h2>Raciones <span>Frías</span></h2>
+        <p>Racions fredes</p>
+      </div>
+      <div class="menu-items">
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Olivas Rellenas o Partidas</div>
+            <div class="menu-item-desc">Olives farcides</div>
+          </div>
+          <div class="menu-item-price">2,00€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Ensaladilla Rusa</div>
+            <div class="menu-item-desc">Amanida russa</div>
+          </div>
+          <div class="menu-item-price">6,80€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">De Queso Manchego 3 Leches o Jamón Serrano</div>
+            <div class="menu-item-desc">De formatge amb enciam, tomàquet, olives i maionesa</div>
+          </div>
+          <div class="menu-item-price">7,50€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Langostinos Cocidos</div>
+          </div>
+          <div class="menu-item-price">6,90€</div>
+        </div>
+        <div class="menu-item reveal">
+          <div class="menu-item-info">
+            <div class="menu-item-name">De Anchoas 8 Filetes</div>
+          </div>
+          <div class="menu-item-price">8,00€</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUGERENCIAS -->
+  <section class="menu-section" id="sugerencias">
+    <div class="menu-section-inner">
+      <div class="menu-section-header reveal">
+        <span class="section-label">Del Día</span>
+        <h2><span>Sugerencias</span></h2>
+        <p>Sugerencias sujetas a disponibilidad</p>
+      </div>
+      <div class="sugerencias-list reveal">
+        <span class="sugerencia-tag">Boquerón Frito</span>
+        <span class="sugerencia-tag">Albóndigas a la Cerveza</span>
+        <span class="sugerencia-tag">Jamón Canario (Lacón)</span>
+        <span class="sugerencia-tag">Langostinos Cocidos</span>
+        <span class="sugerencia-tag">Tallarinas (Pichinas)</span>
+        <span class="sugerencia-tag">Oreja a la Gallega</span>
+        <span class="sugerencia-tag">Carne en Salsa</span>
+        <span class="sugerencia-tag">Cazón Adobado</span>
+        <span class="sugerencia-tag">Pulpo a la Brasa</span>
+        <span class="sugerencia-tag">Torrezno de Soria</span>
+        <span class="sugerencia-tag">Choricitos Picantes</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-social">
+      <a href="#" aria-label="Instagram">IG</a>
+      <a href="#" aria-label="TikTok">TK</a>
+      <a href="#" aria-label="Twitter">X</a>
+      <a href="#" aria-label="Facebook">FB</a>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 Woodpecker's Gavà. Todos los derechos reservados.</p>
+      <p><a href="wood.html">Volver a la web</a> &middot; Av. Eramprunyà 16, Gavà &middot; <a href="tel:+34931234567">+34 931 234 567</a></p>
+    </div>
+  </footer>
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    const hamburgerMenu = document.getElementById('hamburgerMenu');
+    const mobileNav = document.getElementById('mobileNav');
+
+    hamburgerMenu.addEventListener('click', () => {
+      hamburgerMenu.classList.toggle('active');
+      mobileNav.classList.toggle('open');
+      document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : '';
+    });
+
+    function closeMobileNav() {
+      hamburgerMenu.classList.remove('active');
+      mobileNav.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

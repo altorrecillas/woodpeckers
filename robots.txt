@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /old/
+Disallow: /img/_unused/
+
+Sitemap: https://woodpeckers.es/sitemap.xml

@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0e0a08" />
+<meta name="description" content="Carta de Woodpecker's Gavà — hamburguesas, bocadillos, frankfurts, raciones, tapas, cervezas y mucho más. Todos nuestros platos con sus precios, en español y catalán." />
+<meta property="og:title" content="Carta · Woodpecker's Gavà" />
+<meta property="og:description" content="Hamburguesas, bocadillos, raciones, cervezas y tapas. Toda nuestra carta con precios." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://woodpeckers.es/carta.html" />
+<meta property="og:image" content="https://woodpeckers.es/img/hero.webp" />
+<meta property="og:locale" content="es_ES" />
+<meta property="og:site_name" content="Woodpecker's Gavà" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://woodpeckers.es/carta.html" />
+<title>Carta · Woodpecker's Gavà</title>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍔%3C/text%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="img/hero.webp" fetchpriority="high" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css" />
+
+<style>
+/* Estilos especificos de la carta (el resto esta en css/base.css) */
+
+body::before {
+  content: "";
+  position: fixed; inset: 0; pointer-events: none; z-index: 999;
+  opacity: .06; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ===== LANG TOGGLE (en la nav) ===== */
+/* Empuja los enlaces (y, tras ellos, el selector) a la derecha,
+   separandolos del logo. En movil los enlaces se ocultan y es el
+   propio selector el que se va a la derecha (ver media query). */
+.nav > nav { margin-left: auto; }
+.lang-toggle {
+  display: inline-flex; align-items: center; gap: .15rem;
+  margin-left: 1.5rem; margin-right: .85rem;
+  padding: .25rem; border-radius: 999px;
+  border: 1px solid var(--border-strong); background: rgba(254,245,231,.04);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  z-index: 160; position: relative; flex-shrink: 0;
+}
+.lang-toggle .globe { font-size: .9rem; padding: 0 .3rem 0 .4rem; opacity: .8; }
+.lang-opt {
+  font-size: .78rem; font-weight: 600; letter-spacing: .02em;
+  color: var(--cream-dim); padding: .3rem .65rem; border-radius: 999px;
+  transition: color .3s, background .3s;
+}
+.lang-opt.active { color: var(--bg); background: var(--grad-mustard); }
+@media (max-width: 900px) { .lang-toggle { margin-left: auto; } }
+
+/* ===== HERO ===== */
+.carta-hero {
+  position: relative;
+  padding: calc(var(--nav-h) + clamp(3rem, 9vw, 6rem)) clamp(1.25rem, 4vw, 2rem) clamp(2rem, 5vw, 3.5rem);
+  text-align: center; overflow: hidden;
+}
+.carta-hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background:
+    linear-gradient(180deg, rgba(14,10,8,.78) 0%, rgba(14,10,8,.86) 55%, var(--bg) 100%),
+    url('img/hero.webp') center/cover no-repeat;
+  transform: scale(1.05);
+}
+.carta-hero-inner { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; }
+.carta-back { display: inline-flex; align-items: center; gap: .4rem; font-size: .85rem; color: var(--cream-dim); margin-bottom: 1rem; transition: color .3s; }
+.carta-back:hover { color: var(--mustard); }
+.carta-hero h1 { font-size: clamp(2.4rem, 9vw, 4.4rem); font-weight: 500; margin: .7rem 0 .9rem; }
+.carta-hero h1 em { font-style: normal; }
+.carta-hero p { color: var(--cream-dim); max-width: 560px; margin: 0 auto; font-size: clamp(.98rem, 2.6vw, 1.1rem); }
+.carta-note {
+  margin-top: 1.4rem; display: inline-flex; align-items: center; gap: .5rem;
+  font-size: .8rem; color: var(--cream-dim);
+  padding: .5rem 1rem; border: 1px solid var(--border); border-radius: 999px;
+  background: rgba(254,245,231,.03);
+}
+
+/* ===== STICKY CATEGORY NAV ===== */
+.cat-nav {
+  position: sticky; top: var(--nav-h); z-index: 120;
+  background: rgba(14,10,8,.82);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.cat-nav-inner {
+  max-width: var(--max); margin: 0 auto;
+  display: flex; gap: .55rem; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  padding: .8rem clamp(1.25rem, 4vw, 2rem);
+  scrollbar-width: none;
+}
+.cat-nav-inner::-webkit-scrollbar { display: none; }
+.cat-chip {
+  display: inline-flex; align-items: center; gap: .45rem;
+  white-space: nowrap; flex-shrink: 0;
+  font-size: .85rem; font-weight: 500; color: var(--cream-dim);
+  padding: .55rem 1rem; border-radius: 999px;
+  border: 1px solid var(--border); background: rgba(254,245,231,.03);
+  transition: color .3s, border-color .3s, background .3s, transform .3s var(--ease-spring);
+}
+.cat-chip > span:first-child { font-size: 1rem; }
+.cat-chip:hover { color: var(--cream); border-color: var(--mustard); background: rgba(252,191,73,.08); transform: translateY(-2px); }
+.cat-chip.active { color: var(--bg); background: var(--grad-mustard); border-color: transparent; font-weight: 600; }
+
+/* ===== MENU ===== */
+.menu-wrap {
+  max-width: 980px; margin: 0 auto;
+  padding: clamp(2.5rem, 6vw, 4rem) clamp(1.25rem, 4vw, 2rem) clamp(4rem, 9vw, 6rem);
+}
+.menu-cat { scroll-margin-top: calc(var(--nav-h) + 70px); margin-bottom: clamp(2.8rem, 6vw, 4.2rem); }
+.menu-cat:last-child { margin-bottom: 0; }
+
+.cat-head {
+  display: flex; align-items: center; gap: 1rem;
+  padding-bottom: 1.1rem; margin-bottom: 1.4rem;
+  border-bottom: 1px solid var(--border-strong);
+}
+.cat-emoji {
+  flex-shrink: 0; width: 58px; height: 58px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.7rem; border-radius: 16px;
+  background: rgba(252,191,73,.1); border: 1px solid var(--border);
+}
+.cat-head h2 { font-size: clamp(1.5rem, 5vw, 2.1rem); font-weight: 500; }
+.cat-head p { color: var(--cream-dim); font-size: .9rem; margin-top: .2rem; }
+
+.dish-list {
+  list-style: none;
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: .15rem 2.5rem;
+}
+.dish {
+  display: flex; align-items: baseline; gap: .5rem;
+  padding: .7rem .35rem; border-radius: var(--radius-sm);
+  transition: background .3s, padding-left .3s var(--ease-out);
+}
+.dish:hover { background: rgba(254,245,231,.04); padding-left: .7rem; }
+.dish-name { font-size: .98rem; color: var(--cream); font-weight: 400; line-height: 1.35; }
+.dish-dots {
+  flex: 1; align-self: center; min-width: 14px;
+  border-bottom: 1.5px dotted var(--border-strong);
+  transform: translateY(-1px);
+}
+.dish-price {
+  flex-shrink: 0; font-family: 'Fraunces', serif;
+  font-size: 1.05rem; font-weight: 500; color: var(--mustard);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.dish:hover .dish-price { color: var(--cream); }
+
+/* back to top */
+.to-top {
+  position: fixed; right: clamp(1rem, 4vw, 2rem); bottom: calc(1.5rem + var(--safe-bottom));
+  z-index: 130; width: 48px; height: 48px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--ketchup); color: var(--cream);
+  box-shadow: 0 6px 20px rgba(230,57,70,.35);
+  opacity: 0; visibility: hidden; transform: translateY(12px);
+  transition: opacity .4s, visibility .4s, transform .4s var(--ease-spring), background .3s;
+}
+.to-top.show { opacity: 1; visibility: visible; transform: none; }
+.to-top:hover { background: var(--mustard); color: var(--bg); transform: translateY(-3px); }
+
+@media (max-width: 720px) {
+  .dish-list { grid-template-columns: 1fr; gap: 0; }
+  .cat-emoji { width: 48px; height: 48px; font-size: 1.4rem; }
+}
+
+@media print {
+  .cat-nav, .to-top, .carta-back, body::before, .carta-note, .lang-toggle { display: none; }
+  .carta-hero-bg { display: none; }
+  .dish-price { color: #000; }
+  body { color: #000; background: #fff; }
+}
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#carta-main">Saltar a la carta</a>
+
+<!-- SCROLL PROGRESS -->
+<div class="scroll-progress" aria-hidden="true"><div class="scroll-progress-bar"></div></div>
+
+<!-- LOADER -->
+<div id="loader" aria-hidden="true">
+  <div class="loader-logo">
+    <span>Wood</span><span>pecker</span><span>'</span><span>s</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<header class="nav" id="nav" role="banner">
+  <a href="index.html" class="brand" aria-label="Woodpecker's Gava - Inicio">
+    Wood<em>pecker</em><span class="apos">'</span>s
+  </a>
+  <nav aria-label="Navegacion principal">
+    <ul class="nav-links">
+      <li><a href="index.html#historia">Nosotros</a></li>
+      <li><a href="carta.html" class="active" aria-current="page">Carta</a></li>
+      <li><a href="arcade.html">Arcade</a></li>
+      <li><a href="petanca.html">Petanca</a></li>
+      <li><a href="index.html#galeria">Galeria</a></li>
+      <li><a href="index.html#visita">Contacto</a></li>
+    </ul>
+  </nav>
+  <div class="lang-toggle" id="langToggle" role="group" aria-label="Idioma de la carta / Idioma de la carta">
+    <span class="globe" aria-hidden="true">&#127760;</span>
+    <button class="lang-opt" type="button" data-lang="es" aria-pressed="true">ES</button>
+    <button class="lang-opt" type="button" data-lang="ca" aria-pressed="false">CA</button>
+  </div>
+  <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileMenu" type="button">
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </button>
+</header>
+
+<!-- MOBILE MENU -->
+<nav class="mobile-menu" id="mobileMenu" aria-label="Menu de navegacion movil" aria-hidden="true">
+  <div class="mobile-menu-nav">
+    <a href="index.html" class="mobile-menu-item">
+      <span class="mobile-menu-icon hero-icon" aria-hidden="true">&#127968;</span>
+      <div class="mobile-menu-text"><h3>Inicio</h3><p>Volver a Woodpecker's</p></div>
+      <span class="mobile-menu-arrow" aria-hidden="true">&rarr;</span>
+    </a>
+    <a href="carta.html" class="mobile-menu-item">
+      <span class="mobile-menu-icon cart-icon" aria-hidden="true">&#127828;</span>
+      <div class="mobile-menu-text"><h3>Carta</h3><p>Todos nuestros platos y precios</p></div>
+      <span class="mobile-menu-arrow" aria-hidden="true">&rarr;</span>
+    </a>
+    <a href="arcade.html" class="mobile-menu-item">
+      <span class="mobile-menu-icon arcade-icon" aria-hidden="true">&#128377;&#65039;</span>
+      <div class="mobile-menu-text"><h3>Arcade</h3><p>Juega mientras esperas</p></div>
+      <span class="mobile-menu-arrow" aria-hidden="true">&rarr;</span>
+    </a>
+    <a href="petanca.html" class="mobile-menu-item">
+      <span class="mobile-menu-icon petanca-icon" aria-hidden="true">&#127919;</span>
+      <div class="mobile-menu-text"><h3>Petanca</h3><p>Apunta, lanza y gana la mene</p></div>
+      <span class="mobile-menu-arrow" aria-hidden="true">&rarr;</span>
+    </a>
+    <a href="index.html#galeria" class="mobile-menu-item">
+      <span class="mobile-menu-icon gallery-icon" aria-hidden="true">&#128247;</span>
+      <div class="mobile-menu-text"><h3>Galeria</h3><p>Momentos en imagenes</p></div>
+      <span class="mobile-menu-arrow" aria-hidden="true">&rarr;</span>
+    </a>
+    <a href="index.html#visita" class="mobile-menu-item">
+      <span class="mobile-menu-icon contact-icon" aria-hidden="true">&#128205;</span>
+      <div class="mobile-menu-text"><h3>Contacto</h3><p>Donde encontrarnos</p></div>
+      <span class="mobile-menu-arrow" aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="carta-hero">
+  <div class="carta-hero-bg" aria-hidden="true"></div>
+  <div class="carta-hero-inner">
+    <a href="index.html" class="carta-back i18n" data-es="&larr; Volver al inicio" data-ca="&larr; Tornar a l'inici">&larr; Volver al inicio</a>
+    <span class="eyebrow i18n" data-es="La carta de Woodpecker's" data-ca="La carta del Woodpecker's">La carta de Woodpecker's</span>
+    <h1 class="i18n-html" data-es="Todo lo que &lt;em class=&quot;grad-text-mustard&quot;&gt;cocinamos&lt;/em&gt;, a la vista." data-ca="Tot el que &lt;em class=&quot;grad-text-mustard&quot;&gt;cuinem&lt;/em&gt;, a la vista.">Todo lo que <em class="grad-text-mustard">cocinamos</em>, a la vista.</h1>
+    <p class="i18n" data-es="Hamburguesas, bocadillos recien hechos, raciones para compartir y la bebida bien fria. Esta es nuestra carta completa, con todos los precios." data-ca="Hamburgueses, entrepans acabats de fer, racions per compartir i la beguda ben freda. Aquesta es la nostra carta completa, amb tots els preus.">Hamburguesas, bocadillos recien hechos, raciones para compartir y la bebida bien fria. Esta es nuestra carta completa, con todos los precios.</p>
+    <div class="carta-note"><span aria-hidden="true">&#9432;</span> <span class="i18n" data-es="Precios con IVA incluido &middot; Pan con tomate y suplementos aparte" data-ca="Preus amb IVA inclos &middot; Pa amb tomaquet i suplements a part">Precios con IVA incluido &middot; Pan con tomate y suplementos aparte</span></div>
+  </div>
+</section>
+
+<!-- STICKY CATEGORY NAV -->
+<nav class="cat-nav" aria-label="Categorias de la carta">
+  <div class="cat-nav-inner" id="catNav">
+      <a href="#hamburguesas" class="cat-chip"><span aria-hidden="true">🍔</span><span class="i18n" data-es="Hamburguesas" data-ca="Hamburgueses">Hamburguesas</span></a>
+      <a href="#b-calientes" class="cat-chip"><span aria-hidden="true">🥖</span><span class="i18n" data-es="Bocadillos calientes" data-ca="Entrepans calents">Bocadillos calientes</span></a>
+      <a href="#b-frios" class="cat-chip"><span aria-hidden="true">🥪</span><span class="i18n" data-es="Bocadillos fríos" data-ca="Entrepans freds">Bocadillos fríos</span></a>
+      <a href="#sandwich" class="cat-chip"><span aria-hidden="true">🥪</span><span class="i18n" data-es="Sándwiches" data-ca="Sandvitxos">Sándwiches</span></a>
+      <a href="#frankfurts" class="cat-chip"><span aria-hidden="true">🌭</span><span class="i18n" data-es="Frankfurts" data-ca="Frankfurts">Frankfurts</span></a>
+      <a href="#r-calientes" class="cat-chip"><span aria-hidden="true">🍤</span><span class="i18n" data-es="Raciones calientes" data-ca="Racions calentes">Raciones calientes</span></a>
+      <a href="#r-frias" class="cat-chip"><span aria-hidden="true">🥗</span><span class="i18n" data-es="Raciones frías" data-ca="Racions fredes">Raciones frías</span></a>
+      <a href="#cervezas" class="cat-chip"><span aria-hidden="true">🍺</span><span class="i18n" data-es="Cervezas" data-ca="Cerveses">Cervezas</span></a>
+      <a href="#refrescos" class="cat-chip"><span aria-hidden="true">🥤</span><span class="i18n" data-es="Refrescos y vinos" data-ca="Refrescos i vins">Refrescos y vinos</span></a>
+      <a href="#cafes" class="cat-chip"><span aria-hidden="true">☕</span><span class="i18n" data-es="Cafés e infusiones" data-ca="Cafès i infusions">Cafés e infusiones</span></a>
+      <a href="#combinados" class="cat-chip"><span aria-hidden="true">🥃</span><span class="i18n" data-es="Combinados y copas" data-ca="Combinats i copes">Combinados y copas</span></a>
+      <a href="#varios" class="cat-chip"><span aria-hidden="true">🫒</span><span class="i18n" data-es="Para picar y varios" data-ca="Per picar i varis">Para picar y varios</span></a>
+  </div>
+</nav>
+
+<!-- MENU -->
+<main id="carta-main" class="menu-wrap">
+    <section class="menu-cat" id="hamburguesas">
+      <div class="cat-head reveal blur">
+        <span class="cat-emoji" aria-hidden="true">🍔</span>
+        <div>
+          <h2 class="i18n" data-es="Hamburguesas" data-ca="Hamburgueses">Hamburguesas</h2>
+          <p class="i18n" data-es="Nuestra especialidad: carne o pollo, pan recién tostado." data-ca="La nostra especialitat: carn o pollastre, pa acabat de torrar.">Nuestra especialidad: carne o pollo, pan recién tostado.</p>
+        </div>
+      </div>
+      <ul class="dish-list">
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 1 · Hamburguesa con queso" data-ca="Hamburguesa amb formatge">Nº 1 · Hamburguesa con queso</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 2 · Hamburguesa con cebolla" data-ca="Hamburguesa amb ceba">Nº 2 · Hamburguesa con cebolla</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 3 · Hamburguesa con queso y cebolla" data-ca="Hamburguesa amb formatge i ceba">Nº 3 · Hamburguesa con queso y cebolla</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 4 · Hamburguesa con pepinillo, cebolla, lechuga y beicon" data-ca="Hamburguesa amb cogombre, ceba, enciam i bacó">Nº 4 · Hamburguesa con pepinillo, cebolla, lechuga y beicon</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">5,60 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 5 · Hamburguesa con queso, cebolla y pimiento" data-ca="Hamburguesa amb formatge, ceba i pebrot">Nº 5 · Hamburguesa con queso, cebolla y pimiento</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">5,20 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 6 · Hamburguesa con queso, jamón dulce, cebolla, tomate y lechuga" data-ca="Hamburguesa amb formatge, pernil dolç, ceba, tomàquet i enciam">Nº 6 · Hamburguesa con queso, jamón dulce, cebolla, tomate y lechuga</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">5,80 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 7 · Hamburguesa con huevo, beicon y lomo" data-ca="Hamburguesa amb ou, bacó i llom">Nº 7 · Hamburguesa con huevo, beicon y lomo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">7,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 8 · Hamburguesa con queso, jamón dulce, lechuga y tortilla de patatas" data-ca="Hamburguesa amb formatge, pernil dolç, enciam i truita de patata">Nº 8 · Hamburguesa con queso, jamón dulce, lechuga y tortilla de patatas</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 9 · Hamburguesa con atún, queso, lechuga, tomate y cebolla" data-ca="Hamburguesa amb tonyina, formatge, enciam, tomàquet i ceba">Nº 9 · Hamburguesa con atún, queso, lechuga, tomate y cebolla</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">5,80 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 10 · Doble con beicon, lechuga, queso, jamón dulce y huevo" data-ca="Dues hamburgueses amb bacó, enciam, formatge, pernil dolç i ou">Nº 10 · Doble con beicon, lechuga, queso, jamón dulce y huevo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">10,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 11 · Doble con beicon, lomo, tomate, lechuga, queso, jamón dulce y tortilla" data-ca="Dues hamburgueses amb bacó, llom, tomàquet, enciam, formatge, pernil dolç i truita">Nº 11 · Doble con beicon, lomo, tomate, lechuga, queso, jamón dulce y tortilla</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">11,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 15 · Hamburguesa con roquefort y beicon" data-ca="Hamburguesa amb rocafort i bacó">Nº 15 · Hamburguesa con roquefort y beicon</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 16 · Hamburguesa 200g de ternera con huevo y beicon" data-ca="Hamburguesa 200g de vedella amb ou i bacó">Nº 16 · Hamburguesa 200g de ternera con huevo y beicon</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">9,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 17 · Tropical con piña, tomate, lechuga y pepinillo" data-ca="Hamburguesa tropical amb pinya, tomàquet, enciam i cogombre">Nº 17 · Tropical con piña, tomate, lechuga y pepinillo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 18 · Serrana con jamón serrano, pimiento y lomo" data-ca="Hamburguesa serrana amb pernil serrà, pebrot i llom">Nº 18 · Serrana con jamón serrano, pimiento y lomo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 19 · Hot con beicon, jalapeños, queso y salsa pepper" data-ca="Hamburguesa hot amb bacó, jalapenys, formatge i salsa pepper">Nº 19 · Hot con beicon, jalapeños, queso y salsa pepper</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 20 · Diablo con picante, cebolla y queso" data-ca="Hamburguesa diable amb picant, ceba i formatge">Nº 20 · Diablo con picante, cebolla y queso</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,80 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 21 · Con cebolla caramelizada, beicon y queso" data-ca="Hamburguesa amb ceba caramel·litzada, bacó i formatge">Nº 21 · Con cebolla caramelizada, beicon y queso</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,40 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 22 · Con queso de cabra, beicon y cebolla caramelizada" data-ca="Hamburguesa amb formatge de cabra, bacó i ceba caramel·litzada">Nº 22 · Con queso de cabra, beicon y cebolla caramelizada</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">7,70 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nº 23 · Mixta de carne y pollo con huevo y beicon" data-ca="Hamburguesa mixta de carn i pollastre amb ou i bacó">Nº 23 · Mixta de carne y pollo con huevo y beicon</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">10,00 €</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="menu-cat" id="b-calientes">
+      <div class="cat-head reveal blur">
+        <span class="cat-emoji" aria-hidden="true">🥖</span>
+        <div>
+          <h2 class="i18n" data-es="Bocadillos calientes" data-ca="Entrepans calents">Bocadillos calientes</h2>
+          <p class="i18n" data-es="Recién hechos a la plancha, con pan crujiente." data-ca="Acabats de fer a la planxa, amb pa cruixent.">Recién hechos a la plancha, con pan crujiente.</p>
+        </div>
+      </div>
+      <ul class="dish-list">
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de bistec" data-ca="Entrepà de bistec">Bocadillo de bistec</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de calamares con mayonesa" data-ca="Entrepà de calamars amb maionesa">Bocadillo de calamares con mayonesa</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,80 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de pinchos" data-ca="Entrepà de pinxos">Bocadillo de pinchos</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">5,80 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de pechuga de pollo con beicon y huevo" data-ca="Entrepà de pit de pollastre amb bacó i ou">Bocadillo de pechuga de pollo con beicon y huevo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de pechuga de pollo con beicon y roquefort" data-ca="Entrepà de pit de pollastre amb bacó i rocafort">Bocadillo de pechuga de pollo con beicon y roquefort</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de pechuga de pollo" data-ca="Entrepà de pit de pollastre">Bocadillo de pechuga de pollo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de pechuga de pollo con queso" data-ca="Entrepà de pit de pollastre amb formatge">Bocadillo de pechuga de pollo con queso</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,60 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de beicon" data-ca="Entrepà de bacó">Bocadillo de beicon</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,20 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de beicon con queso" data-ca="Entrepà de bacó amb formatge">Bocadillo de beicon con queso</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de butifarra con alioli" data-ca="Entrepà de botifarra amb all i oli">Bocadillo de butifarra con alioli</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de lomo" data-ca="Entrepà de llom">Bocadillo de lomo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de lomo, beicon y queso" data-ca="Entrepà de llom, bacó i formatge">Bocadillo de lomo, beicon y queso</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de lomo, pimiento y queso" data-ca="Entrepà de llom, pebrot i formatge">Bocadillo de lomo, pimiento y queso</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">5,60 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de lomo con queso" data-ca="Entrepà de llom amb formatge">Bocadillo de lomo con queso</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,60 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de salchichas del país" data-ca="Entrepà de salsitxes del país">Bocadillo de salchichas del país</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo serranito (jamón serrano, lomo y pimiento)" data-ca="Entrepà serranito (pernil serrà, llom i pebrot)">Bocadillo serranito (jamón serrano, lomo y pimiento)</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,70 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de sobrasada" data-ca="Entrepà de sobrassada">Bocadillo de sobrasada</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,80 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de tortilla al gusto" data-ca="Entrepà de truita al gust">Bocadillo de tortilla al gusto</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo vegetal de pollo (lechuga, queso, tomate y mayonesa)" data-ca="Entrepà vegetal de pollastre (enciam, formatge, tomàquet i maionesa)">Bocadillo vegetal de pollo (lechuga, queso, tomate y mayonesa)</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,70 €</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="menu-cat" id="b-frios">
+      <div class="cat-head reveal blur">
+        <span class="cat-emoji" aria-hidden="true">🥪</span>
+        <div>
+          <h2 class="i18n" data-es="Bocadillos fríos" data-ca="Entrepans freds">Bocadillos fríos</h2>
+          <p class="i18n" data-es="Embutidos y conservas selectas en bocadillo." data-ca="Embotits i conserves selectes en entrepà.">Embutidos y conservas selectas en bocadillo.</p>
+        </div>
+      </div>
+      <ul class="dish-list">
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de atún" data-ca="Entrepà de tonyina">Bocadillo de atún</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de anchoas, atún y olivas" data-ca="Entrepà d&#x27;anxoves, tonyina i olives">Bocadillo de anchoas, atún y olivas</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">5,60 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de longaniza o fuet" data-ca="Entrepà de llonganissa o fuet">Bocadillo de longaniza o fuet</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">3,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de jamón serrano" data-ca="Entrepà de pernil serrà">Bocadillo de jamón serrano</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo de queso manchego" data-ca="Entrepà de formatge manxec">Bocadillo de queso manchego</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bocadillo vegetal de atún (lechuga, queso, tomate y mayonesa)" data-ca="Entrepà vegetal de tonyina (enciam, formatge, tomàquet i maionesa)">Bocadillo vegetal de atún (lechuga, queso, tomate y mayonesa)</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,70 €</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="menu-cat" id="sandwich">
+      <div class="cat-head reveal blur">
+        <span class="cat-emoji" aria-hidden="true">🥪</span>
+        <div>
+          <h2 class="i18n" data-es="Sándwiches" data-ca="Sandvitxos">Sándwiches</h2>
+          <p class="i18n" data-es="Bikinis y mallorquines bien calentitos." data-ca="Bikinis i mallorquins ben calents.">Bikinis y mallorquines bien calentitos.</p>
+        </div>
+      </div>
+      <ul class="dish-list">
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bikini de jamón dulce y queso" data-ca="Mixt de pernil dolç i formatge">Bikini de jamón dulce y queso</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bikini de la casa (jamón, queso, lomo, beicon y huevo)" data-ca="Mixt de la casa (pernil, formatge, llom, bacó i ou)">Bikini de la casa (jamón, queso, lomo, beicon y huevo)</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,20 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Sándwich mallorquín" data-ca="Sandvitx mallorquí">Sándwich mallorquín</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,50 €</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="menu-cat" id="frankfurts">
+      <div class="cat-head reveal blur">
+        <span class="cat-emoji" aria-hidden="true">🌭</span>
+        <div>
+          <h2 class="i18n" data-es="Frankfurts" data-ca="Frankfurts">Frankfurts</h2>
+          <p class="i18n" data-es="Salchichas a la plancha con sus acompañamientos." data-ca="Salsitxes a la planxa amb els seus acompanyaments.">Salchichas a la plancha con sus acompañamientos.</p>
+        </div>
+      </div>
+      <ul class="dish-list">
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Frankfurt" data-ca="Frankfurt">Frankfurt</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Frankfurt con cebolla" data-ca="Frankfurt amb ceba">Frankfurt con cebolla</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,60 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Frankfurt con cebolla caramelizada" data-ca="Frankfurt amb ceba caramel·litzada">Frankfurt con cebolla caramelizada</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Frankfurt con beicon, queso y pimiento" data-ca="Frankfurt amb bacó, formatge i pebrot">Frankfurt con beicon, queso y pimiento</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">5,20 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Cervela" data-ca="Cervela">Cervela</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,80 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Pikantwurst (salchicha picante)" data-ca="Pikantwurst (salsitxa picant)">Pikantwurst (salchicha picante)</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,70 €</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="menu-cat" id="r-calientes">
+      <div class="cat-head reveal blur">
+        <span class="cat-emoji" aria-hidden="true">🍤</span>
+        <div>
+          <h2 class="i18n" data-es="Raciones calientes" data-ca="Racions calentes">Raciones calientes</h2>
+          <p class="i18n" data-es="Para compartir, recién salidas de la cocina." data-ca="Per compartir, acabades de sortir de la cuina.">Para compartir, recién salidas de la cocina.</p>
+        </div>
+      </div>
+      <ul class="dish-list">
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Albóndigas a la cerveza" data-ca="Mandonguilles a la cervesa">Albóndigas a la cerveza</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">8,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Alitas de pollo (10u)" data-ca="Aletes de pollastre (10u)">Alitas de pollo (10u)</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">8,70 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Almejas" data-ca="Cloïsses">Almejas</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">8,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Arroz a la cubana" data-ca="Arròs a la cubana">Arroz a la cubana</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">7,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bombas" data-ca="Bombes">Bombas</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">5,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Boquerones rebozados" data-ca="Seitons arrebossats">Boquerones rebozados</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">7,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Butifarra con mongetas" data-ca="Botifarra amb mongetes">Butifarra con mongetas</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">9,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Buñuelos de bacalao" data-ca="Bunyols de bacallà">Buñuelos de bacalao</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Calamares a la romana" data-ca="Calamars a la romana">Calamares a la romana</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">7,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Callos a la madrileña" data-ca="Tripes a la madrilenya">Callos a la madrileña</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">9,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Caracoles con salsa picante" data-ca="Cargols amb salsa picant">Caracoles con salsa picante</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">8,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Carne en salsa" data-ca="Carn amb salsa">Carne en salsa</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">8,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Cazón en adobo" data-ca="Caella en adob">Cazón en adobo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,80 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Champiñones a la plancha" data-ca="Xampinyons a la planxa">Champiñones a la plancha</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Chocos" data-ca="Rabes de calamar">Chocos</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">7,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Choricitos picantes" data-ca="Xoricets picants">Choricitos picantes</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">8,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Chuletón de ternera 350g" data-ca="Xuletó de vedella 350g">Chuletón de ternera 350g</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">16,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Churrasco (2 piezas)" data-ca="Xurrasco (2 peces)">Churrasco (2 piezas)</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">14,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Codillo de cerdo" data-ca="Colze de porc">Codillo de cerdo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">10,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Croquetas de cocido (8u)" data-ca="Croquetes de carn d&#x27;olla (8u)">Croquetas de cocido (8u)</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">9,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Fritura de pescado" data-ca="Fritada de peix">Fritura de pescado</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">9,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Galtas (carrilleras de cerdo)" data-ca="Galtes de porc">Galtas (carrilleras de cerdo)</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">10,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Huevos al plato" data-ca="Ous al plat">Huevos al plato</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">8,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Jamón canario (lacón)" data-ca="Lacón">Jamón canario (lacón)</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">8,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Jamón picante" data-ca="Pernil picant">Jamón picante</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Mejillones al vapor o a la marinera" data-ca="Musclos al vapor o a la marinera">Mejillones al vapor o a la marinera</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">8,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Montaditos de lomo" data-ca="Barquetes de llom">Montaditos de lomo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">5,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Morros fritos" data-ca="Morros fregits">Morros fritos</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nuggets de pollo (8u)" data-ca="Nuggets de pollastre (8u)">Nuggets de pollo (8u)</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Oreja a la gallega" data-ca="Orella a la gallega">Oreja a la gallega</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Patatas fritas naturales" data-ca="Patates fregides">Patatas fritas naturales</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">5,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Pies de cerdo" data-ca="Peus de porc">Pies de cerdo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">10,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Pinchos con pan y tomate" data-ca="Pinxos amb pa i tomàquet">Pinchos con pan y tomate</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">9,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Queso provolone" data-ca="Formatge provolone">Queso provolone</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Pulpo a la brasa" data-ca="Pop a la brasa">Pulpo a la brasa</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">15,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Sepia a la plancha" data-ca="Sípia a la planxa">Sepia a la plancha</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">14,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Solomillo de ternera" data-ca="Filet de vedella">Solomillo de ternera</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">15,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Tallarinas (pichinas)" data-ca="Tellerines (petxines)">Tallarinas (pichinas)</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">10,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Tempura de verduras" data-ca="Tempura de verdura">Tempura de verduras</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">7,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Torreznos de Soria" data-ca="Torreznos de Sòria">Torreznos de Soria</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">8,90 €</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="menu-cat" id="r-frias">
+      <div class="cat-head reveal blur">
+        <span class="cat-emoji" aria-hidden="true">🥗</span>
+        <div>
+          <h2 class="i18n" data-es="Raciones frías" data-ca="Racions fredes">Raciones frías</h2>
+          <p class="i18n" data-es="Tablas, ensaladas y conservas para picar." data-ca="Taules, amanides i conserves per picar.">Tablas, ensaladas y conservas para picar.</p>
+        </div>
+      </div>
+      <ul class="dish-list">
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Boquerones en vinagre" data-ca="Seitons en vinagre">Boquerones en vinagre</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Ensalada mixta" data-ca="Amanida mixta">Ensalada mixta</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Ensaladilla rusa" data-ca="Amanida russa">Ensaladilla rusa</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,80 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Langostinos cocidos" data-ca="Llagostins bullits">Langostinos cocidos</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Ración de jamón serrano" data-ca="Ració de pernil serrà">Ración de jamón serrano</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">7,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Ración de anchoas" data-ca="Ració d&#x27;anxoves">Ración de anchoas</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">8,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Ración de queso manchego" data-ca="Ració de formatge manxec">Ración de queso manchego</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">7,50 €</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="menu-cat" id="cervezas">
+      <div class="cat-head reveal blur">
+        <span class="cat-emoji" aria-hidden="true">🍺</span>
+        <div>
+          <h2 class="i18n" data-es="Cervezas" data-ca="Cerveses">Cervezas</h2>
+          <p class="i18n" data-es="Tiradas y de botella, bien frías." data-ca="De pressió i d&#x27;ampolla, ben fredes.">Tiradas y de botella, bien frías.</p>
+        </div>
+      </div>
+      <ul class="dish-list">
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Estrella Galicia 1906" data-ca="Estrella Galicia 1906">Estrella Galicia 1906</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,40 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Caña" data-ca="Canya">Caña</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,70 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Cerveza" data-ca="Cervesa">Cerveza</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Clara" data-ca="Clara">Clara</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Clara ½ litro" data-ca="Clara ½ litre">Clara ½ litro</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">3,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Clara de caña" data-ca="Clara de canya">Clara de caña</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,60 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Coronita" data-ca="Coronita">Coronita</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Desperados" data-ca="Desperados">Desperados</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Jarra ½ litro" data-ca="Gerra ½ litre">Jarra ½ litro</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">3,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Mediana" data-ca="Mitjana">Mediana</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Mediana sin alcohol" data-ca="Mitjana sense alcohol">Mediana sin alcohol</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,40 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Quinto" data-ca="Quinto">Quinto</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,70 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Quinto sin alcohol" data-ca="Quinto sense alcohol">Quinto sin alcohol</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,80 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Quinto Coronita" data-ca="Quinto Coronita">Quinto Coronita</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,70 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Tubo" data-ca="Tub">Tubo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,20 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Turia" data-ca="Turia">Turia</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,40 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Voll-Damm" data-ca="Voll-Damm">Voll-Damm</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,40 €</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="menu-cat" id="refrescos">
+      <div class="cat-head reveal blur">
+        <span class="cat-emoji" aria-hidden="true">🥤</span>
+        <div>
+          <h2 class="i18n" data-es="Refrescos y vinos" data-ca="Refrescos i vins">Refrescos y vinos</h2>
+          <p class="i18n" data-es="Refrescos, zumos, vermut y copas de vino." data-ca="Refrescos, sucs, vermut i copes de vi.">Refrescos, zumos, vermut y copas de vino.</p>
+        </div>
+      </div>
+      <ul class="dish-list">
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Aquarius" data-ca="Aquarius">Aquarius</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Agua mineral" data-ca="Aigua mineral">Agua mineral</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bitter Kas" data-ca="Bitter Kas">Bitter Kas</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Cacaolat" data-ca="Cacaolat">Cacaolat</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Coca-Cola" data-ca="Coca-Cola">Coca-Cola</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Coca-Cola Zero" data-ca="Coca-Cola Zero">Coca-Cola Zero</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Copa de vino blanco" data-ca="Copa de vi blanc">Copa de vino blanco</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Copa de vino reserva" data-ca="Copa de vi reserva">Copa de vino reserva</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">3,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Copa de vino tinto" data-ca="Copa de vi negre">Copa de vino tinto</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Fanta de limón" data-ca="Fanta de llimona">Fanta de limón</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Fanta de naranja" data-ca="Fanta de taronja">Fanta de naranja</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Vino Faustino" data-ca="Vi Faustino">Vino Faustino</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Gazpacho" data-ca="Gaspatxo">Gazpacho</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Ginger ale" data-ca="Ginger ale">Ginger ale</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Horchata" data-ca="Orxata">Horchata</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Nestea" data-ca="Nestea">Nestea</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Red Bull" data-ca="Red Bull">Red Bull</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,40 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Refresco" data-ca="Refresc">Refresco</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Tinto de verano" data-ca="Tint d&#x27;estiu">Tinto de verano</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,40 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Tónica" data-ca="Tònica">Tónica</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Trina" data-ca="Trina">Trina</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Vermut casero" data-ca="Vermut casolà">Vermut casero</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">3,80 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Agua Vichy Catalán" data-ca="Aigua Vichy Catalán">Agua Vichy Catalán</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,40 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Zumo de melocotón" data-ca="Suc de préssec">Zumo de melocotón</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Zumo de naranja" data-ca="Suc de taronja">Zumo de naranja</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,70 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Zumo de piña" data-ca="Suc de pinya">Zumo de piña</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,30 €</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="menu-cat" id="cafes">
+      <div class="cat-head reveal blur">
+        <span class="cat-emoji" aria-hidden="true">☕</span>
+        <div>
+          <h2 class="i18n" data-es="Cafés e infusiones" data-ca="Cafès i infusions">Cafés e infusiones</h2>
+          <p class="i18n" data-es="Cafés, carajillos e infusiones." data-ca="Cafès, cigalons i infusions.">Cafés, carajillos e infusiones.</p>
+        </div>
+      </div>
+      <ul class="dish-list">
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Café americano" data-ca="Cafè americà">Café americano</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Café bombón" data-ca="Cafè bombó">Café bombón</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,80 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Café con leche" data-ca="Cafè amb llet">Café con leche</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Café con hielo" data-ca="Cafè amb gel">Café con hielo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,40 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Café solo" data-ca="Cafè sol">Café solo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,30 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Carajillo de anís" data-ca="Cigaló d&#x27;anís">Carajillo de anís</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,20 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Carajillo de Baileys" data-ca="Cigaló de Baileys">Carajillo de Baileys</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,40 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Carajillo de coñac" data-ca="Cigaló de conyac">Carajillo de coñac</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,20 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Carajillo de Marie Brizard" data-ca="Cigaló de Marie Brizard">Carajillo de Marie Brizard</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,20 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Carajillo de ron" data-ca="Cigaló de rom">Carajillo de ron</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,20 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Carajillo de whisky" data-ca="Cigaló de whisky">Carajillo de whisky</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,20 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Café cortado" data-ca="Tallat">Café cortado</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,40 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Infusión de manzanilla" data-ca="Infusió de camamilla">Infusión de manzanilla</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,70 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Poleo menta" data-ca="Poliol menta">Poleo menta</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Té" data-ca="Te">Té</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Vaso de leche" data-ca="Got de llet">Vaso de leche</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,00 €</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="menu-cat" id="combinados">
+      <div class="cat-head reveal blur">
+        <span class="cat-emoji" aria-hidden="true">🥃</span>
+        <div>
+          <h2 class="i18n" data-es="Combinados y copas" data-ca="Combinats i copes">Combinados y copas</h2>
+          <p class="i18n" data-es="Copas, cubatas y combinados." data-ca="Copes, cubates i combinats.">Copas, cubatas y combinados.</p>
+        </div>
+      </div>
+      <ul class="dish-list">
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Copa de coñac" data-ca="Copa de conyac">Copa de coñac</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Copa de licor" data-ca="Copa de licor">Copa de licor</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Copa de whisky" data-ca="Copa de whisky">Copa de whisky</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Cubata" data-ca="Cubata">Cubata</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,70 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Cubata con Red Bull" data-ca="Cubata amb Red Bull">Cubata con Red Bull</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,90 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Licor con hielo" data-ca="Licor amb gel">Licor con hielo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,20 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Whisky especial" data-ca="Whisky especial">Whisky especial</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">6,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Whisky con hielo" data-ca="Whisky amb gel">Whisky con hielo</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">4,50 €</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="menu-cat" id="varios">
+      <div class="cat-head reveal blur">
+        <span class="cat-emoji" aria-hidden="true">🫒</span>
+        <div>
+          <h2 class="i18n" data-es="Para picar y varios" data-ca="Per picar i varis">Para picar y varios</h2>
+          <p class="i18n" data-es="Aperitivos y complementos." data-ca="Aperitius i complements.">Aperitivos y complementos.</p>
+        </div>
+      </div>
+      <ul class="dish-list">
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Berberechos" data-ca="Escopinyes">Berberechos</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">10,00 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Patatas chips" data-ca="Patates xips">Patatas chips</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,70 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Olivas rellenas o partidas" data-ca="Olives farcides o partides">Olivas rellenas o partidas</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">2,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Pan con tomate" data-ca="Pa amb tomàquet">Pan con tomate</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">1,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Sangría de vino" data-ca="Sangria de vi">Sangría de vino</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">9,50 €</span>
+        </li>
+        <li class="dish reveal">
+          <span class="dish-name i18n" data-es="Bolsa" data-ca="Bossa">Bolsa</span>
+          <span class="dish-dots" aria-hidden="true"></span>
+          <span class="dish-price">0,10 €</span>
+        </li>
+      </ul>
+    </section>
+</main>
+
+<!-- back to top -->
+<a href="#nav" class="to-top" id="toTop" aria-label="Volver arriba">&uarr;</a>
+
+<!-- FOOTER -->
+<footer role="contentinfo">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="brand" aria-hidden="true">Wood<em>pecker</em><span class="apos">'</span>s</div>
+      <p>Posiblemente las mejores hamburguesas del mundo, en el corazon de Gava.</p>
+      <div class="socials" aria-label="Redes sociales">
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 22v-8h3l1-4h-4V7.5c0-1.1.5-2 2-2h2V2h-3c-3 0-5 1.8-5 5v3H6v4h3v8h4z"/></svg></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navegar</h4>
+      <ul>
+        <li><a href="index.html#historia">Nosotros</a></li>
+        <li><a href="carta.html">Carta</a></li>
+        <li><a href="arcade.html">Arcade</a></li>
+        <li><a href="petanca.html">Petanca</a></li>
+        <li><a href="index.html#galeria">Galeria</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contacto</h4>
+      <ul>
+        <li><a href="tel:+34936381707">+34 936 381 707</a></li>
+        <li><a href="mailto:juan@woodpeckers.es">juan@woodpeckers.es</a></li>
+        <li>Av. Erampruny&agrave; 16, bajos</li>
+        <li>08850 Gav&agrave;, Barcelona</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Horario</h4>
+      <ul>
+        <li>Lun &mdash; Mar &middot; Cerrado</li>
+        <li>Mie &mdash; Dom &middot; 12:00 &mdash; 01:00</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; <span id="footerYear">2026</span> Woodpecker's Gav&agrave; &middot; Todos los derechos reservados</span>
+    <span>Carta hecha con <span class="heart" aria-label="amor">&hearts;</span> en Gav&agrave;</span>
+  </div>
+</footer>
+
+<script src="js/site.js"></script>
+
+<script>
+/* ============================================================
+   CARTA - Woodpecker's
+   - Conmutador de idioma ES / CA (persistente en localStorage).
+   - Scroll-spy: resalta el chip de la categoria visible.
+   - Boton "volver arriba".
+============================================================ */
+(function () {
+  "use strict";
+
+  /* ---------- Idioma ES / CA ---------- */
+  var LANG_KEY = "wp-carta-lang";
+  var langBtns = Array.prototype.slice.call(document.querySelectorAll(".lang-opt"));
+  var i18nEls = Array.prototype.slice.call(document.querySelectorAll(".i18n, .i18n-html"));
+
+  function applyLang(lang) {
+    if (lang !== "ca") lang = "es";
+    document.documentElement.lang = lang;
+    i18nEls.forEach(function (el) {
+      var val = el.getAttribute("data-" + lang);
+      if (val == null) return;
+      if (el.classList.contains("i18n-html")) {
+        el.innerHTML = val;
+      } else {
+        el.textContent = val;
+      }
+    });
+    langBtns.forEach(function (b) {
+      var on = b.getAttribute("data-lang") === lang;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+  }
+
+  langBtns.forEach(function (b) {
+    b.addEventListener("click", function () { applyLang(b.getAttribute("data-lang")); });
+  });
+
+  var saved = "es";
+  try { saved = localStorage.getItem(LANG_KEY) || "es"; } catch (e) {}
+  applyLang(saved);
+
+  /* ---------- Scroll-spy de categorias ---------- */
+  var chips = Array.prototype.slice.call(document.querySelectorAll(".cat-chip"));
+  var sections = chips.map(function (c) { return document.querySelector(c.getAttribute("href")); });
+  var catNav = document.getElementById("catNav");
+  var toTop = document.getElementById("toTop");
+
+  function setActive(idx) {
+    chips.forEach(function (c, i) {
+      var on = i === idx;
+      c.classList.toggle("active", on);
+      if (on && catNav) {
+        var left = c.offsetLeft - (catNav.clientWidth - c.offsetWidth) / 2;
+        catNav.scrollTo({ left: left, behavior: "smooth" });
+      }
+    });
+  }
+
+  var visible = {};
+  if ("IntersectionObserver" in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { visible[e.target.id] = e.isIntersecting ? e.intersectionRatio : 0; });
+      var bestId = null, best = 0;
+      Object.keys(visible).forEach(function (id) { if (visible[id] > best) { best = visible[id]; bestId = id; } });
+      if (bestId) {
+        var idx = sections.findIndex(function (s) { return s && s.id === bestId; });
+        if (idx >= 0) setActive(idx);
+      }
+    }, { rootMargin: "-45% 0px -45% 0px", threshold: [0, .25, .5, 1] });
+    sections.forEach(function (s) { if (s) obs.observe(s); });
+  }
+
+  function onScroll() { if (toTop) toTop.classList.toggle("show", window.scrollY > 600); }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  var fy = document.getElementById("footerYear");
+  if (fy) fy.textContent = new Date().getFullYear();
+})();
+</script>
+
+</body>
+</html>
