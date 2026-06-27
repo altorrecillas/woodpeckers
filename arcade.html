@@ -73,7 +73,7 @@
 .arc-iconbtn:active { transform: translateY(0) scale(.94); }
 
 /* STAGE */
-.arc-stage { position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border-strong); box-shadow: 0 24px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04); background: #0b0805; touch-action: none; }
+.arc-stage { position: relative; margin-inline: auto; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border-strong); box-shadow: 0 24px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04); background: #0b0805; touch-action: none; }
 #gameCanvas { width: 100%; height: auto; display: block; touch-action: none; image-rendering: optimizeQuality; }
 
 .arc-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: .45rem; padding: 1.6rem; background: rgba(11,8,6,.86); -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px); opacity: 0; visibility: hidden; transition: opacity .35s var(--ease-out), visibility .35s; z-index: 5; }
@@ -91,6 +91,27 @@
 .arc-controls[data-layout="dpad"] .cb-left { grid-column: 1; grid-row: 2; }
 .arc-controls[data-layout="dpad"] .cb-down { grid-column: 2; grid-row: 2; }
 .arc-controls[data-layout="dpad"] .cb-right { grid-column: 3; grid-row: 2; }
+/* Tetris: rejilla de 6 botones grandes en una sola fila, a todo el ancho */
+.arc-controls[data-layout="tetris"] {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 7px;
+  width: 100%; max-width: 460px; margin: 1rem auto 0; flex-wrap: nowrap;
+}
+.arc-controls[data-layout="tetris"] .cbtn {
+  flex-direction: column; gap: 1px; height: 62px; min-width: 0; padding: 0 .15rem;
+}
+.cbtn .cb-ic { font-size: 1.5rem; line-height: 1; }
+.cbtn .cb-sub { font-family: 'VT323', monospace; font-size: .8rem; line-height: 1; letter-spacing: .04em; color: inherit; opacity: .8; }
+.cbtn.cb-rot { background: linear-gradient(135deg, var(--pixel), var(--lettuce)); color: var(--bg); border-color: transparent; }
+.cbtn.cb-rot.pressed { background: linear-gradient(135deg, var(--lettuce), var(--pixel)); }
+.cbtn.cb-drop { background: rgba(230,57,70,.16); border-color: rgba(230,57,70,.55); color: #ffd9dd; }
+.cbtn.cb-drop.pressed { background: rgba(230,57,70,.3); }
+.cbtn.cb-hold { color: var(--cream-dim); }
+@media (max-width: 380px) {
+  .arc-controls[data-layout="tetris"] { gap: 5px; }
+  .arc-controls[data-layout="tetris"] .cbtn { height: 58px; }
+  .cbtn .cb-ic { font-size: 1.3rem; }
+  .cbtn .cb-sub { font-size: .72rem; }
+}
 .cbtn { -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; height: 54px; min-width: 54px; padding: 0 1rem; border-radius: 13px; border: 1px solid var(--border-strong); background: rgba(254,245,231,.04); display: inline-flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 600; color: var(--cream); transition: background .15s, border-color .15s, transform .1s; }
 .cbtn .cb-lbl { font-family: 'VT323', monospace; font-size: 1.05rem; letter-spacing: .05em; margin-left: .4rem; color: var(--cream-dim); }
 .cbtn:hover { border-color: var(--mustard); }
@@ -117,6 +138,7 @@
   .arc-scores { gap: .7rem; }
   .arc-scores b { font-size: 1.1rem; }
   .arc-title h2 { font-size: 1.05rem; }
+  .arc-hint { display: none; }
 }
 @media (max-height: 720px) {
   .game-hero p { display: none; }
@@ -557,13 +579,13 @@
       help: 'Encaja las piezas y completa líneas para puntuar. Sube de nivel y acelera.',
       controlHint: '<kbd>← →</kbd> mover · <kbd>↑</kbd> girar · <kbd>↓</kbd> bajar · <kbd>espacio</kbd> soltar · <kbd>C</kbd> reservar',
       controls: [
-        { action: 'hold', icon: '⇄' },
-        { action: 'left', icon: '◀', hold: true },
-        { action: 'up', icon: '⟳' },
-        { action: 'right', icon: '▶', hold: true },
-        { action: 'down', icon: '▼', hold: true },
-        { action: 'fire', icon: '⤓' }
-      ], layout: 'row',
+        { action: 'left', icon: '<span class="cb-ic">◀</span><span class="cb-sub">Izq</span>', hold: true },
+        { action: 'up', icon: '<span class="cb-ic">⟳</span><span class="cb-sub">Girar</span>', cls: 'cb-rot' },
+        { action: 'right', icon: '<span class="cb-ic">▶</span><span class="cb-sub">Der</span>', hold: true },
+        { action: 'down', icon: '<span class="cb-ic">▼</span><span class="cb-sub">Baja</span>', hold: true },
+        { action: 'fire', icon: '<span class="cb-ic">⤓</span><span class="cb-sub">Caer</span>', cls: 'cb-drop' },
+        { action: 'hold', icon: '<span class="cb-ic">⇄</span><span class="cb-sub">Hold</span>', cls: 'cb-hold' }
+      ], layout: 'tetris',
       get score() { return score; }, get over() { return over; },
       info() { return 'Nivel ' + level + ' · Líneas ' + lines; },
       reset() {
@@ -610,12 +632,9 @@
       },
       draw(ctx) {
         ctx.fillStyle = '#0b0805'; ctx.fillRect(0, 0, W, H);
-        ctx.strokeStyle = 'rgba(254,245,231,.035)'; ctx.lineWidth = 1;
-        for (let i = 1; i < COLS; i++) { ctx.beginPath(); ctx.moveTo(i * CELL, 0); ctx.lineTo(i * CELL, H); ctx.stroke(); }
-        for (let j = 1; j < ROWS; j++) { ctx.beginPath(); ctx.moveTo(0, j * CELL); ctx.lineTo(W, j * CELL); ctx.stroke(); }
         const block = (x, y, c) => {
           const px = x * CELL, py = y * CELL;
-          ctx.fillStyle = c; ctx.roundRect(px + 1, py + 1, CELL - 2, CELL - 2, 4); ctx.fill();
+          ctx.beginPath(); ctx.fillStyle = c; ctx.roundRect(px + 1, py + 1, CELL - 2, CELL - 2, 4); ctx.fill();
           ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.fillRect(px + 3, py + 3, CELL - 6, 3);
           ctx.fillStyle = 'rgba(0,0,0,.22)'; ctx.fillRect(px + 3, py + CELL - 6, CELL - 6, 3);
         };
@@ -627,36 +646,6 @@
           cur.m.forEach((row, yy) => row.forEach((v, xx) => { if (v) block(cur.x + xx, gy + yy, cur.c); }));
           ctx.globalAlpha = 1;
           cur.m.forEach((row, yy) => row.forEach((v, xx) => { if (v && cur.y + yy >= 0) block(cur.x + xx, cur.y + yy, cur.c); }));
-        }
-        // HOLD preview (panel arriba-izquierda)
-        {
-          const s = 12, pw = 4 * s + 12, ph = 3 * s + 18, px = 6, py = 6;
-          ctx.fillStyle = 'rgba(11,8,6,.82)'; ctx.roundRect(px, py, pw, ph, 7); ctx.fill();
-          ctx.strokeStyle = 'rgba(254,245,231,.14)'; ctx.lineWidth = 1; ctx.stroke();
-          ctx.fillStyle = '#fcbf49'; ctx.font = '700 8px Inter, sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
-          ctx.fillText('HOLD', px + 6, py + 5);
-          if (hold) {
-            const m = SHAPES[hold].m, c = holdUsed ? 'rgba(254,245,231,.28)' : SHAPES[hold].c;
-            const ox = px + (pw - m[0].length * s) / 2, oy = py + 13;
-            m.forEach((row, yy) => row.forEach((v, xx) => {
-              if (!v) return;
-              ctx.fillStyle = c; ctx.roundRect(ox + xx * s + 1, oy + yy * s + 1, s - 2, s - 2, 3); ctx.fill();
-            }));
-          }
-        }
-        // NEXT preview (panel arriba-derecha)
-        if (nextK) {
-          const m = SHAPES[nextK].m, c = SHAPES[nextK].c, s = 12;
-          const pw = 4 * s + 12, ph = 3 * s + 18, px = W - pw - 6, py = 6;
-          ctx.fillStyle = 'rgba(11,8,6,.82)'; ctx.roundRect(px, py, pw, ph, 7); ctx.fill();
-          ctx.strokeStyle = 'rgba(254,245,231,.14)'; ctx.lineWidth = 1; ctx.stroke();
-          ctx.fillStyle = '#fcbf49'; ctx.font = '700 8px Inter, sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
-          ctx.fillText('NEXT', px + 6, py + 5);
-          const ox = px + (pw - m[0].length * s) / 2, oy = py + 13;
-          m.forEach((row, yy) => row.forEach((v, xx) => {
-            if (!v) return;
-            ctx.fillStyle = c; ctx.roundRect(ox + xx * s + 1, oy + yy * s + 1, s - 2, s - 2, 3); ctx.fill();
-          }));
         }
       }
     };
@@ -882,28 +871,41 @@
 
   let game = null, state = 'idle', paused = false, lastT = 0, rafId = 0, lastScore = -1, lastInfo = '';
 
+  // Altura de referencia ESTABLE para dimensionar el lienzo.
+  // En móvil, al hacer scroll la barra del navegador se oculta/muestra y cambia
+  // el "visual viewport"; si reaccionáramos a eso, el canvas crecería y encogería.
+  // Usamos el "layout viewport" (clientHeight), que no cambia con el scroll, y nos
+  // quedamos con la mayor altura vista para que nunca encoja (siempre lo más grande).
+  let stableVH = 0, lastFitW = 0;
   function fit() {
     if (!game) return;
     const ar = game.W / game.H;
-    const vv = window.visualViewport;
-    const vh = vv ? vv.height : window.innerHeight;
+    const w = window.innerWidth;
+    if (w !== lastFitW) { lastFitW = w; stableVH = 0; } // cambio real de ancho / orientación
+    const vhNow = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    if (vhNow > stableVH) stableVH = vhNow;
+    const vh = stableVH;
     const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 64;
-    // Reserva = altura real de todo lo que NO es el lienzo (nav + HUD + controles + pista) + respiración.
-    const chrome = navH
-      + (hudEl ? hudEl.offsetHeight : 0)
-      + (controlsEl ? controlsEl.offsetHeight : 0)
-      + (hintEl ? hintEl.offsetHeight : 0)
-      + 56;
-    const availH = Math.max(160, vh - chrome);
-    const byWidth = consoleEl.parentElement.clientWidth;
-    const maxW = Math.min(480, byWidth, Math.max(180, availH * ar));
-    consoleEl.style.maxWidth = Math.round(maxW) + 'px';
+    // Todo lo que NO es el tablero dentro de la consola (HUD + controles + hint
+    // + sus márgenes) se mide directamente para no quedarnos cortos.
+    const stageH = stage.offsetHeight || 0;
+    const nonStage = Math.max(0, consoleEl.offsetHeight - stageH);
+    // Respiro = hueco bajo la nav + aire inferior (menos en móvil para ganar tamaño).
+    const breathing = vh <= 760 ? 26 : 48;
+    const availH = Math.max(160, vh - navH - nonStage - breathing);
+    // Limitamos SOLO el tablero (no la consola): así los controles mantienen un
+    // ancho cómodo y el lienzo se hace tan grande como permita la altura disponible.
+    const byWidth = consoleEl.clientWidth;
+    const maxW = Math.min(480, byWidth, Math.max(160, availH * ar));
+    stage.style.maxWidth = Math.round(maxW) + 'px';
   }
   let fitRAF = 0;
   const scheduleFit = () => { if (fitRAF) return; fitRAF = requestAnimationFrame(() => { fitRAF = 0; fit(); }); };
+  // Solo re-ajustamos en cambios reales (rotación / tamaño de ventana), NO al
+  // hacer scroll. No escuchamos visualViewport.resize a propósito: es lo que se
+  // dispara al ocultarse/mostrarse la barra del navegador durante el scroll.
   window.addEventListener('resize', scheduleFit, { passive: true });
   window.addEventListener('orientationchange', scheduleFit, { passive: true });
-  if (window.visualViewport) window.visualViewport.addEventListener('resize', scheduleFit, { passive: true });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleFit);
 
   function setupCanvas() {
