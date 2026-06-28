@@ -108,6 +108,32 @@ body::before {
 .cat-chip:hover { color: var(--cream); border-color: var(--mustard); background: rgba(252,191,73,.08); transform: translateY(-2px); }
 .cat-chip.active { color: var(--bg); background: var(--grad-mustard); border-color: transparent; font-weight: 600; }
 
+/* ===== SEARCH ===== */
+.cat-search { max-width: var(--max); margin: 0 auto; padding: .75rem clamp(1.25rem, 4vw, 2rem) .2rem; }
+.cat-search-box { position: relative; max-width: 520px; margin: 0 auto; }
+.cat-search-box > svg { position: absolute; left: .95rem; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--cream-dim); pointer-events: none; }
+.cat-search-input {
+  width: 100%; padding: .7rem 2.6rem .7rem 2.6rem; border-radius: 999px;
+  border: 1px solid var(--border-strong); background: rgba(254,245,231,.04); color: var(--cream);
+  font: inherit; font-size: .92rem; transition: border-color .3s, background .3s, box-shadow .3s;
+  -webkit-appearance: none; appearance: none;
+}
+.cat-search-input::placeholder { color: var(--cream-dim); }
+.cat-search-input::-webkit-search-cancel-button { -webkit-appearance: none; }
+.cat-search-input:focus { outline: none; border-color: var(--mustard); background: rgba(252,191,73,.06); box-shadow: 0 0 0 4px var(--mustard-glow); }
+.cat-search-clear {
+  position: absolute; right: .55rem; top: 50%; transform: translateY(-50%);
+  width: 28px; height: 28px; border-radius: 50%; display: none;
+  align-items: center; justify-content: center; font-size: .9rem; color: var(--cream-dim);
+  transition: color .2s, background .2s;
+}
+.cat-search-clear.show { display: inline-flex; }
+.cat-search-clear:hover { color: var(--cream); background: rgba(254,245,231,.08); }
+.menu-cat[hidden], .dish[hidden] { display: none; }
+.no-results { text-align: center; color: var(--cream-dim); padding: clamp(3rem, 9vw, 5rem) 1rem; display: none; }
+.no-results.show { display: block; }
+.no-results .nr-emoji { font-size: 2.6rem; display: block; margin-bottom: .6rem; }
+
 /* ===== MENU ===== */
 .menu-wrap {
   max-width: 980px; margin: 0 auto;
@@ -267,8 +293,15 @@ body::before {
   </div>
 </section>
 
-<!-- STICKY CATEGORY NAV -->
+<!-- STICKY CATEGORY NAV + BUSCADOR -->
 <nav class="cat-nav" aria-label="Categorias de la carta">
+  <div class="cat-search">
+    <div class="cat-search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="dishSearch" class="cat-search-input i18n-ph" type="search" inputmode="search" autocomplete="off" data-es="Buscar en la carta…" data-ca="Cerca a la carta…" aria-label="Buscar plato en la carta" />
+      <button class="cat-search-clear" id="dishSearchClear" type="button" aria-label="Borrar busqueda">&#10005;</button>
+    </div>
+  </div>
   <div class="cat-nav-inner" id="catNav">
       <a href="#hamburguesas" class="cat-chip"><span aria-hidden="true">🍔</span><span class="i18n" data-es="Hamburguesas" data-ca="Hamburgueses">Hamburguesas</span></a>
       <a href="#b-calientes" class="cat-chip"><span aria-hidden="true">🥖</span><span class="i18n" data-es="Bocadillos calientes" data-ca="Entrepans calents">Bocadillos calientes</span></a>
@@ -287,6 +320,10 @@ body::before {
 
 <!-- MENU -->
 <main id="carta-main" class="menu-wrap">
+    <p class="no-results" id="noResults" role="status" aria-live="polite">
+      <span class="nr-emoji" aria-hidden="true">🍽️</span>
+      <span class="i18n" data-es="No encontramos ningún plato con ese nombre." data-ca="No hem trobat cap plat amb aquest nom.">No encontramos ningún plato con ese nombre.</span>
+    </p>
     <section class="menu-cat" id="hamburguesas">
       <div class="cat-head reveal blur">
         <span class="cat-emoji" aria-hidden="true">🍔</span>
@@ -1329,7 +1366,7 @@ body::before {
     <div class="footer-col">
       <h4>Contacto</h4>
       <ul>
-        <li><a href="tel:+34936381707">+34 936 381 707</a></li>
+        <li><a href="tel:+34936381707">+34 936 38 17 07</a></li>
         <li><a href="mailto:juan@woodpeckers.es">juan@woodpeckers.es</a></li>
         <li>Av. Erampruny&agrave; 16, bajos</li>
         <li>08850 Gav&agrave;, Barcelona</li>
@@ -1364,7 +1401,7 @@ body::before {
   /* ---------- Idioma ES / CA ---------- */
   var LANG_KEY = "wp-carta-lang";
   var langBtns = Array.prototype.slice.call(document.querySelectorAll(".lang-opt"));
-  var i18nEls = Array.prototype.slice.call(document.querySelectorAll(".i18n, .i18n-html"));
+  var i18nEls = Array.prototype.slice.call(document.querySelectorAll(".i18n, .i18n-html, .i18n-ph"));
 
   function applyLang(lang) {
     if (lang !== "ca") lang = "es";
@@ -1372,7 +1409,9 @@ body::before {
     i18nEls.forEach(function (el) {
       var val = el.getAttribute("data-" + lang);
       if (val == null) return;
-      if (el.classList.contains("i18n-html")) {
+      if (el.classList.contains("i18n-ph")) {
+        el.setAttribute("placeholder", val);
+      } else if (el.classList.contains("i18n-html")) {
         el.innerHTML = val;
       } else {
         el.textContent = val;
@@ -1423,6 +1462,48 @@ body::before {
       }
     }, { rootMargin: "-45% 0px -45% 0px", threshold: [0, .25, .5, 1] });
     sections.forEach(function (s) { if (s) obs.observe(s); });
+  }
+
+  /* ---------- Buscador en vivo (insensible a acentos, en ambos idiomas) ---------- */
+  var norm = function (s) { return (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); };
+  var searchInput = document.getElementById("dishSearch");
+  var searchClear = document.getElementById("dishSearchClear");
+  var noResults = document.getElementById("noResults");
+  var cats = Array.prototype.slice.call(document.querySelectorAll(".menu-cat"));
+  var dishes = Array.prototype.slice.call(document.querySelectorAll(".dish"));
+  // Índice de búsqueda por plato: nombre en ES + CA, normalizado.
+  dishes.forEach(function (d) {
+    var n = d.querySelector(".dish-name");
+    d._q = norm((n.getAttribute("data-es") || "") + " " + (n.getAttribute("data-ca") || ""));
+  });
+
+  function runSearch() {
+    if (!searchInput) return;
+    var q = norm(searchInput.value.trim());
+    searchClear.classList.toggle("show", searchInput.value.length > 0);
+    var anyVisible = false;
+    cats.forEach(function (cat) {
+      var catVisible = false;
+      Array.prototype.forEach.call(cat.querySelectorAll(".dish"), function (d) {
+        var match = !q || d._q.indexOf(q) !== -1;
+        d.hidden = !match;
+        if (match) catVisible = true;
+      });
+      cat.hidden = !catVisible;
+      if (catVisible) anyVisible = true;
+    });
+    if (noResults) noResults.classList.toggle("show", !anyVisible);
+    // Oculta del carrusel los chips de categorías sin resultados.
+    chips.forEach(function (c) {
+      var sec = document.querySelector(c.getAttribute("href"));
+      c.style.display = (sec && sec.hidden) ? "none" : "";
+    });
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener("input", runSearch);
+    searchInput.addEventListener("keydown", function (e) { if (e.key === "Escape") { searchInput.value = ""; runSearch(); } });
+    searchClear.addEventListener("click", function () { searchInput.value = ""; runSearch(); searchInput.focus(); });
   }
 
   function onScroll() { if (toTop) toTop.classList.toggle("show", window.scrollY > 600); }

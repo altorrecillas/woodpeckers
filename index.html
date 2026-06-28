@@ -1472,6 +1472,8 @@ body::before {
   </div>
 </footer>
 
+<script src="js/site.js"></script>
+
 <script>
 (function() {
   'use strict';
@@ -1479,101 +1481,11 @@ body::before {
   const hasIO = 'IntersectionObserver' in window;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* Loader con failsafe */
-  const loader = document.getElementById('loader');
-  const hideLoader = () => {
-    if (loader && !loader.classList.contains('hide')) {
-      loader.classList.add('hide');
-      setTimeout(() => loader.remove(), 1000);
-    }
-  };
-  window.addEventListener('load', () => setTimeout(hideLoader, 400));
-  setTimeout(hideLoader, 4000);
-
-  /* Scroll Progress Bar */
-  const progressBar = document.querySelector('.scroll-progress-bar');
-  if (progressBar) {
-    let ticking = false;
-    const docEl = document.documentElement;
-    const updateProgress = () => {
-      const scrollHeight = docEl.scrollHeight - window.innerHeight;
-      const scrolled = scrollHeight > 0 ? (window.scrollY / scrollHeight) * 100 : 0;
-      progressBar.style.width = scrolled + '%';
-    };
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(() => { updateProgress(); ticking = false; });
-        ticking = true;
-      }
-    }, { passive: true });
-    updateProgress();
-  }
-
-  /* Nav scroll */
+  /* El loader, el scroll de la nav, la barra de progreso, el menú móvil (con
+     foco atrapado), el reveal base y el año del footer los gestiona js/site.js
+     — fuente única compartida por todas las páginas. Aquí solo va lo específico
+     de la portada. */
   const nav = document.getElementById('nav');
-  let tickingNav = false;
-  const updateNav = () => {
-    if (nav) nav.classList.toggle('scrolled', window.scrollY > 30);
-    tickingNav = false;
-  };
-  window.addEventListener('scroll', () => {
-    if (!tickingNav) { requestAnimationFrame(updateNav); tickingNav = true; }
-  }, { passive: true });
-  updateNav();
-
-  /* Mobile Menu */
-  const toggle = document.getElementById('menuToggle');
-  const menu = document.getElementById('mobileMenu');
-
-  function closeMenu() {
-    if (!toggle || !menu) return;
-    toggle.classList.remove('active');
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-label', 'Abrir menú');
-    menu.classList.remove('open');
-    menu.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('menu-open');
-  }
-
-  function openMenu() {
-    if (!toggle || !menu) return;
-    toggle.classList.add('active');
-    toggle.setAttribute('aria-expanded', 'true');
-    toggle.setAttribute('aria-label', 'Cerrar menú');
-    menu.classList.add('open');
-    menu.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('menu-open');
-  }
-
-  if (toggle && menu) {
-    toggle.addEventListener('click', () => {
-      if (toggle.getAttribute('aria-expanded') === 'true') closeMenu();
-      else openMenu();
-    });
-
-    menu.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', closeMenu);
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
-        closeMenu();
-        toggle.focus();
-      }
-      // Focus trap: keep Tab inside the menu while open
-      if (e.key === 'Tab' && toggle.getAttribute('aria-expanded') === 'true') {
-        const focusable = [...menu.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])')];
-        if (!focusable.length) return;
-        const first = focusable[0], last = focusable[focusable.length - 1];
-        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-      }
-    });
-
-    menu.addEventListener('click', (e) => {
-      if (e.target === menu) closeMenu();
-    });
-  }
 
   /* Game cards cursor effect */
   const gameCards = document.querySelectorAll('.game-card');
@@ -1595,18 +1507,8 @@ body::before {
     });
   });
 
-  /* Reveal on scroll */
+  /* Observadores específicos de la portada (el .reveal base lo hace js/site.js) */
   if (hasIO) {
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
-
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
     /* Scrollspy: resalta la sección activa en la navegación */
     const navLinks = [...document.querySelectorAll('.nav-links a[href^="#"]')];
@@ -1698,10 +1600,6 @@ body::before {
     const heroBg = document.querySelector('.hero-bg');
     if (heroBg) heroBg.style.animation = 'none';
   }
-
-  /* Año dinámico en el footer */
-  const yearEl = document.getElementById('footerYear');
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   /* ===========================
      CUSTOM CURSOR

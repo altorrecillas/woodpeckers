@@ -67,6 +67,9 @@
 .arc-scores b { font-family: 'Fraunces', serif; font-size: 1.3rem; line-height: 1; }
 .arc-scores .as-score b { color: var(--pixel); }
 .arc-scores .as-best b { color: var(--mustard); }
+.arc-next { display: flex; flex-direction: column; align-items: center; gap: 2px; flex-shrink: 0; }
+.arc-next span { font-size: .58rem; letter-spacing: .12em; text-transform: uppercase; color: var(--cream-dim); line-height: 1; }
+.arc-next canvas { width: 40px; height: 40px; display: block; }
 .arc-actions { display: flex; gap: .4rem; flex-shrink: 0; }
 .arc-iconbtn { width: 40px; height: 40px; border-radius: 11px; border: 1px solid var(--border-strong); background: rgba(254,245,231,.03); display: inline-flex; align-items: center; justify-content: center; font-size: 1.05rem; transition: border-color .3s, background .3s, transform .2s; }
 .arc-iconbtn:hover { border-color: var(--mustard); background: rgba(252,191,73,.08); transform: translateY(-2px); }
@@ -268,6 +271,10 @@
         <div class="arc-scores">
           <div class="as-score"><span>Score</span><b id="scoreVal">0</b></div>
           <div class="as-best"><span>Best</span><b id="bestVal">0</b></div>
+        </div>
+        <div class="arc-next" id="arcNext" hidden aria-hidden="true">
+          <span>Next</span>
+          <canvas id="nextCanvas" width="44" height="44"></canvas>
         </div>
         <div class="arc-actions">
           <button class="arc-iconbtn" id="btnMute" type="button" aria-label="Activar o silenciar sonido" aria-pressed="false">🔊</button>
@@ -484,7 +491,7 @@
           const t = i / Math.max(1, snake.length - 1);
           const head = i === 0;
           ctx.fillStyle = head ? '#fcbf49' : `rgba(167,201,87,${0.9 - t * 0.45})`;
-          ctx.roundRect(gx * CELL + 1.5, gy * CELL + 1.5, CELL - 3, CELL - 3, 7); ctx.fill();
+          ctx.beginPath(); ctx.roundRect(gx * CELL + 1.5, gy * CELL + 1.5, CELL - 3, CELL - 3, 7); ctx.fill();
           if (head) {
             ctx.fillStyle = '#0e0a08';
             const ex = gx * CELL + CELL / 2, ey = gy * CELL + CELL / 2;
@@ -587,6 +594,7 @@
         { action: 'hold', icon: '<span class="cb-ic">⇄</span><span class="cb-sub">Hold</span>', cls: 'cb-hold' }
       ], layout: 'tetris',
       get score() { return score; }, get over() { return over; },
+      peekNext() { return nextK ? { m: SHAPES[nextK].m, c: SHAPES[nextK].c } : null; },
       info() { return 'Nivel ' + level + ' · Líneas ' + lines; },
       reset() {
         grid = Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
@@ -824,14 +832,14 @@
         ctx.fillStyle = '#0b0805'; ctx.fillRect(0, 0, W, H);
         bricks.forEach(b => {
           if (!b.alive) return;
-          ctx.fillStyle = b.c; ctx.roundRect(b.x, b.y, BW, BH, 4); ctx.fill();
+          ctx.fillStyle = b.c; ctx.beginPath(); ctx.roundRect(b.x, b.y, BW, BH, 4); ctx.fill();
           ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fillRect(b.x + 3, b.y + 3, BW - 6, 3);
           ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.fillRect(b.x + 3, b.y + BH - 5, BW - 6, 3);
         });
         // pala
         const grd = ctx.createLinearGradient(0, PAD_Y, 0, PAD_Y + PAD_H);
         grd.addColorStop(0, '#e0c48e'); grd.addColorStop(1, '#8b6f47');
-        ctx.fillStyle = grd; ctx.roundRect(pad.x - pad.w / 2, PAD_Y, pad.w, PAD_H, 6); ctx.fill();
+        ctx.fillStyle = grd; ctx.beginPath(); ctx.roundRect(pad.x - pad.w / 2, PAD_Y, pad.w, PAD_H, 6); ctx.fill();
         // bola
         ctx.fillStyle = '#fef5e7'; ctx.shadowColor = 'rgba(252,191,73,.6)'; ctx.shadowBlur = 12;
         ctx.beginPath(); ctx.arc(ball.x, ball.y, R, 0, 7); ctx.fill(); ctx.shadowBlur = 0;
@@ -868,8 +876,36 @@
   const btnPause = document.getElementById('btnPause');
   const btnRestart = document.getElementById('btnRestart');
   const btnMute = document.getElementById('btnMute');
+  const nextWrap = document.getElementById('arcNext');
+  const nextCanvas = document.getElementById('nextCanvas');
+  const nctx = nextCanvas ? nextCanvas.getContext('2d') : null;
 
   let game = null, state = 'idle', paused = false, lastT = 0, rafId = 0, lastScore = -1, lastInfo = '';
+
+  // Vista previa de la "siguiente pieza" (solo juegos que exponen peekNext, p.ej. Tetris).
+  // Se dibuja en un mini-lienzo del HUD para no ensuciar el tablero.
+  function drawNext() {
+    if (!nctx || !game || !game.peekNext) return;
+    const dpr = Math.min(3, window.devicePixelRatio || 1);
+    const size = 40;
+    if (nextCanvas.width !== Math.round(size * dpr)) {
+      nextCanvas.width = Math.round(size * dpr);
+      nextCanvas.height = Math.round(size * dpr);
+    }
+    nctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    nctx.imageSmoothingEnabled = true; nctx.imageSmoothingQuality = 'high';
+    nctx.clearRect(0, 0, size, size);
+    const np = game.peekNext();
+    if (!np) return;
+    const m = np.m, cols = m[0].length, rows = m.length;
+    const cell = Math.floor(Math.min((size - 6) / cols, (size - 6) / rows));
+    const ox = (size - cols * cell) / 2, oy = (size - rows * cell) / 2;
+    for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+      if (!m[y][x]) continue;
+      nctx.fillStyle = np.c; nctx.beginPath();
+      nctx.roundRect(ox + x * cell + 1, oy + y * cell + 1, cell - 2, cell - 2, 3); nctx.fill();
+    }
+  }
 
   // Altura de referencia ESTABLE para dimensionar el lienzo.
   // En móvil, al hacer scroll la barra del navegador se oculta/muestra y cambia
@@ -956,6 +992,7 @@
     elScore.textContent = '0';
     elBest.textContent = Best.get(id);
     document.querySelectorAll('.arc-card').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.game === id)));
+    if (nextWrap) nextWrap.hidden = !game.peekNext;
     state = 'idle'; paused = false; lastScore = -1; lastInfo = '';
     showOverlay('start');
     fit(); draw();
@@ -1021,6 +1058,7 @@
     } else { shakeAmt = 0; }
     if (ox || oy) { ctx.save(); ctx.translate(ox, oy); game.draw(ctx); ctx.restore(); }
     else { game.draw(ctx); }
+    drawNext();
   }
 
   /* Bucle con paso de simulación fijo (físicas deterministas e idénticas a
