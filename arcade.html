@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#0e0a08" />
 <meta name="description" content="Recreativos Woodpecker's — juega gratis a Snake, Tetris, Flappy y Arkanoid mientras esperas tu hamburguesa. Cuatro clásicos retro jugables desde el móvil." />
 <meta property="og:title" content="Recreativos Woodpecker's · Arcade" />
@@ -141,7 +141,16 @@
   .arc-scores { gap: .7rem; }
   .arc-scores b { font-size: 1.1rem; }
   .arc-title h2 { font-size: 1.05rem; }
-  .arc-hint { display: none; }
+  /* la ayuda de controles se mantiene visible: en móvil es donde más falta hace */
+  .arc-hint { font-size: .72rem; margin-top: .5rem; }
+  .arc-hud { gap: .45rem; }
+  .arc-next canvas { width: 34px; height: 34px; }
+  .arc-iconbtn { width: 36px; height: 36px; }
+}
+@media (max-width: 400px) {
+  /* con Next + Hold (Tetris) el HUD no cabe en una fila: el título pasa arriba */
+  .arc-hud { flex-wrap: wrap; row-gap: .45rem; }
+  .arc-title { flex-basis: 100%; }
 }
 @media (max-height: 720px) {
   .game-hero p { display: none; }
@@ -275,6 +284,10 @@
         <div class="arc-next" id="arcNext" hidden aria-hidden="true">
           <span>Next</span>
           <canvas id="nextCanvas" width="44" height="44"></canvas>
+        </div>
+        <div class="arc-next" id="arcHold" hidden aria-hidden="true">
+          <span>Hold</span>
+          <canvas id="holdCanvas" width="44" height="44"></canvas>
         </div>
         <div class="arc-actions">
           <button class="arc-iconbtn" id="btnMute" type="button" aria-label="Activar o silenciar sonido" aria-pressed="false">🔊</button>
@@ -425,7 +438,7 @@
   function Snake() {
     const COLS = 19, ROWS = 19, CELL = 26;
     const W = COLS * CELL, H = ROWS * CELL;
-    let snake, prev, dir, nextDir, food, score, over, moveT, step, grow;
+    let snake, prev, dir, dirQ, food, score, over, moveT, step, grow;
 
     function placeFood() {
       let p;
@@ -448,21 +461,24 @@
       reset() {
         snake = [{ x: 9, y: 9 }, { x: 8, y: 9 }, { x: 7, y: 9 }];
         prev = snake.map(s => ({ x: s.x, y: s.y }));
-        dir = { x: 1, y: 0 }; nextDir = dir; score = 0; over = false;
+        dir = { x: 1, y: 0 }; dirQ = []; score = 0; over = false;
         moveT = 0; step = 150; grow = 0; placeFood();
       },
       action(a) {
         const map = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
         const d = map[a]; if (!d) return;
-        if (d.x === -dir.x && d.y === -dir.y) return; // no reversa
-        nextDir = d;
+        // Cola de 2 giros: dos pulsaciones rápidas dentro del mismo paso no se pisan
+        const last = dirQ.length ? dirQ[dirQ.length - 1] : dir;
+        if (d.x === -last.x && d.y === -last.y) return; // no reversa
+        if (d.x === last.x && d.y === last.y) return;   // repetido
+        if (dirQ.length < 2) dirQ.push(d);
       },
       gesture(g) { ({ U: () => this.action('up'), D: () => this.action('down'), L: () => this.action('left'), R: () => this.action('right') }[g] || (() => {}))(); },
       update(dt) {
         moveT += dt;
         step = Math.max(70, 150 - snake.length * 2.5);
         if (moveT < step) return;
-        moveT = 0; dir = nextDir;
+        moveT = 0; if (dirQ.length) dir = dirQ.shift();
         const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
         if (head.x < 0 || head.y < 0 || head.x >= COLS || head.y >= ROWS || snake.some(s => s.x === head.x && s.y === head.y)) {
           over = true; Sound.over(); return;
@@ -525,6 +541,7 @@
     let grid, cur, nextK, bag, score, lines, level, over, dropT;
     let hold, holdUsed, grounded, lockT, lockResets;
     let held = { left: false, right: false, down: false }, dasT = 0, dasDir = 0, dasCharged = false;
+    let fxRows = [], fxText = null; // flash de líneas limpiadas y aviso de TETRIS
 
     function newBag() { const b = KEYS.slice(); for (let i = b.length - 1; i > 0; i--) { const j = (Math.random() * (i + 1)) | 0;[b[i], b[j]] = [b[j], b[i]]; } return b; }
     function pull() { if (!bag.length) bag = newBag(); return bag.pop(); }
@@ -568,10 +585,12 @@
     }
     function lock() {
       cur.m.forEach((row, y) => row.forEach((v, x) => { if (v && cur.y + y >= 0) grid[cur.y + y][cur.x + x] = cur.c; }));
-      let cleared = 0;
-      for (let y = ROWS - 1; y >= 0; y--) {
-        if (grid[y].every(c => c)) { grid.splice(y, 1); grid.unshift(new Array(COLS).fill(0)); cleared++; y++; }
-      }
+      const full = [];
+      for (let y = 0; y < ROWS; y++) if (grid[y].every(c => c)) full.push(y);
+      const cleared = full.length;
+      for (const y of full) { grid.splice(y, 1); grid.unshift(new Array(COLS).fill(0)); }
+      if (cleared && !reduceMotion) full.forEach(y => fxRows.push({ y, life: 260 }));
+      if (cleared === 4) fxText = { text: 'TETRIS!', life: 900 };
       if (cleared) {
         lines += cleared; score += [0, 100, 300, 500, 800][cleared] * level;
         const nl = Math.floor(lines / 10) + 1;
@@ -586,20 +605,21 @@
       help: 'Encaja las piezas y completa líneas para puntuar. Sube de nivel y acelera.',
       controlHint: '<kbd>← →</kbd> mover · <kbd>↑</kbd> girar · <kbd>↓</kbd> bajar · <kbd>espacio</kbd> soltar · <kbd>C</kbd> reservar',
       controls: [
-        { action: 'left', icon: '<span class="cb-ic">◀</span><span class="cb-sub">Izq</span>', hold: true },
-        { action: 'up', icon: '<span class="cb-ic">⟳</span><span class="cb-sub">Girar</span>', cls: 'cb-rot' },
-        { action: 'right', icon: '<span class="cb-ic">▶</span><span class="cb-sub">Der</span>', hold: true },
-        { action: 'down', icon: '<span class="cb-ic">▼</span><span class="cb-sub">Baja</span>', hold: true },
-        { action: 'fire', icon: '<span class="cb-ic">⤓</span><span class="cb-sub">Caer</span>', cls: 'cb-drop' },
-        { action: 'hold', icon: '<span class="cb-ic">⇄</span><span class="cb-sub">Hold</span>', cls: 'cb-hold' }
+        { action: 'left', icon: '<span class="cb-ic">◀</span><span class="cb-sub">Izq</span>', hold: true, aria: 'Mover a la izquierda' },
+        { action: 'up', icon: '<span class="cb-ic">⟳</span><span class="cb-sub">Girar</span>', cls: 'cb-rot', aria: 'Girar pieza' },
+        { action: 'right', icon: '<span class="cb-ic">▶</span><span class="cb-sub">Der</span>', hold: true, aria: 'Mover a la derecha' },
+        { action: 'down', icon: '<span class="cb-ic">▼</span><span class="cb-sub">Baja</span>', hold: true, aria: 'Bajar más rápido' },
+        { action: 'fire', icon: '<span class="cb-ic">⤓</span><span class="cb-sub">Caer</span>', cls: 'cb-drop', aria: 'Caída instantánea' },
+        { action: 'hold', icon: '<span class="cb-ic">⇄</span><span class="cb-sub">Hold</span>', cls: 'cb-hold', aria: 'Reservar pieza' }
       ], layout: 'tetris',
       get score() { return score; }, get over() { return over; },
       peekNext() { return nextK ? { m: SHAPES[nextK].m, c: SHAPES[nextK].c } : null; },
+      peekHold() { return hold ? { m: SHAPES[hold].m, c: SHAPES[hold].c } : null; },
       info() { return 'Nivel ' + level + ' · Líneas ' + lines; },
       reset() {
         grid = Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
         bag = newBag(); nextK = null; score = 0; lines = 0; level = 1; over = false; dropT = 0;
-        hold = null; holdUsed = false; clearLockState();
+        hold = null; holdUsed = false; clearLockState(); fxRows = []; fxText = null;
         held = { left: false, right: false, down: false }; dasT = 0; dasDir = 0; dasCharged = false;
         spawn();
       },
@@ -637,6 +657,8 @@
         }
         // lock delay: la pieza apoyada no se fija hasta agotar el tiempo de gracia
         if (grounded) { lockT += dt; if (lockT >= LOCK_DELAY) { lock(); } }
+        for (let i = fxRows.length - 1; i >= 0; i--) { fxRows[i].life -= dt; if (fxRows[i].life <= 0) fxRows.splice(i, 1); }
+        if (fxText) { fxText.life -= dt; if (fxText.life <= 0) fxText = null; }
       },
       draw(ctx) {
         ctx.fillStyle = '#0b0805'; ctx.fillRect(0, 0, W, H);
@@ -655,6 +677,19 @@
           ctx.globalAlpha = 1;
           cur.m.forEach((row, yy) => row.forEach((v, xx) => { if (v && cur.y + yy >= 0) block(cur.x + xx, cur.y + yy, cur.c); }));
         }
+        // flash de las líneas recién limpiadas
+        for (const f of fxRows) {
+          ctx.fillStyle = 'rgba(255,255,255,' + (0.8 * f.life / 260).toFixed(3) + ')';
+          ctx.fillRect(0, f.y * CELL, W, CELL);
+        }
+        if (fxText) {
+          ctx.save();
+          ctx.globalAlpha = Math.min(1, fxText.life / 500);
+          ctx.font = '34px VT323, monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillStyle = '#7be495'; ctx.shadowColor = 'rgba(123,228,149,.8)'; ctx.shadowBlur = 14;
+          ctx.fillText(fxText.text, W / 2, H * 0.32);
+          ctx.restore();
+        }
       }
     };
   }
@@ -670,7 +705,7 @@
       id: 'flappy', name: 'Flappy', emoji: '🐦', W, H,
       help: 'Toca para batir las alas y esquiva los tubos. Cada tubo superado suma un punto.',
       controlHint: 'Toca la pantalla o pulsa <kbd>espacio</kbd> / <kbd>↑</kbd> para volar',
-      controls: [{ action: 'fire', icon: '🐦 VOLAR', cls: 'cb-primary cb-flap' }], layout: 'row',
+      controls: [{ action: 'fire', icon: '🐦 VOLAR', cls: 'cb-primary cb-flap', aria: 'Volar' }], layout: 'row',
       get score() { return score; }, get over() { return over; },
       info() { return started ? 'Tubos ' + score : 'Toca para empezar'; },
       reset() {
@@ -751,13 +786,20 @@
     const COLS = 8, ROWS = 5, BTOP = 64, BPAD = 10, BGAP = 6;
     const BW = (W - 2 * BPAD - (COLS - 1) * BGAP) / COLS, BH = 18;
     const ROWC = ['#e63946', '#f3863d', '#fcbf49', '#a7c957', '#7be495'];
-    let pad, ball, bricks, score, lives, over, launched, baseSpeed, padTarget;
+    let pad, ball, bricks, score, lives, over, launched, baseSpeed, padTarget, level;
     let held = { left: false, right: false };
 
+    // Un patrón distinto por nivel; desde el nivel 2 las filas altas aguantan 2 golpes.
     function build() {
       bricks = [];
-      for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++)
-        bricks.push({ x: BPAD + c * (BW + BGAP), y: BTOP + r * (BH + BGAP), c: ROWC[r], alive: true });
+      const pat = (level - 1) % 4;
+      for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+        if (pat === 1 && (r + c) % 2 === 1) continue;                    // damero
+        if (pat === 2 && (c < r || c >= COLS - r)) continue;             // pirámide
+        if (pat === 3 && r % 2 === 1 && c > 1 && c < COLS - 2) continue; // almenas
+        const hp = level > 1 && r < 2 ? 2 : 1;
+        bricks.push({ x: BPAD + c * (BW + BGAP), y: BTOP + r * (BH + BGAP), c: ROWC[r], alive: true, hp, cracked: false });
+      }
     }
     function resetBall() { launched = false; ball = { x: pad.x, y: PAD_Y - R - 1, vx: 0, vy: 0 }; }
     // Mantiene un ángulo jugable: la bola nunca se queda casi horizontal (rebotes eternos).
@@ -771,17 +813,17 @@
     }
     return {
       id: 'arkanoid', name: 'Arkanoid', emoji: '🧱', W, H,
-      help: 'Mueve la pala y rompe todos los ladrillos. Tienes 3 vidas. ¡No dejes caer la bola!',
+      help: 'Rompe todos los ladrillos para subir de nivel: cada uno trae un patrón nuevo y ladrillos reforzados. Tienes 3 vidas. ¡No dejes caer la bola!',
       controlHint: 'Arrastra o <kbd>← →</kbd> para mover · toca para lanzar',
       controls: [
         { action: 'left', icon: '◀', hold: true },
-        { action: 'fire', icon: '●' },
+        { action: 'fire', icon: '●', aria: 'Lanzar bola' },
         { action: 'right', icon: '▶', hold: true }
       ], layout: 'row',
       get score() { return score; }, get over() { return over; },
-      info() { return 'Vidas ' + '●'.repeat(Math.max(0, lives)) + '○'.repeat(Math.max(0, 3 - lives)); },
+      info() { return 'Nivel ' + level + ' · ' + '●'.repeat(Math.max(0, lives)) + '○'.repeat(Math.max(0, 3 - lives)); },
       reset() {
-        pad = { x: W / 2, w: PAD_W }; padTarget = pad.x; score = 0; lives = 3; over = false;
+        pad = { x: W / 2, w: PAD_W }; padTarget = pad.x; score = 0; lives = 3; over = false; level = 1;
         baseSpeed = 300; held = { left: false, right: false }; build(); resetBall();
       },
       launch() { if (over || launched) return; launched = true; const ang = rand(-0.5, 0.5) - Math.PI / 2; ball.vx = Math.cos(ang) * baseSpeed; ball.vy = Math.sin(ang) * baseSpeed; Sound.flap(); },
@@ -814,7 +856,8 @@
         for (const b of bricks) {
           if (!b.alive) continue;
           if (ball.x + R > b.x && ball.x - R < b.x + BW && ball.y + R > b.y && ball.y - R < b.y + BH) {
-            b.alive = false; score += 10; Sound.eat(); FX.shake(3);
+            b.hp--; score += 10; Sound.eat(); FX.shake(3);
+            if (b.hp <= 0) b.alive = false; else b.cracked = true;
             const ox = Math.min(ball.x + R - b.x, b.x + BW - (ball.x - R));
             const oy = Math.min(ball.y + R - b.y, b.y + BH - (ball.y - R));
             if (ox < oy) ball.vx = -ball.vx; else ball.vy = -ball.vy;
@@ -822,7 +865,7 @@
             break;
           }
         }
-        if (!bricks.some(b => b.alive)) { baseSpeed = Math.min(440, baseSpeed * 1.08); build(); resetBall(); Sound.line(); }
+        if (!bricks.some(b => b.alive)) { level++; baseSpeed = Math.min(440, baseSpeed * 1.08); build(); resetBall(); Sound.line(); }
         if (ball.y - R > H) {
           lives--;
           if (lives <= 0) { over = true; Sound.over(); } else { resetBall(); Sound.hit(); }
@@ -835,6 +878,13 @@
           ctx.fillStyle = b.c; ctx.beginPath(); ctx.roundRect(b.x, b.y, BW, BH, 4); ctx.fill();
           ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fillRect(b.x + 3, b.y + 3, BW - 6, 3);
           ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.fillRect(b.x + 3, b.y + BH - 5, BW - 6, 3);
+          if (b.hp > 1) { // reforzado: doble borde
+            ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.roundRect(b.x + 2, b.y + 2, BW - 4, BH - 4, 3); ctx.stroke();
+          } else if (b.cracked) { // ya tocado: grieta
+            ctx.strokeStyle = 'rgba(0,0,0,.4)'; ctx.lineWidth = 1.2;
+            ctx.beginPath(); ctx.moveTo(b.x + BW * .32, b.y + 2); ctx.lineTo(b.x + BW * .48, b.y + BH * .55); ctx.lineTo(b.x + BW * .38, b.y + BH - 2); ctx.stroke();
+          }
         });
         // pala
         const grd = ctx.createLinearGradient(0, PAD_Y, 0, PAD_Y + PAD_H);
@@ -879,33 +929,37 @@
   const nextWrap = document.getElementById('arcNext');
   const nextCanvas = document.getElementById('nextCanvas');
   const nctx = nextCanvas ? nextCanvas.getContext('2d') : null;
+  const holdWrap = document.getElementById('arcHold');
+  const holdCanvas = document.getElementById('holdCanvas');
+  const hctx = holdCanvas ? holdCanvas.getContext('2d') : null;
 
   let game = null, state = 'idle', paused = false, lastT = 0, rafId = 0, lastScore = -1, lastInfo = '';
 
-  // Vista previa de la "siguiente pieza" (solo juegos que exponen peekNext, p.ej. Tetris).
-  // Se dibuja en un mini-lienzo del HUD para no ensuciar el tablero.
-  function drawNext() {
-    if (!nctx || !game || !game.peekNext) return;
+  // Mini-lienzos del HUD: "siguiente pieza" y "pieza reservada" (juegos que
+  // exponen peekNext/peekHold, p.ej. Tetris). Así no se ensucia el tablero.
+  function drawMini(mctx, mcanvas, piece) {
+    if (!mctx) return;
     const dpr = Math.min(3, window.devicePixelRatio || 1);
     const size = 40;
-    if (nextCanvas.width !== Math.round(size * dpr)) {
-      nextCanvas.width = Math.round(size * dpr);
-      nextCanvas.height = Math.round(size * dpr);
+    if (mcanvas.width !== Math.round(size * dpr)) {
+      mcanvas.width = Math.round(size * dpr);
+      mcanvas.height = Math.round(size * dpr);
     }
-    nctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    nctx.imageSmoothingEnabled = true; nctx.imageSmoothingQuality = 'high';
-    nctx.clearRect(0, 0, size, size);
-    const np = game.peekNext();
-    if (!np) return;
-    const m = np.m, cols = m[0].length, rows = m.length;
+    mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    mctx.imageSmoothingEnabled = true; mctx.imageSmoothingQuality = 'high';
+    mctx.clearRect(0, 0, size, size);
+    if (!piece) return;
+    const m = piece.m, cols = m[0].length, rows = m.length;
     const cell = Math.floor(Math.min((size - 6) / cols, (size - 6) / rows));
     const ox = (size - cols * cell) / 2, oy = (size - rows * cell) / 2;
     for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
       if (!m[y][x]) continue;
-      nctx.fillStyle = np.c; nctx.beginPath();
-      nctx.roundRect(ox + x * cell + 1, oy + y * cell + 1, cell - 2, cell - 2, 3); nctx.fill();
+      mctx.fillStyle = piece.c; mctx.beginPath();
+      mctx.roundRect(ox + x * cell + 1, oy + y * cell + 1, cell - 2, cell - 2, 3); mctx.fill();
     }
   }
+  function drawNext() { if (game && game.peekNext) drawMini(nctx, nextCanvas, game.peekNext()); }
+  function drawHold() { if (game && game.peekHold) drawMini(hctx, holdCanvas, game.peekHold()); }
 
   // Altura de referencia ESTABLE para dimensionar el lienzo.
   // En móvil, al hacer scroll la barra del navegador se oculta/muestra y cambia
@@ -955,6 +1009,7 @@
     ctx.imageSmoothingQuality = 'high';
   }
 
+  const ARIA_ACTIONS = { up: 'Arriba', down: 'Abajo', left: 'Izquierda', right: 'Derecha', fire: 'Acción', hold: 'Reservar pieza' };
   function renderControls() {
     controlsEl.innerHTML = '';
     controlsEl.dataset.layout = game.layout || 'row';
@@ -963,7 +1018,7 @@
       b.type = 'button';
       b.className = 'cbtn ' + (c.cls || '');
       b.innerHTML = c.icon;
-      b.setAttribute('aria-label', c.action);
+      b.setAttribute('aria-label', c.aria || ARIA_ACTIONS[c.action] || c.action);
       const down = (e) => { e.preventDefault(); b.classList.add('pressed'); Sound.ensure(); doAction(c.action, 'down'); };
       const up = (e) => { e.preventDefault(); b.classList.remove('pressed'); if (c.hold) doAction(c.action, 'up'); };
       b.addEventListener('pointerdown', down);
@@ -993,6 +1048,7 @@
     elBest.textContent = Best.get(id);
     document.querySelectorAll('.arc-card').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.game === id)));
     if (nextWrap) nextWrap.hidden = !game.peekNext;
+    if (holdWrap) holdWrap.hidden = !game.peekHold;
     state = 'idle'; paused = false; lastScore = -1; lastInfo = '';
     showOverlay('start');
     fit(); draw();
@@ -1058,7 +1114,7 @@
     } else { shakeAmt = 0; }
     if (ox || oy) { ctx.save(); ctx.translate(ox, oy); game.draw(ctx); ctx.restore(); }
     else { game.draw(ctx); }
-    drawNext();
+    drawNext(); drawHold();
   }
 
   /* Bucle con paso de simulación fijo (físicas deterministas e idénticas a

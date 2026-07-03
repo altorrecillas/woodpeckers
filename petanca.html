@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#0e0a08" />
 <meta name="description" content="Petanca Woodpecker's — el juego oficial de petanca de Woodpecker's Gavà. Apunta, lanza tus bolas y acércate más al boliche que la CPU. Jugable desde el móvil." />
 <meta property="og:title" content="Petanca Woodpecker's · El juego" />
@@ -624,7 +624,11 @@
     const yb = closest('you'), cb = closest('cpu');
     const playerHolds = yb.ball && (!cb.ball || yb.d < cb.d);
     let target, travel;
-    if (playerHolds && yb.d < 130 && Math.random() < d.shoot) {
+    // En difícil, si tu bola está pegada al boliche, a veces intenta mover el propio boliche
+    if (settings.difficulty === 'dificil' && playerHolds && yb.d < 38 && left.cpu >= 2 && Math.random() < 0.35) {
+      target = { x: jack.x + gauss(d.sigma * 0.7), y: jack.y + gauss(d.sigma * 0.7) };
+      travel = dist(LAUNCH, target) * 1.3;
+    } else if (playerHolds && yb.d < 130 && Math.random() < d.shoot) {
       target = { x: yb.ball.x + gauss(d.sigma * 0.6), y: yb.ball.y + gauss(d.sigma * 0.6) };
       travel = dist(LAUNCH, target) * 1.28;
     } else {
@@ -762,13 +766,19 @@
       b.x += nx * ov * (a.mass / tot); b.y += ny * ov * (a.mass / tot);
       const vn = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
       if (vn < 0) {
+        const spA = Math.hypot(a.vx, a.vy), spB = Math.hypot(b.vx, b.vy); // velocidades pre-impulso
         const imp = -(1 + REST) * vn / (1 / a.mass + 1 / b.mass);
         a.vx -= imp * nx / a.mass; a.vy -= imp * ny / a.mass; b.vx += imp * nx / b.mass; b.vy += imp * ny / b.mass;
         const impact = -vn, wood = a.team === 'jack' || b.team === 'jack';
         playImpact(wood, impact);
         if (impact > 2.5) { spawnDust((a.x + b.x) / 2, (a.y + b.y) / 2, Math.min(10, 4 + impact | 0), impact); if (impact > 3.5) vibrate(22); }
         const rivals = (a.team === 'you' && b.team === 'cpu') || (a.team === 'cpu' && b.team === 'you');
-        if (rivals && impact > 3 && !practice) { const youHit = boules.some(x => x.team === 'you' && x.wasMoving); if (youHit) { carreauMatch = true; unlockGoal('carreau'); showToast('💥', '¡Carreau!'); } }
+        // Carreau solo si el golpe llega en TU tirada y tu bola es la que impacta
+        // (la más rápida antes del choque), no por rebotes fortuitos.
+        if (rivals && impact > 3 && !practice && current === 'you') {
+          const striker = spA > spB ? a : b;
+          if (striker.team === 'you') { carreauMatch = true; unlockGoal('carreau'); showToast('💥', '¡Carreau!'); }
+        }
       }
     }
   }
